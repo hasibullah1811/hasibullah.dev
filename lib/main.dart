@@ -512,62 +512,92 @@ class StatusBadge extends StatelessWidget {
     final secondaryText = isDark ? Colors.grey[400] : Colors.grey[600];
     final cardColor = Theme.of(context).cardColor;
     final borderColor = isDark ? Colors.grey[800]! : Colors.grey[300]!;
-    return Row(
+    final isMobile = MediaQuery.of(context).size.width < 768;
+    return Column(
       children: [
-        Align(
-          alignment: Alignment.centerLeft,
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: const Color(0xFF052e16), // Very dark green bg
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: const Color(0xFF4ADE80).withOpacity(0.5),
-              ),
-            ),
-            child: Text(
-              "open for work!",
-              style: GoogleFonts.jetBrainsMono(
-                color: const Color(0xFF4ADE80),
-                fontSize: 12,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(width: 20),
-        // Text Details
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        Row(
           children: [
-            Row(
-              children: [
-                Icon(
-                  FontAwesomeIcons.earthAmericas,
-                  size: 12,
-                  color: secondaryText,
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
                 ),
-                const SizedBox(width: 8),
-                Text(
-                  "Wollongong, NSW, Australia (GMT+11)",
-                  style: GoogleFonts.jetBrainsMono(
-                    color: secondaryText,
-                    fontSize: 12,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF052e16), // Very dark green bg
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color: const Color(0xFF4ADE80).withOpacity(0.5),
                   ),
                 ),
-              ],
+                child: Text(
+                  "open for work!",
+                  style: GoogleFonts.jetBrainsMono(
+                    color: const Color(0xFF4ADE80),
+                    fontSize: 12,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
             ),
-            const SizedBox(height: 6),
-            // The "Techy" Coordinates part
+            const SizedBox(width: 20),
+            // Text Details
+            isMobile
+                ? Container()
+                : LocationTile(secondaryText: secondaryText, isDark: isDark),
+          ],
+        ),
+        SizedBox(height: isMobile ? 20 : 0),
+        isMobile
+            ? LocationTile(secondaryText: secondaryText, isDark: isDark)
+            : Container(),
+      ],
+    );
+  }
+}
+
+class LocationTile extends StatelessWidget {
+  const LocationTile({
+    super.key,
+    required this.secondaryText,
+    required this.isDark,
+  });
+
+  final Color? secondaryText;
+  final bool isDark;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Icon(
+              FontAwesomeIcons.earthAmericas,
+              size: 12,
+              color: secondaryText,
+            ),
+            const SizedBox(width: 8),
             Text(
-              "34.4278° S, 150.8931° E",
+              "Wollongong, NSW, Australia (GMT+11)",
               style: GoogleFonts.jetBrainsMono(
-                color: isDark ? Colors.grey[600] : Colors.grey[400],
-                fontSize: 10,
-                letterSpacing: 1.0,
+                color: secondaryText,
+                fontSize: 12,
               ),
             ),
           ],
+        ),
+        const SizedBox(height: 6),
+        // The "Techy" Coordinates part
+        Text(
+          "34.4278° S, 150.8931° E",
+          style: GoogleFonts.jetBrainsMono(
+            color: isDark ? Colors.grey[600] : Colors.grey[400],
+            fontSize: 10,
+            letterSpacing: 1.0,
+          ),
         ),
       ],
     );
@@ -970,6 +1000,17 @@ class FloatingDock extends StatelessWidget {
       }
     }
 
+    Future<void> _launchEmail(String emailAddress) async {
+      final Uri emailLaunchUri = Uri(scheme: 'mailto', path: emailAddress);
+
+      if (await canLaunchUrl(emailLaunchUri)) {
+        await launchUrl(emailLaunchUri);
+      } else {
+        // Handle the case where no email app is available
+        throw 'Could not launch $emailLaunchUri';
+      }
+    }
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
       decoration: BoxDecoration(
@@ -998,9 +1039,21 @@ class FloatingDock extends StatelessWidget {
             },
           ),
           const SizedBox(width: 20),
-          _DockIcon(icon: FontAwesomeIcons.linkedin, onTap: () {}),
+          _DockIcon(
+            icon: FontAwesomeIcons.linkedin,
+            onTap: () {
+              _launchUrl(
+                "https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/",
+              );
+            },
+          ),
           const SizedBox(width: 20),
-          _DockIcon(icon: FontAwesomeIcons.envelope, onTap: () {}),
+          _DockIcon(
+            icon: FontAwesomeIcons.envelope,
+            onTap: () {
+              _launchEmail('hasib.mobiledev@gmail.com');
+            },
+          ),
           const SizedBox(width: 20),
           Container(
             width: 1,
