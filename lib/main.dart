@@ -3,10 +3,24 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hasib_website/Widgets/pulsuiating_circle.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'dart:html' as html; // Adds HTML capabilities
 
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.dark);
 void main() {
   runApp(const MyMinimalPortfolio());
+  // --- PRE-LOADER REMOVAL LOGIC ---
+  final loader = html.document.getElementById('loader');
+
+  if (loader != null) {
+    // 1. Start the fade out
+    loader.style.opacity = '0';
+    loader.style.transition = 'opacity 0.5s';
+
+    // 2. Wait 500ms using Dart's native timer, then remove the element
+    Future.delayed(const Duration(milliseconds: 500), () {
+      loader.remove();
+    });
+  }
 }
 
 class MyMinimalPortfolio extends StatelessWidget {
@@ -80,26 +94,18 @@ class PortfolioHome extends StatelessWidget {
                   const HeaderSection(),
                   const SizedBox(height: 40),
                   const StatusBadge(),
-                  // const SizedBox(
-                  //   height: 60,
-                  // ),
-                  // const LocationSection(),
-                  const SizedBox(height: 60),
-                  // --- INSERT HERE ---
-                  const LeetCodeSection(),
-                  // -------------------
+
                   const SizedBox(height: 60),
 
-                  // --- ADD HERE ---
+                  const LeetCodeSection(),
+                  const SizedBox(height: 60),
+
                   const EducationSection(),
 
-                  // ----------------
                   const SizedBox(height: 60),
                   const SectionTitle(title: "WORK HISTORY"),
 
                   const SizedBox(height: 20),
-
-                  // 2. The Fun Kebab Job (Current) <-- INSERT HERE
                   const WorkTile(
                     role: "Production Engineer (Kebabs)",
                     company: "Fairy Meadow Kebabs",
@@ -108,7 +114,6 @@ class PortfolioHome extends StatelessWidget {
                         "Debugging hunger in a high-concurrency environment. I balance a full-time Master's degree while ensuring zero downtime on garlic sauce deployment.",
                     isLast: false,
                   ),
-                  // Using your actual data context
                   const WorkTile(
                     role: "SOFTWARE DEVELOPER",
                     company: "BinaryCraft",
