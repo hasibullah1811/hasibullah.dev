@@ -1142,7 +1142,7 @@ class PublicationSection extends StatelessWidget {
               "International Journal of Supply Chain & Management (IJSCM)",
           meta: "Primary Author • Vol. 10, No. 4, Aug 2021",
           link:
-              "https://ojs.excelingtech.co.uk/", // Replace with actual paper link if you have one
+              "https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037", // Replace with actual paper link if you have one
         ),
       ],
     );
@@ -1170,6 +1170,13 @@ class PublicationTile extends StatelessWidget {
     final secondaryText = isDark ? Colors.grey[400] : Colors.grey[600];
     final cardColor = Theme.of(context).cardColor;
     final borderColor = isDark ? Colors.grey[800]! : Colors.grey[300]!;
+
+    Future<void> _launchUrl(String paperUrl) async {
+      final Uri uri = Uri.parse(paperUrl);
+      if (!await launchUrl(uri)) {
+        throw Exception('Could not launch $uri');
+      }
+    }
 
     return Container(
       padding: const EdgeInsets.all(20),
@@ -1229,10 +1236,15 @@ class PublicationTile extends StatelessWidget {
                           ),
                         ),
                         // External Link Icon
-                        Icon(
-                          FontAwesomeIcons.arrowUpRightFromSquare,
-                          size: 12,
-                          color: secondaryText,
+                        InkWell(
+                          onTap: () {
+                            _launchUrl(link);
+                          },
+                          child: Icon(
+                            FontAwesomeIcons.arrowUpRightFromSquare,
+                            size: 12,
+                            color: secondaryText,
+                          ),
                         ),
                       ],
                     ),
