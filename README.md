@@ -28,8 +28,8 @@ Designed for developers who prefer content, code, and clarity over flashy animat
 
 1.  **Clone the repository**
     ```bash
-    git clone [https://github.com/yourusername/your-repo-name.git](https://github.com/yourusername/your-repo-name.git)
-    cd your-repo-name
+    git clone [https://github.com/hasibullah1811/hasibullah.dev.git](https://github.com/hasibullah1811/hasibullah.dev.git)
+    cd hasibullah.dev
     ```
 
 2.  **Install dependencies**
