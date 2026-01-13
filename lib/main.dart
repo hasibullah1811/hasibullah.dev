@@ -476,7 +476,7 @@ class HeaderSection extends StatelessWidget {
         Row(
           children: [
             Text(
-              "hey, i'm hasib ",
+              "Hey, I'm Hasib ",
               style: GoogleFonts.playfairDisplay(
                 color: colorScheme.primary, // Changed from Colors.white
                 fontSize: 32,
