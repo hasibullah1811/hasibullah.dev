@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -95,6 +97,9 @@ class PortfolioHome extends StatelessWidget {
                   const SizedBox(height: 40),
                   const StatusBadge(),
 
+                  const SizedBox(height: 60),
+
+                  const TerminalChat(),
                   const SizedBox(height: 60),
 
                   const LeetCodeSection(),
@@ -195,6 +200,325 @@ class PortfolioHome extends StatelessWidget {
 // -----------------------------------------------------------------------------
 // COMPONENTS
 // -----------------------------------------------------------------------------
+class TerminalChat extends StatefulWidget {
+  const TerminalChat({super.key});
+
+  @override
+  State<TerminalChat> createState() => _TerminalChatState();
+}
+
+class _TerminalChatState extends State<TerminalChat> {
+  final TextEditingController _controller = TextEditingController();
+  final List<Map<String, String>> _history = [
+    {
+      "role": "system",
+      "text":
+          "HasibAI v2.0 online. Ask about skills, projects, or my secret kebab recipe.",
+    },
+  ];
+  final ScrollController _scrollController = ScrollController();
+  bool _isTyping = false;
+  Timer? _typingTimer; // Keep track of timer to cancel if needed
+
+  @override
+  void dispose() {
+    _typingTimer?.cancel(); // Good practice to stop leaks
+    _controller.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void _showHelp() {
+    // If we are already typing, don't interrupt
+    if (_isTyping) return;
+
+    setState(() {
+      // 1. Add a "System" message with the list of commands
+      _history.add({
+        "role": "system",
+        "text":
+            "AVAILABLE COMMANDS:\n"
+            "-------------------\n"
+            "• skills    : View technical stack\n"
+            "• projects  : See recent work\n"
+            "• contact   : Get email & socials\n"
+            "• kebab     : Secret production engineering info\n"
+            "• joke      : Developer humor\n"
+            "• clear     : Reset terminal\n"
+            "• love      : What I love the most\n",
+      });
+    });
+    _scrollToBottom();
+  }
+
+  void _handleSubmit(String input) {
+    if (input.trim().isEmpty) return;
+
+    // 1. Add User Message
+    setState(() {
+      _history.add({"role": "user", "text": input});
+      _isTyping = true;
+    });
+    _controller.clear();
+    _scrollToBottom();
+
+    // 2. Generate "AI" Response (Simulated Latency)
+    Future.delayed(const Duration(milliseconds: 600), () {
+      if (!mounted) return; // Prevent errors if user left screen
+      String response = _generateResponse(input.toLowerCase());
+      _streamResponse(response);
+    });
+  }
+
+  // Simple "Fake LLM" Logic
+  String _generateResponse(String input) {
+    if (input.contains("hi") || input.contains("hello")) {
+      return "Hello! I am Hasib's digital assistant. How can I help you?";
+    } else if (input.contains("skill") ||
+        input.contains("stack") ||
+        input.contains("tech")) {
+      return "I am proficient in Flutter, Python (FastAPI), and Machine Learning. I also make a mean kebab.";
+    } else if (input.contains("contact") ||
+        input.contains("email") ||
+        input.contains("hire")) {
+      return "You can reach me at hasib.mobiledev@gmail.com or find me on LinkedIn.";
+    } else if (input.contains("project") || input.contains("work")) {
+      return "I built StepWise for international students and published a paper on Deep Learning in IJSCM.";
+    } else if (input.contains("joke") || input.contains("funny")) {
+      return "Why did the neural network break up with the random forest? ... It had too many decision trees.";
+    } else if (input.contains("clear")) {
+      setState(() => _history.clear());
+      return "Terminal cleared.";
+    } // Greetings
+    if (input.contains("hi") ||
+        input.contains("hello") ||
+        input.contains("hey")) {
+      return "Hello! I am Hasib's digital clone. I run on coffee and spaghetti code.";
+    }
+    // Tech / Skills
+    else if (input.contains("skill") ||
+        input.contains("stack") ||
+        input.contains("tech")) {
+      return "I speak fluent Flutter, Python, and Dart. I dabble in AI/ML when I'm feeling adventurous.";
+    }
+    // Kebab / Food (The Fun Part)
+    else if (input.contains("kebab") ||
+        input.contains("food") ||
+        input.contains("hungry")) {
+      return "My HSPs (Halal Snack Packs) compile faster than my Flutter builds. 100% garlic sauce coverage guaranteed.";
+    }
+    // Contact
+    else if (input.contains("contact") ||
+        input.contains("email") ||
+        input.contains("hire")) {
+      return "Slide into my DMs or email me. I'm currently strictly open to 'high-paying' or 'super-cool' opportunities. Preferably both.";
+    }
+    // Education
+    else if (input.contains("study") ||
+        input.contains("university") ||
+        input.contains("degree")) {
+      return "Mastering AI at Macquarie University. Before that, I survived a CSE degree at North South University.";
+    }
+    // Projects
+    else if (input.contains("project") || input.contains("work")) {
+      return "I built StepWise (for students) and a few secret tools. Check the 'Projects' section above if you don't believe me.";
+    }
+    // Meta / Humor
+    else if (input.contains("sudo")) {
+      return "Nice try. You have no power here.";
+    } else if (input.contains("salary") || input.contains("money")) {
+      return "I accept payment in AUD, USD, and compliments about my code.";
+    } else if (input.contains("joke")) {
+      return "A SQL query walks into a bar, walks up to two tables, and asks... 'Can I join you?'";
+    } else if (input.contains("love")) {
+      return "I love coding. And my wife. (Not necessarily in that order, don't tell her).";
+    } else if (input.contains("clear")) {
+      setState(() => _history.clear());
+      return "Console cleared. Memory wiped. Who are you again?";
+    }
+    // The "Fallback"
+    else {
+      return "Error 404: Context not found. My NLP model is just a bunch of if-else statements in a trench coat. Try asking about 'skills', 'kebabs', or 'projects'.";
+    }
+  }
+
+  // --- THE FIX: Stream Response ---
+  void _streamResponse(String fullText) {
+    int index = 0;
+
+    setState(() {
+      _history.add({"role": "system", "text": ""});
+    });
+
+    _typingTimer = Timer.periodic(const Duration(milliseconds: 30), (timer) {
+      if (index < fullText.length) {
+        setState(() {
+          _history.last["text"] = _history.last["text"]! + fullText[index];
+        });
+        index++;
+        _scrollToBottom();
+      } else {
+        // --- THIS WAS THE FIX ---
+        // We must call setState here to re-enable the text box!
+        setState(() {
+          _isTyping = false;
+        });
+        timer.cancel();
+      }
+    });
+  }
+
+  void _scrollToBottom() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent + 50,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final accentColor = Theme.of(context).colorScheme.secondary;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // --- HEADER ROW WITH HELP ICON ---
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const SectionTitle(title: "INTERACTIVE TERMINAL"),
+
+            // The Exclamatory Icon
+            IconButton(
+              onPressed: _showHelp,
+              tooltip: "List Commands",
+              icon: Icon(
+                FontAwesomeIcons.circleExclamation, // The icon you asked for
+                size: 18,
+                color: accentColor.withOpacity(0.8), // Subtle accent color
+              ),
+            ),
+          ],
+        ),
+
+        // ---------------------------------
+        const SizedBox(height: 10),
+        Container(
+          height: 300, // Fixed height for the chat window
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF0F0F0F) : const Color(0xFFF0F0F0),
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+            ),
+          ),
+          child: Column(
+            children: [
+              // Chat History Area
+              Expanded(
+                child: ListView.builder(
+                  controller: _scrollController,
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _history.length,
+                  itemBuilder: (context, index) {
+                    final msg = _history[index];
+                    final isUser = msg["role"] == "user";
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 8.0),
+                      child: RichText(
+                        text: TextSpan(
+                          style: GoogleFonts.jetBrainsMono(
+                            fontSize: 13,
+                            height: 1.4,
+                          ),
+                          children: [
+                            TextSpan(
+                              text: isUser ? "> " : "\$ ",
+                              style: TextStyle(
+                                color: isUser ? accentColor : Colors.grey[500],
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            TextSpan(
+                              text: msg["text"],
+                              style: TextStyle(
+                                color: isUser
+                                    ? primaryColor
+                                    : (isDark
+                                          ? Colors.grey[300]
+                                          : Colors.grey[800]),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              // Input Area
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 8,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(
+                      color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+                    ),
+                  ),
+                ),
+                child: Row(
+                  children: [
+                    Text(
+                      ">",
+                      style: GoogleFonts.jetBrainsMono(
+                        color: accentColor,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: TextField(
+                        controller: _controller,
+                        enabled:
+                            !_isTyping, // Disable input while bot is typing
+                        onSubmitted: _handleSubmit,
+                        style: GoogleFonts.jetBrainsMono(
+                          color: primaryColor,
+                          fontSize: 14,
+                        ),
+                        decoration: InputDecoration(
+                          hintText: _isTyping
+                              ? "HasibAI is typing..."
+                              : "Try 'skills' or 'joke'...",
+                          hintStyle: TextStyle(color: Colors.grey[500]),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                    if (!_isTyping)
+                      IconButton(
+                        icon: Icon(Icons.send, size: 16, color: accentColor),
+                        onPressed: () => _handleSubmit(_controller.text),
+                      ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
 
 class LocationSection extends StatelessWidget {
   const LocationSection({super.key});
