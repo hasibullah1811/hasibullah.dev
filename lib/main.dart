@@ -209,6 +209,7 @@ class TerminalChat extends StatefulWidget {
 
 class _TerminalChatState extends State<TerminalChat> {
   final TextEditingController _controller = TextEditingController();
+  Color? _terminalTextColor;
   final List<Map<String, String>> _history = [
     {
       "role": "system",
@@ -229,23 +230,27 @@ class _TerminalChatState extends State<TerminalChat> {
   }
 
   void _showHelp() {
-    // If we are already typing, don't interrupt
     if (_isTyping) return;
 
     setState(() {
-      // 1. Add a "System" message with the list of commands
       _history.add({
         "role": "system",
         "text":
             "AVAILABLE COMMANDS:\n"
             "-------------------\n"
-            "• skills    : View technical stack\n"
-            "• projects  : See recent work\n"
-            "• contact   : Get email & socials\n"
-            "• kebab     : Secret production engineering info\n"
+            "• skills    : Tech stack & expertise\n"
+            "• projects  : Recent work & papers\n"
+            "• contact   : Email & socials\n"
+            "• education : University details\n"
+            "• ls        : List directory files\n"
+            "• cat [file]: Read a file\n"
+            "• matrix    : Toggle hacker theme\n"
+            "• sudo      : Try admin privileges\n"
+            "• kebab     : Production engineering info\n"
+            "• salary    : Rate expectations\n"
+            "• love      : Personal trivia\n"
             "• joke      : Developer humor\n"
-            "• clear     : Reset terminal\n"
-            "• love      : What I love the most\n",
+            "• clear     : Reset terminal",
       });
     });
     _scrollToBottom();
@@ -272,6 +277,63 @@ class _TerminalChatState extends State<TerminalChat> {
 
   // Simple "Fake LLM" Logic
   String _generateResponse(String input) {
+    // Clean up input
+    input = input.trim().toLowerCase();
+
+    // -----------------------------------------------------------------
+    // PRIORITY 1: SYSTEM COMMANDS & EASTER EGGS (Check these FIRST)
+    // -----------------------------------------------------------------
+
+    // 1. LS (File System)
+    if (input == "ls" || input.contains("dir")) {
+      return "Directory of /home/hasib/brain:\n"
+          "drwx------  projects/\n"
+          "-r--r--r--  resume.pdf\n"
+          "-rw-r--r--  secret_kebab_recipe.txt\n"
+          "-r-x------  world_domination_plan.sh";
+    }
+    // 2. CAT (Reading Files) - Must be before "kebab" check!
+    else if (input.contains("cat secret") || input.contains("read secret")) {
+      return "ACCESS DENIED: This file is encrypted with 256-bit garlic sauce protection. Nice try.";
+    } else if (input.contains("cat world") || input.contains("run world")) {
+      return "Executing world_domination_plan.sh...\n"
+          "Loading AI...\n"
+          "Error: Insufficient coffee. Aborting.";
+    } else if (input.contains("cat")) {
+      return "Error: File not found or you do not have permission to view it.";
+    }
+    // 3. SUDO (The Trap)
+    else if (input.contains("sudo") || input.contains("rm -rf")) {
+      return "PERMISSION DENIED: You are not in the sudoers file. This incident will be reported to my wife.";
+    }
+    // 4. MATRIX (Theme Change)
+    else if (input.contains("matrix")) {
+      Future.delayed(Duration.zero, () {
+        if (mounted) {
+          setState(() {
+            _terminalTextColor = const Color(0xFF00FF00); // Hacker Green
+          });
+        }
+      });
+      return "Wake up, Neo... The Matrix has you.";
+    } else if (input.contains("reset") || input.contains("normal")) {
+      Future.delayed(Duration.zero, () {
+        if (mounted) {
+          setState(() {
+            _terminalTextColor = null; // Reset to default
+          });
+        }
+      });
+      return "Theme reset to default.";
+    }
+    // 5. CLEAR
+    else if (input.contains("clear") || input.contains("cls")) {
+      setState(() => _history.clear());
+      return "Console cleared.";
+    } else if (input.contains("help")) {
+      return "COMMANDS: skills, projects, contact, education, ls, cat, matrix, sudo, kebab, salary, love, joke, clear.";
+    }
+
     if (input.contains("hi") || input.contains("hello")) {
       return "Hello! I am Hasib's digital assistant. How can I help you?";
     } else if (input.contains("skill") ||
@@ -447,11 +509,13 @@ class _TerminalChatState extends State<TerminalChat> {
                             TextSpan(
                               text: msg["text"],
                               style: TextStyle(
-                                color: isUser
-                                    ? primaryColor
-                                    : (isDark
-                                          ? Colors.grey[300]
-                                          : Colors.grey[800]),
+                                color:
+                                    _terminalTextColor ??
+                                    (isUser
+                                        ? primaryColor
+                                        : (isDark
+                                              ? Colors.grey[300]
+                                              : Colors.grey[800])),
                               ),
                             ),
                           ],
