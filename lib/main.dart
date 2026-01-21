@@ -146,6 +146,7 @@ class PortfolioHome extends StatelessWidget {
                     description:
                         "A comprehensive platform assisting international students in Australia with jobs, accommodation, and community connection.",
                     projectUrl: 'https://thestepwise.com',
+                    isLive: true,
                   ),
                   SizedBox(height: 30),
                   const ProjectItem(
@@ -154,6 +155,7 @@ class PortfolioHome extends StatelessWidget {
                     description:
                         "Prism is a full-stack developer tool for visualizing and debugging RAG (Retrieval-Augmented Generation) pipelines. It helps engineers understand how text chunking strategies (Token size, Overlap) affect retrieval accuracy.",
                     projectUrl: 'https://github.com/hasibullah1811/prism',
+                    isLive: false,
                   ),
                   const SizedBox(height: 30),
                   const ProjectItem(
@@ -163,6 +165,7 @@ class PortfolioHome extends StatelessWidget {
                         "End-to-End file encryption system with facial recognition. Encrypts PDFs/Images and uploads to Drive securely.",
                     projectUrl:
                         'https://github.com/hasibullah1811/Amazing-App-NbM',
+                    isLive: false,
                   ),
                   const SizedBox(height: 30),
                   const ProjectItem(
@@ -170,7 +173,8 @@ class PortfolioHome extends StatelessWidget {
                     badge: "HEALTHCARE",
                     description:
                         "Online medicine delivery platform connecting doctors, pharmacists, and consumers.",
-                    projectUrl: "",
+                    projectUrl: "https://github.com/hasibullah1811/medway",
+                    isLive: false,
                   ),
                   const SizedBox(height: 60),
 
@@ -1278,6 +1282,7 @@ class ProjectItem extends StatelessWidget {
   final String badge;
   final String description;
   final String projectUrl;
+  final bool isLive;
 
   const ProjectItem({
     super.key,
@@ -1285,6 +1290,7 @@ class ProjectItem extends StatelessWidget {
     required this.badge,
     required this.description,
     required this.projectUrl,
+    required this.isLive,
   });
 
   @override
@@ -1353,7 +1359,7 @@ class ProjectItem extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
           onTap: _launchUrl,
           child: Container(
-            width: 70,
+            width: isLive ? 70 : 145,
             height: 25,
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12),
@@ -1363,20 +1369,24 @@ class ProjectItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Text(
-                  'View',
+                  isLive ? 'View' : "Github Repo",
                   style: GoogleFonts.jetBrainsMono(
                     color: isDark ? Colors.grey[400] : Colors.grey[800],
-                    fontSize: 13,
+                    fontSize: 12,
                     height: 1.5,
                   ),
                 ),
-                const SizedBox(width: 10),
-                const PulsatingCircle(size: 12, color: Colors.greenAccent),
+                SizedBox(width: isLive ? 10 : 30),
+                isLive
+                    ? PulsatingCircle(size: 12, color: Colors.greenAccent)
+                    : Icon(FontAwesomeIcons.github, size: 14),
               ],
             ),
           ),
         ),
-        Divider(color: Colors.grey[900], thickness: 1),
+        title == "MedWay"
+            ? Container()
+            : Divider(color: Colors.grey[900], thickness: 1),
       ],
     );
   }
