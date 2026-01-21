@@ -147,6 +147,14 @@ class PortfolioHome extends StatelessWidget {
                         "A comprehensive platform assisting international students in Australia with jobs, accommodation, and community connection.",
                     projectUrl: 'https://thestepwise.com',
                   ),
+                  SizedBox(height: 30),
+                  const ProjectItem(
+                    title: "Prism",
+                    badge: "LangChain + Scikit-learn + TikToken",
+                    description:
+                        "Prism is a full-stack developer tool for visualizing and debugging RAG (Retrieval-Augmented Generation) pipelines. It helps engineers understand how text chunking strategies (Token size, Overlap) affect retrieval accuracy.",
+                    projectUrl: 'https://github.com/hasibullah1811/prism',
+                  ),
                   const SizedBox(height: 30),
                   const ProjectItem(
                     title: "Amazing App",
