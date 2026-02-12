@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:hasib_website/Widgets/pulsuiating_circle.dart';
+import 'package:hasib_website/Widgets/project_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html' as html; // Adds HTML capabilities
 
@@ -145,8 +145,7 @@ class PortfolioHome extends StatelessWidget {
                     badge: "FLUTTER + FASTAPI",
                     description:
                         "A comprehensive platform assisting international students in Australia with jobs, accommodation, and community connection.",
-                    projectUrl: 'https://thestepwise.com',
-                    isLive: true,
+                    liveUrl: 'https://thestepwise.com',
                   ),
                   SizedBox(height: 30),
                   const ProjectItem(
@@ -154,8 +153,8 @@ class PortfolioHome extends StatelessWidget {
                     badge: "LangChain + Scikit-learn + TikToken",
                     description:
                         "Prism is a full-stack developer tool for visualizing and debugging RAG (Retrieval-Augmented Generation) pipelines. It helps engineers understand how text chunking strategies (Token size, Overlap) affect retrieval accuracy.",
-                    projectUrl: 'https://github.com/hasibullah1811/prism',
-                    isLive: false,
+                    repoUrl: 'https://github.com/hasibullah1811/prism',
+                    liveUrl: 'https://prism-xi-three.vercel.app/',
                   ),
                   const SizedBox(height: 30),
                   const ProjectItem(
@@ -163,9 +162,8 @@ class PortfolioHome extends StatelessWidget {
                     badge: "ENCRYPTION SYSTEM",
                     description:
                         "End-to-End file encryption system with facial recognition. Encrypts PDFs/Images and uploads to Drive securely.",
-                    projectUrl:
+                    repoUrl:
                         'https://github.com/hasibullah1811/Amazing-App-NbM',
-                    isLive: false,
                   ),
                   const SizedBox(height: 30),
                   const ProjectItem(
@@ -173,8 +171,7 @@ class PortfolioHome extends StatelessWidget {
                     badge: "HEALTHCARE",
                     description:
                         "Online medicine delivery platform connecting doctors, pharmacists, and consumers.",
-                    projectUrl: "https://github.com/hasibullah1811/medway",
-                    isLive: false,
+                    repoUrl: "https://github.com/hasibullah1811/medway",
                   ),
                   const SizedBox(height: 60),
 
@@ -1277,120 +1274,7 @@ class WorkTile extends StatelessWidget {
   }
 }
 
-class ProjectItem extends StatelessWidget {
-  final String title;
-  final String badge;
-  final String description;
-  final String projectUrl;
-  final bool isLive;
-
-  const ProjectItem({
-    super.key,
-    required this.title,
-    required this.badge,
-    required this.description,
-    required this.projectUrl,
-    required this.isLive,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    Future<void> _launchUrl() async {
-      final Uri uri = Uri.parse(projectUrl);
-      if (!await launchUrl(uri)) {
-        throw Exception('Could not launch $uri');
-      }
-    }
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Text(
-              title,
-              style: GoogleFonts.jetBrainsMono(
-                color: isDark ? Colors.grey[400] : Colors.grey[800],
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-              decoration: BoxDecoration(
-                color: Colors.grey[900],
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.grey[800]!),
-              ),
-              child: Row(
-                children: [
-                  Icon(
-                    FontAwesomeIcons.code,
-                    size: 10,
-                    color: isDark ? Colors.grey[500] : Colors.white,
-                  ),
-                  const SizedBox(width: 6),
-                  Text(
-                    badge.toLowerCase(),
-                    style: GoogleFonts.jetBrainsMono(
-                      color: isDark ? Colors.grey[400] : Colors.white,
-                      fontSize: 10,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 12),
-        Text(
-          description,
-          style: GoogleFonts.jetBrainsMono(
-            color: isDark ? Colors.grey[400] : Colors.grey[800],
-            fontSize: 13,
-            height: 1.5,
-          ),
-        ),
-        const SizedBox(height: 12),
-        InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: _launchUrl,
-          child: Container(
-            width: isLive ? 70 : 145,
-            height: 25,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12),
-              border: Border.all(color: Colors.grey),
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  isLive ? 'View' : "Github Repo",
-                  style: GoogleFonts.jetBrainsMono(
-                    color: isDark ? Colors.grey[400] : Colors.grey[800],
-                    fontSize: 12,
-                    height: 1.5,
-                  ),
-                ),
-                SizedBox(width: isLive ? 10 : 30),
-                isLive
-                    ? PulsatingCircle(size: 12, color: Colors.greenAccent)
-                    : Icon(FontAwesomeIcons.github, size: 14),
-              ],
-            ),
-          ),
-        ),
-        title == "MedWay"
-            ? Container()
-            : Divider(color: Colors.grey[900], thickness: 1),
-      ],
-    );
-  }
-}
+//
 
 class FloatingDock extends StatelessWidget {
   const FloatingDock({super.key});
