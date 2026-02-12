@@ -3,11 +3,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hasib_website/Widgets/flash_alert.dart';
+import 'package:hasib_website/Widgets/floating_dock.dart';
 import 'package:hasib_website/Widgets/project_item.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html' as html; // Adds HTML capabilities
 
 final ValueNotifier<ThemeMode> themeNotifier = ValueNotifier(ThemeMode.dark);
+// Signal to show a flash message
+final ValueNotifier<String> flashNotifier = ValueNotifier("");
 void main() {
   runApp(const MyMinimalPortfolio());
   // --- PRE-LOADER REMOVAL LOGIC ---
@@ -200,6 +204,7 @@ class PortfolioHome extends StatelessWidget {
             right: 0,
             child: Center(child: FloatingDock()),
           ),
+          const FlashAlert(),
         ],
       ),
     );
@@ -1274,96 +1279,6 @@ class WorkTile extends StatelessWidget {
   }
 }
 
-//
-
-class FloatingDock extends StatelessWidget {
-  const FloatingDock({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-
-    Future<void> _launchUrl(String projectUrl) async {
-      final Uri uri = Uri.parse(projectUrl);
-      if (!await launchUrl(uri)) {
-        throw Exception('Could not launch $uri');
-      }
-    }
-
-    Future<void> _launchEmail(String emailAddress) async {
-      final Uri emailLaunchUri = Uri(scheme: 'mailto', path: emailAddress);
-
-      if (await canLaunchUrl(emailLaunchUri)) {
-        await launchUrl(emailLaunchUri);
-      } else {
-        // Handle the case where no email app is available
-        throw 'Could not launch $emailLaunchUri';
-      }
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-      decoration: BoxDecoration(
-        // Dynamic background color (White in light mode, Dark Grey in dark mode)
-        color: Theme.of(context).cardColor,
-        borderRadius: BorderRadius.circular(40),
-        border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-          width: 0.5,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(isDark ? 0.3 : 0.1),
-            blurRadius: 20,
-            offset: const Offset(0, 10),
-          ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _DockIcon(
-            icon: FontAwesomeIcons.github,
-            onTap: () {
-              _launchUrl("https://github.com/hasibullah1811");
-            },
-          ),
-          const SizedBox(width: 20),
-          _DockIcon(
-            icon: FontAwesomeIcons.linkedin,
-            onTap: () {
-              _launchUrl(
-                "https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/",
-              );
-            },
-          ),
-          const SizedBox(width: 20),
-          _DockIcon(
-            icon: FontAwesomeIcons.envelope,
-            onTap: () {
-              _launchEmail('hasib.mobiledev@gmail.com');
-            },
-          ),
-          const SizedBox(width: 20),
-          Container(
-            width: 1,
-            height: 20,
-            color: isDark ? Colors.grey[800] : Colors.grey[300],
-          ),
-          const SizedBox(width: 20),
-          // The Theme Toggle Button
-          _DockIcon(
-            icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
-            onTap: () {
-              themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
-            },
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class TechSection extends StatelessWidget {
   const TechSection({super.key});
 
@@ -1714,41 +1629,6 @@ class EducationTile extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _DockIcon extends StatefulWidget {
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _DockIcon({required this.icon, required this.onTap});
-
-  @override
-  State<_DockIcon> createState() => _DockIconState();
-}
-
-class _DockIconState extends State<_DockIcon> {
-  bool _isHovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _isHovered = true),
-      onExit: (_) => setState(() => _isHovered = false),
-      cursor: SystemMouseCursors.click,
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: AnimatedContainer(
-          duration: const Duration(milliseconds: 200),
-          transform: Matrix4.identity()..scale(_isHovered ? 1.2 : 1.0),
-          child: Icon(
-            widget.icon,
-            color: _isHovered ? Colors.white : Colors.grey[500],
-            size: 20,
-          ),
-        ),
       ),
     );
   }
