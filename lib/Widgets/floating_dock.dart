@@ -107,7 +107,7 @@ class FloatingDock extends StatelessWidget {
           _DockIcon(
             icon: FontAwesomeIcons.download,
             onTap: () => _launchUrl(
-              'https://github.com/hasibullah1811/hasibullah.dev/blob/main/assets/Hasibullah_Hasib_Resume.pdf',
+              'https://raw.githubusercontent.com/hasibullah1811/hasibullah.dev/main/assets/Hasibullah_Hasib_Resume.pdf',
             ),
           ),
           const SizedBox(width: 20),
