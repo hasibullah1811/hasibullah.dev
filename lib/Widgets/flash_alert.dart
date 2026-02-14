@@ -56,8 +56,8 @@ class _FlashAlertState extends State<FlashAlert> {
       duration: const Duration(milliseconds: 500),
       curve: Curves.easeOutBack, // Gives it a nice "spring" effect
       top: _isVisible ? 50 : -100, // Slide in/out logic
-      left: 0,
-      right: 0,
+      left: 10,
+      right: 10,
       child: Center(
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
@@ -78,6 +78,7 @@ class _FlashAlertState extends State<FlashAlert> {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // Warning Icon
               const Icon(
@@ -87,12 +88,16 @@ class _FlashAlertState extends State<FlashAlert> {
               ),
               const SizedBox(width: 12),
               // The Text
-              Text(
-                _message,
-                style: GoogleFonts.jetBrainsMono(
-                  color: Colors.white,
-                  fontSize: 13,
-                  fontWeight: FontWeight.bold,
+              Center(
+                child: Text(
+                  _message,
+                  style: GoogleFonts.jetBrainsMono(
+                    color: Colors.white,
+                    fontSize: 13,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                  maxLines: 2,
                 ),
               ),
             ],

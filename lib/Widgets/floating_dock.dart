@@ -59,10 +59,10 @@ class FloatingDock extends StatelessWidget {
     final List<String> lightModeJokes = [
       "MY EYES! IT BURNS! 🔥",
       "Flashbang deployed! 💥",
-      "Warning: Solar flare detected. Sunglasses advised. 🕶️",
-      "Dark mode is for coders. Light mode is for... psychopaths.",
+      "Warning: Solar flare detected. \nSunglasses advised. 🕶️",
+      "Dark mode is for coders. \nLight mode is for... psychopaths.",
       "System Overload: Brightness at 1000% ☀️",
-      "Why would you do this? The bugs like the dark. 🐛",
+      "Why would you do this? \nThe bugs like the dark. 🐛",
       "Retina burn initiated in 3... 2... 1...",
     ];
 
