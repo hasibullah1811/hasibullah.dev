@@ -61,7 +61,7 @@ class FloatingDock extends StatelessWidget {
       "Flashbang deployed! 💥",
       "Warning: Solar flare detected. \nSunglasses advised. 🕶️",
       "Dark mode is for coders. \nLight mode is for... psychopaths.",
-      "System Overload: Brightness at 1000% ☀️",
+      "System Overload: Brightness at 1000%",
       "Why would you do this? \nThe bugs like the dark. 🐛",
       "Retina burn initiated in 3... 2... 1...",
     ];
