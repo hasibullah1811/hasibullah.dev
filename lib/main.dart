@@ -81,6 +81,27 @@ class MyMinimalPortfolio extends StatelessWidget {
 
 class PortfolioHome extends StatelessWidget {
   const PortfolioHome({super.key});
+  // Helper method for the column
+  Widget _buildStatColumn(String label, String value) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          label,
+          style: GoogleFonts.jetBrainsMono(
+            color: Colors.greenAccent,
+            fontSize: 10,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        const SizedBox(height: 4),
+        Text(
+          value,
+          style: GoogleFonts.jetBrainsMono(color: Colors.white, fontSize: 13),
+        ),
+      ],
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -101,6 +122,8 @@ class PortfolioHome extends StatelessWidget {
                   const SizedBox(height: 40),
                   const StatusBadge(),
 
+                  const SizedBox(height: 60),
+                  const ActiveThreadsSection(),
                   const SizedBox(height: 60),
 
                   const TerminalChat(),
@@ -189,6 +212,32 @@ class PortfolioHome extends StatelessWidget {
                   const TechSection(),
                   const SizedBox(height: 60),
 
+                  // // A simple, hacker-style stats row for DSA
+                  // Container(
+                  //   padding: const EdgeInsets.all(16),
+                  //   decoration: BoxDecoration(
+                  //     border: Border.all(color: Colors.grey[800]!),
+                  //     borderRadius: BorderRadius.circular(8),
+                  //     color: const Color(0xFF0A0A0A), // Very dark background
+                  //   ),
+                  //   child: Row(
+                  //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  //     children: [
+                  //       _buildStatColumn(
+                  //         "ALGORITHMS",
+                  //         "LeetCode: Continous Learning",
+                  //       ),
+                  //       _buildStatColumn(
+                  //         "ARCHITECTURE",
+                  //         "REST / Microservices",
+                  //       ),
+                  //       _buildStatColumn(
+                  //         "VERSION CONTROL",
+                  //         "Advanced Git / CI-CD",
+                  //       ),
+                  //     ],
+                  //   ),
+                  // ),
                   const Footer(),
                   // Bottom padding for the floating dock
                   const SizedBox(height: 120),
@@ -228,7 +277,7 @@ class _TerminalChatState extends State<TerminalChat> {
     {
       "role": "system",
       "text":
-          "HasibAI v2.0 online. Ask about skills, projects, or my secret kebab recipe.",
+          "HasibAI v2.0 initialized. Ask about my skills, type 'help' for commands, or type your company name to see if we are a match.",
     },
   ];
   final ScrollController _scrollController = ScrollController();
@@ -254,6 +303,7 @@ class _TerminalChatState extends State<TerminalChat> {
             "-------------------\n"
             "• skills    : Tech stack & expertise\n"
             "• projects  : Recent work & papers\n"
+            "• company : Type your company name (e.g., quantium)\n"
             "• contact   : Email & socials\n"
             "• education : University details\n"
             "• ls        : List directory files\n"
@@ -377,6 +427,14 @@ class _TerminalChatState extends State<TerminalChat> {
         input.contains("tech")) {
       return "I speak fluent Flutter, Python, and Dart. I dabble in AI/ML when I'm feeling adventurous.";
     }
+    // --- THE QUANTIUM EASTER EGG ---
+    else if (input.contains("quantium")) {
+      return "Analyzing 10 million rows of human behavior footprint... \n"
+          "Result: Hasib is an optimal fit for the Graduate Software Engineer role. \n"
+          "Action: Proceed to interview stage.";
+    } else if (input.contains("data") || input.contains("analytics")) {
+      return "I believe data is the footprint of human behavior. I specialize in building the UI and business logic layers required to decode that data.";
+    }
     // Kebab / Food (The Fun Part)
     else if (input.contains("kebab") ||
         input.contains("food") ||
@@ -411,6 +469,10 @@ class _TerminalChatState extends State<TerminalChat> {
     } else if (input.contains("clear")) {
       setState(() => _history.clear());
       return "Console cleared. Memory wiped. Who are you again?";
+    } else if (input.contains("algo") || input.contains("dsa")) {
+      return "Data Structures? I eat Big O notation for breakfast. I regularly practice algorithm optimization to ensure my backend code runs in O(1) or O(log n) time wherever possible.";
+    } else if (input.contains("design") || input.contains("system")) {
+      return "I prefer building decoupled, scalable systems. My go-to stack involves a stateless React/Flutter frontend communicating with a FastAPI backend via strictly typed JSON endpoints.";
     }
     // The "Fallback"
     else {
@@ -598,6 +660,129 @@ class _TerminalChatState extends State<TerminalChat> {
   }
 }
 
+class ActiveThreadsSection extends StatelessWidget {
+  const ActiveThreadsSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryColor = Theme.of(context).colorScheme.primary;
+    final accentColor = Theme.of(context).colorScheme.secondary; // Green
+    final primaryText = Theme.of(context).colorScheme.primary;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // Title with a "Live" dot indicator
+        Row(
+          children: [
+            Container(
+              width: 8,
+              height: 8,
+              decoration: BoxDecoration(
+                color: accentColor,
+                shape: BoxShape.circle,
+                boxShadow: [
+                  BoxShadow(
+                    color: accentColor.withOpacity(0.5),
+                    blurRadius: 6,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(width: 10),
+            Text(
+              "ACTIVE PROCESSES",
+              style: GoogleFonts.jetBrainsMono(
+                color: primaryText,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1.5,
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16),
+
+        // The "Log" Container
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(16),
+          decoration: BoxDecoration(
+            color: isDark ? const Color(0xFF0A0A0A) : Colors.grey[100],
+            border: Border.all(
+              color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+            ),
+            borderRadius: BorderRadius.circular(8),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildProcessLog(
+                context,
+                pid: "8420",
+                status: "RUNNING",
+                task: "Training machine learning models locally for COMP8420.",
+              ),
+              const SizedBox(height: 12),
+              _buildProcessLog(
+                context,
+                pid: "9001",
+                status: "COMPILING",
+                task:
+                    "Researching & building Low-Resource Machine Translation systems for Bengali Language",
+              ),
+              const SizedBox(height: 12),
+              _buildProcessLog(
+                context,
+                pid: "0001",
+                status: "BACKGROUND",
+                task:
+                    "Optimizing the garlic sauce to meat ratio at Fairy Meadow Kebabs.",
+              ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Helper widget for each line item
+  Widget _buildProcessLog(
+    BuildContext context, {
+    required String pid,
+    required String status,
+    required String task,
+  }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+
+    return RichText(
+      text: TextSpan(
+        style: GoogleFonts.jetBrainsMono(
+          color: isDark ? Colors.grey[400] : Colors.grey[700],
+          fontSize: 13,
+          height: 1.5,
+        ),
+        children: [
+          TextSpan(
+            text: "[$pid] ",
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
+          TextSpan(
+            text: "$status: ",
+            style: const TextStyle(
+              fontWeight: FontWeight.bold,
+              color: Colors.orangeAccent,
+            ),
+          ),
+          TextSpan(text: task),
+        ],
+      ),
+    );
+  }
+}
+
 class LocationSection extends StatelessWidget {
   const LocationSection({super.key});
 
@@ -699,10 +884,10 @@ class Footer extends StatelessWidget {
     return Column(
       children: [
         // A subtle separator line
-        Divider(
-          color: isDark ? Colors.grey[900] : Colors.grey[200],
-          thickness: 1,
-        ),
+        // Divider(
+        //   color: isDark ? Colors.grey[900] : Colors.grey[200],
+        //   thickness: 1,
+        // ),
         const SizedBox(height: 20),
 
         // Copyright / Built by
@@ -868,36 +1053,54 @@ class HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Helper to get dynamic colors
-    final colorScheme = Theme.of(context).colorScheme;
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryText = Theme.of(context).colorScheme.primary;
+    final secondaryText = isDark ? Colors.grey[400] : Colors.grey[600];
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          children: [
-            Text(
-              "Hey, I'm Hasib ",
-              style: GoogleFonts.playfairDisplay(
-                color: colorScheme.primary, // Changed from Colors.white
-                fontSize: 32,
-                fontStyle: FontStyle.italic,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-            const Text("👋", style: TextStyle(fontSize: 28)),
-          ],
-        ),
-        const SizedBox(height: 16),
+        // --- NAME & TITLE ---
         Text(
-          "I started to code when I was 16. Been in the game ever since. Crafting apps is my jam, turning ideas into pixel-perfect reality. I'm that guy who finds peace in the rattling of the keyboard.",
+          "Hasibullah Hasib",
+          style: GoogleFonts.playfairDisplay(
+            color: primaryText,
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+            letterSpacing: -1,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Text(
+          "Software Engineer • UI & Business Logic • AI Integration",
           style: GoogleFonts.jetBrainsMono(
-            // Darker grey for light mode, Lighter grey for dark mode
-            color: isDark ? Colors.grey[400] : Colors.grey[700],
+            color: Theme.of(context).colorScheme.secondary, // Green accent
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+
+        const SizedBox(height: 24),
+
+        // --- THE TAILORED BIO ---
+        Text(
+          "I am a full-stack Application Engineer specializing in bridging the gap between complex data models and intuitive user interfaces. Currently completing my Master of IT in Artificial Intelligence at Macquarie University (Graduating July 2026).",
+          style: GoogleFonts.jetBrainsMono(
+            color: secondaryText,
             fontSize: 14,
             height: 1.6,
           ),
+          textAlign: TextAlign.justify,
+        ),
+        const SizedBox(height: 12),
+        Text(
+          "I build decoupled, scalable systems. Whether I am developing the front-end architecture in React and Flutter, or engineering the business logic layer using Python and FastAPI, my focus is on decoding complex data to build robust, production-ready applications.",
+          style: GoogleFonts.jetBrainsMono(
+            color: secondaryText,
+            fontSize: 14,
+            height: 1.6,
+          ),
+          textAlign: TextAlign.justify,
         ),
       ],
     );
@@ -1282,50 +1485,115 @@ class WorkTile extends StatelessWidget {
 class TechSection extends StatelessWidget {
   const TechSection({super.key});
 
-  final List<String> techStack = const [
-    "Flutter",
-    "Dart",
-    "Python",
-    "FastAPI",
-    "NestJS",
-    "MongoDB",
-    "Firebase",
-    "SQL",
-    "Git",
-  ];
-
   @override
   Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(title: "TECHNICAL CAPABILITIES"),
+        const SizedBox(height: 24),
+
+        // 1. The UI Layer (React and Flutter)
+        _buildSkillCategory(
+          context,
+          title: "// USER INTERFACE (FRONTEND)",
+          skills: ["React", "Next.js", "Flutter", "Dart", "Tailwind CSS"],
+        ),
+        const SizedBox(height: 20),
+
+        // 2. The Logic Layer (Python and APIs)
+        _buildSkillCategory(
+          context,
+          title: "// BUSINESS LOGIC (BACKEND)",
+          skills: [
+            "Python",
+            "FastAPI",
+            "RESTful Architecture",
+            "SQL / PostgreSQL",
+          ],
+        ),
+        const SizedBox(height: 20),
+
+        // 3. The AI Layer (Thesis and Prism tools)
+        _buildSkillCategory(
+          context,
+          title: "// DATA & ARTIFICIAL INTELLIGENCE",
+          skills: [
+            "Large Language Models (LLMs)",
+            "RAG Architecture",
+            "Data Structures",
+            "Predictive Analytics",
+          ],
+        ),
+        const SizedBox(height: 20),
+
+        // 4. The Ops Layer (Required by Quantium Grads)
+        _buildSkillCategory(
+          context,
+          title: "// INFRASTRUCTURE & PROCESS",
+          skills: ["Git Version Control", "Vercel", "Agile / Scrum", "CI/CD"],
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSkillCategory(
+    BuildContext context, {
+    required String title,
+    required List<String> skills,
+  }) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionTitle(title: "TECH"),
-        const SizedBox(height: 24),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: techStack.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 4,
-            crossAxisSpacing: 20,
-            mainAxisSpacing: 10,
+        Text(
+          title,
+          style: GoogleFonts.jetBrainsMono(
+            color: Theme.of(context).colorScheme.secondary, // Green Accent
+            fontSize: 12,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1.2,
           ),
-          itemBuilder: (context, index) {
-            return Text(
-              techStack[index],
-              style: GoogleFonts.jetBrainsMono(
-                // Dynamic grey color
-                color: isDark ? Colors.grey[400] : Colors.grey[800],
-                fontSize: 14,
-                fontWeight: FontWeight.w500,
-              ),
-            );
-          },
+        ),
+        const SizedBox(height: 12),
+        Wrap(
+          spacing: 10,
+          runSpacing: 10,
+          children: skills
+              .map((skill) => _TechChip(label: skill, isDark: isDark))
+              .toList(),
         ),
       ],
+    );
+  }
+}
+
+// The minimalist chip design for individual skills
+class _TechChip extends StatelessWidget {
+  final String label;
+  final bool isDark;
+
+  const _TechChip({required this.label, required this.isDark});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF0F0F0F) : Colors.grey[100],
+        border: Border.all(
+          color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
+        ),
+        borderRadius: BorderRadius.circular(6),
+      ),
+      child: Text(
+        label,
+        style: GoogleFonts.jetBrainsMono(
+          color: isDark ? Colors.grey[300] : Colors.grey[800],
+          fontSize: 13,
+        ),
+      ),
     );
   }
 }
