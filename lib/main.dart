@@ -320,10 +320,76 @@ class _TerminalChatState extends State<TerminalChat> {
     _scrollToBottom();
   }
 
+  Future<void> _runQuantiumSequence() async {
+    // Helper function to print a line and wait
+    Future<void> printLine(String text, int delayMs) async {
+      if (!mounted) return;
+      setState(() {
+        _history.add({"role": "system", "text": text});
+      });
+      _scrollToBottom();
+      await Future.delayed(Duration(milliseconds: delayMs));
+    }
+
+    // 1. The Setup
+    await printLine("INITIATING SECURE HANDSHAKE...", 800);
+    await printLine(
+      "Bypassing standard UI... hijacking terminal theme...",
+      600,
+    );
+
+    // --- THE THEME HIJACK ---
+    // Snaps the text color to a striking "Data Cyan"
+    if (mounted) {
+      setState(() {
+        _terminalTextColor = const Color(0xFF00E5FF);
+      });
+    }
+
+    await printLine(
+      "Theme override successful. Connecting to Quantium Analytics...",
+      600,
+    );
+
+    // 2. The Fake Loading Bar
+    await printLine("Decoding human behaviour footprint...", 300);
+    await printLine("[==                  ] 10%", 400);
+    await printLine("[======              ] 35%", 300);
+    await printLine("[=============       ] 70%", 400);
+    await printLine("[====================] 100% COMPLETE", 800);
+
+    // 3. The ASCII Art
+    const String asciiQ = '''
+       ██████╗ 
+      ██╔═══██╗
+      ██║   ██║
+      ██║▄▄ ██║
+      ╚██████╔╝
+       ╚══▀▀═╝ 
+    ''';
+    await printLine(asciiQ, 600);
+
+    // 4. The Verdict
+    await printLine("ANALYSIS COMPLETE.", 400);
+    await printLine(
+      ">>> RESULT: Hasibullah is an optimal fit for UI & Business Logic.",
+      600,
+    );
+    await printLine(">>> ACTION: Fast-track to interview.", 0);
+
+    // Free up the text box
+    if (mounted) {
+      setState(() {
+        _isTyping = false;
+      });
+    }
+  }
+
   void _handleSubmit(String input) {
     if (input.trim().isEmpty) return;
 
-    // 1. Add User Message
+    final cleanInput = input.trim().toLowerCase();
+
     setState(() {
       _history.add({"role": "user", "text": input});
       _isTyping = true;
@@ -331,10 +397,16 @@ class _TerminalChatState extends State<TerminalChat> {
     _controller.clear();
     _scrollToBottom();
 
-    // 2. Generate "AI" Response (Simulated Latency)
+    // --- THE INTERCEPT ---
+    if (cleanInput == "quantium") {
+      _runQuantiumSequence();
+      return; // Stop here, don't run the normal generator
+    }
+
+    // --- NORMAL BEHAVIOR ---
     Future.delayed(const Duration(milliseconds: 600), () {
-      if (!mounted) return; // Prevent errors if user left screen
-      String response = _generateResponse(input.toLowerCase());
+      if (!mounted) return;
+      String response = _generateResponse(cleanInput);
       _streamResponse(response);
     });
   }
@@ -428,11 +500,12 @@ class _TerminalChatState extends State<TerminalChat> {
       return "I speak fluent Flutter, Python, and Dart. I dabble in AI/ML when I'm feeling adventurous.";
     }
     // --- THE QUANTIUM EASTER EGG ---
-    else if (input.contains("quantium")) {
-      return "Analyzing 10 million rows of human behavior footprint... \n"
-          "Result: Hasib is an optimal fit for the Graduate Software Engineer role. \n"
-          "Action: Proceed to interview stage.";
-    } else if (input.contains("data") || input.contains("analytics")) {
+    // else if (input.contains("quantium")) {
+    //   return "Analyzing 10 million rows of human behavior footprint... \n"
+    //       "Result: Hasib is an optimal fit for the Graduate Software Engineer role. \n"
+    //       "Action: Proceed to interview stage.";
+    // }
+    else if (input.contains("data") || input.contains("analytics")) {
       return "I believe data is the footprint of human behavior. I specialize in building the UI and business logic layers required to decode that data.";
     }
     // Kebab / Food (The Fun Part)
