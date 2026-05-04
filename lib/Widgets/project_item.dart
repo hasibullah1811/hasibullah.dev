@@ -2,13 +2,19 @@ import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:hasib_website/Widgets/architecture_module.dart';
 
 class ProjectItem extends StatelessWidget {
   final String title;
   final String badge;
   final String description;
-  final String? liveUrl; // Optional: Link to live demo
-  final String? repoUrl; // Optional: Link to GitHub code
+  final String? liveUrl;
+  final String? repoUrl;
+  final List<ProjectMetric>? metrics;
+
+  // --- NEW PROPERTIES FOR ARCHITECTURE MODAL ---
+  final String? archImagePath;
+  final String? archDescription;
 
   const ProjectItem({
     super.key,
@@ -17,9 +23,11 @@ class ProjectItem extends StatelessWidget {
     required this.description,
     this.liveUrl,
     this.repoUrl,
+    this.archImagePath,
+    this.archDescription,
+    this.metrics,
   });
 
-  // Helper to open URLs
   Future<void> _launchUrl(String url) async {
     final Uri uri = Uri.parse(url);
     if (await canLaunchUrl(uri)) {
@@ -85,31 +93,91 @@ class ProjectItem extends StatelessWidget {
             height: 1.5,
           ),
         ),
+        // --- METRICS ROW ---
+        if (metrics != null && metrics!.isNotEmpty) ...[
+          const SizedBox(height: 16),
+          Wrap(
+            spacing: 12,
+            runSpacing: 8,
+            children: metrics!.map((metric) {
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                decoration: BoxDecoration(
+                  color: isDark ? const Color(0xFF1A1A1A) : Colors.grey[50],
+                  borderRadius: BorderRadius.circular(6),
+                  border: Border.all(
+                    color: isDark ? Colors.grey[800]! : Colors.grey[200]!,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(metric.icon, size: 12, color: secondaryText),
+                    const SizedBox(width: 6),
+                    Text(
+                      "${metric.label}: ",
+                      style: GoogleFonts.jetBrainsMono(
+                        color: secondaryText,
+                        fontSize: 11,
+                      ),
+                    ),
+                    Text(
+                      metric.value,
+                      style: GoogleFonts.jetBrainsMono(
+                        // Uses the highlight color if provided, otherwise defaults to primary text
+                        color: metric.valueHighlight ?? primaryText,
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }).toList(),
+          ),
+        ],
 
-        // --- NEW: LINKS ROW (Only shows if URLs exist) ---
-        if (liveUrl != null || repoUrl != null) ...[
+        // --- LINKS & ACTIONS ROW ---
+        if (liveUrl != null || repoUrl != null || archImagePath != null) ...[
           const SizedBox(height: 16),
           Row(
+            spacing: 20, // Horizontal space between buttons
+            // runSpacing: 12, // Vertical space if they wrap on mobile
+            // crossAxisAlignment: WrapCrossAlignment.center,
             children: [
-              // GitHub Link
-              if (repoUrl != null) ...[
+              // 1. Architecture Button (Fires the Modal)
+              if (archImagePath != null && archDescription != null)
+                _ProjectLink(
+                  icon: Icons.account_tree_outlined, // Native flutter icon
+                  label: "Architecture",
+                  isHighlight: true, // Let's make this stand out
+                  onTap: () {
+                    showDialog(
+                      context: context,
+                      builder: (context) => ArchitectureModal(
+                        projectName: title,
+                        imagePath: archImagePath!,
+                        description: archDescription!,
+                      ),
+                    );
+                  },
+                ),
+
+              // 2. GitHub Link
+              if (repoUrl != null)
                 _ProjectLink(
                   icon: FontAwesomeIcons.github,
                   label: "Code",
                   onTap: () => _launchUrl(repoUrl!),
                 ),
-                const SizedBox(width: 20),
-              ],
 
-              // Live Demo Link
-              if (liveUrl != null) ...[
+              // 3. Live Demo Link
+              if (liveUrl != null)
                 _ProjectLink(
                   icon: FontAwesomeIcons.arrowUpRightFromSquare,
                   label: "Live Demo",
                   onTap: () => _launchUrl(liveUrl!),
-                  isHighlight: true, // Makes it stand out slightly
                 ),
-              ],
             ],
           ),
         ],
@@ -190,4 +258,19 @@ class _ProjectLinkState extends State<_ProjectLink> {
       ),
     );
   }
+}
+
+class ProjectMetric {
+  final IconData icon;
+  final String label;
+  final String value;
+  final Color?
+  valueHighlight; // Optional: To make the number pop (e.g., Green for 99%)
+
+  const ProjectMetric({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.valueHighlight,
+  });
 }

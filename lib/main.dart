@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:hasib_website/Widgets/acsMember_badge.dart';
+import 'package:hasib_website/Widgets/animated_tech_chip.dart';
 import 'package:hasib_website/Widgets/flash_alert.dart';
 import 'package:hasib_website/Widgets/floating_dock.dart';
 import 'package:hasib_website/Widgets/project_item.dart';
@@ -167,21 +169,56 @@ class PortfolioHome extends StatelessWidget {
                   const SectionTitle(title: "OWN PROJECTS"),
                   const SizedBox(height: 30),
 
-                  const ProjectItem(
+                  ProjectItem(
                     title: "StepWise",
                     badge: "FLUTTER + FASTAPI",
                     description:
                         "A comprehensive platform assisting international students in Australia with jobs, accommodation, and community connection.",
                     liveUrl: 'https://thestepwise.com',
+                    archImagePath: "assets/stepwise-diagram.png",
+                    archDescription:
+                        "The Flutter frontend communicates securely via an AWS API Gateway. Business logic and routing are handled by a FastAPI service, which reads and writes to a PostgreSQL database, while document storage is delegated to AWS S3.",
+
+                    metrics: [
+                      ProjectMetric(
+                        icon: Icons.people_outline,
+                        label: "Concurrent Users",
+                        value: "500+",
+                      ),
+                      ProjectMetric(
+                        icon: Icons.storage,
+                        label: "DB Query Optimization",
+                        value: "40% faster",
+                        valueHighlight: Colors.greenAccent[400],
+                      ),
+                    ],
                   ),
                   SizedBox(height: 30),
-                  const ProjectItem(
+                  ProjectItem(
                     title: "Prism",
                     badge: "LangChain + Scikit-learn + TikToken",
                     description:
                         "Prism is a full-stack developer tool for visualizing and debugging RAG (Retrieval-Augmented Generation) pipelines. It helps engineers understand how text chunking strategies (Token size, Overlap) affect retrieval accuracy.",
                     repoUrl: 'https://github.com/hasibullah1811/prism',
                     liveUrl: 'https://prism-xi-three.vercel.app/',
+                    archImagePath: "assets/prism-diagram.png",
+                    archDescription:
+                        "The React frontend captures user parameters and transmits them to the Python backend via REST. The backend processes the chunking logic using LangChain, queries the LLM, and returns the vectorized overlaps back to the UI for D3.js rendering. This decouples the heavy mathematical lifting from the client interface.",
+                    metrics: [
+                      ProjectMetric(
+                        icon: Icons.speed,
+                        label: "Lighthouse Performance",
+                        value: "98",
+                        valueHighlight:
+                            Colors.greenAccent[400], // Makes it glow green
+                      ),
+                      ProjectMetric(
+                        icon: Icons.memory,
+                        label: "Vector Processing Latency",
+                        value: "<120ms",
+                        valueHighlight: Colors.cyanAccent[400],
+                      ),
+                    ],
                   ),
                   const SizedBox(height: 30),
                   const ProjectItem(
@@ -1144,13 +1181,21 @@ class HeaderSection extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 8),
-        Text(
-          "Software Engineer • UI & Business Logic • AI Integration",
-          style: GoogleFonts.jetBrainsMono(
-            color: Theme.of(context).colorScheme.secondary, // Green accent
-            fontSize: 14,
-            fontWeight: FontWeight.w600,
-          ),
+        Wrap(
+          crossAxisAlignment: WrapCrossAlignment.center,
+          spacing: 12, // Space between title and badge
+          runSpacing: 8,
+          children: [
+            Text(
+              "Software Engineer • UI & Business Logic • AI Integration",
+              style: GoogleFonts.jetBrainsMono(
+                color: Theme.of(context).colorScheme.secondary, // Green accent
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const AcsMemberBadge(),
+          ],
         ),
 
         const SizedBox(height: 24),
@@ -1634,39 +1679,10 @@ class TechSection extends StatelessWidget {
           spacing: 10,
           runSpacing: 10,
           children: skills
-              .map((skill) => _TechChip(label: skill, isDark: isDark))
+              .map((skill) => AnimatedTechChip(label: skill))
               .toList(),
         ),
       ],
-    );
-  }
-}
-
-// The minimalist chip design for individual skills
-class _TechChip extends StatelessWidget {
-  final String label;
-  final bool isDark;
-
-  const _TechChip({required this.label, required this.isDark});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F0F0F) : Colors.grey[100],
-        border: Border.all(
-          color: isDark ? Colors.grey[800]! : Colors.grey[300]!,
-        ),
-        borderRadius: BorderRadius.circular(6),
-      ),
-      child: Text(
-        label,
-        style: GoogleFonts.jetBrainsMono(
-          color: isDark ? Colors.grey[300] : Colors.grey[800],
-          fontSize: 13,
-        ),
-      ),
     );
   }
 }
