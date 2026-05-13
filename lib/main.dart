@@ -220,6 +220,34 @@ class PortfolioHome extends StatelessWidget {
                       ),
                     ],
                   ),
+                  SizedBox(height: 30),
+
+                  ProjectItem(
+                    title: "Minima",
+                    badge: "Next.js + Typescript",
+                    description:
+                        "Minima is an open-source, interactive curriculum for machine learning. Each lesson pairs readable MDX with client-side sandboxes so readers can manipulate data, hyperparameters, and geometry directly in the browser—without opaque black boxes.",
+                    repoUrl: 'https://github.com/hasibullah1811/minima',
+                    liveUrl: 'https://tryminima.com',
+                    archImagePath: "assets/minima-diagram.png",
+                    archDescription:
+                        "The Architecture Breakdown 1. Core Framework: Next.js 15 (App Router). It uses Server Components to fetch and render your MDX theory for instant SEO and Client Components to handle the high-frequency state updates in your math sandboxes. 2. Content System: A decoupled MDX workflow. This allows you to write simple Markdown for your lessons while 'injecting' complex React components like your KNN and K-Means canvases directly into the narrative. 3. Visualization Engine: A 'Pure SVG' Pipeline. To maintain your minimalist aesthetic, the app skips heavy charting libraries in favor of native <svg> elements driven by React state, with d3-delaunay serving as a headless math engine for complex geometry. 4. Infrastructure: A serverless deployment on Vercel with Porkbun handling the DNS. This setup ensures that your visualizations are served from the edge, minimizing latency for users worldwide.",
+                    metrics: [
+                      ProjectMetric(
+                        icon: Icons.speed,
+                        label: "Lighthouse Performance",
+                        value: "99",
+                        valueHighlight:
+                            Colors.greenAccent[400], // Makes it glow green
+                      ),
+                      ProjectMetric(
+                        icon: Icons.memory,
+                        label: "Vector Processing Latency",
+                        value: "<100ms",
+                        valueHighlight: Colors.cyanAccent[400],
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 30),
                   const ProjectItem(
                     title: "Amazing App",
