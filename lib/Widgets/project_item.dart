@@ -11,7 +11,7 @@ class ProjectItem extends StatelessWidget {
   final String? liveUrl;
   final String? repoUrl;
   final List<ProjectMetric>? metrics;
-
+  final bool isCommercial;
   // --- NEW PROPERTIES FOR ARCHITECTURE MODAL ---
   final String? archImagePath;
   final String? archDescription;
@@ -21,6 +21,7 @@ class ProjectItem extends StatelessWidget {
     required this.title,
     required this.badge,
     required this.description,
+    this.isCommercial = false,
     this.liveUrl,
     this.repoUrl,
     this.archImagePath,
@@ -61,19 +62,33 @@ class ProjectItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: cardColor,
+                color: isCommercial
+                    ? Colors.amber.withOpacity(0.1)
+                    : cardColor,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: borderColor),
+                border: Border.all(
+                  color: isCommercial
+                      ? Colors.amber.withOpacity(0.5)
+                      : borderColor,
+                ),
               ),
               child: Row(
                 children: [
-                  Icon(FontAwesomeIcons.code, size: 10, color: secondaryText),
+                  Icon(
+                    isCommercial ? Icons.verified : FontAwesomeIcons.code,
+                    size: 10,
+                    color: isCommercial ? Colors.amber[700] : secondaryText,
+                  ),
                   const SizedBox(width: 6),
                   Text(
-                    badge.toLowerCase(),
+                    isCommercial
+                        ? "${badge.toLowerCase()} (COMMERCIAL)"
+                        : badge.toLowerCase(),
                     style: GoogleFonts.jetBrainsMono(
-                      color: secondaryText,
+                      color: isCommercial ? Colors.amber[700] : secondaryText,
                       fontSize: 10,
+                      fontWeight:
+                          isCommercial ? FontWeight.bold : FontWeight.normal,
                     ),
                   ),
                 ],

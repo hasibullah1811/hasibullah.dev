@@ -8,6 +8,7 @@ import 'package:hasib_website/Widgets/animated_tech_chip.dart';
 import 'package:hasib_website/Widgets/flash_alert.dart';
 import 'package:hasib_website/Widgets/floating_dock.dart';
 import 'package:hasib_website/Widgets/project_item.dart';
+import 'package:hasib_website/Widgets/system_design_card.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'dart:html' as html; // Adds HTML capabilities
 
@@ -141,19 +142,19 @@ class PortfolioHome extends StatelessWidget {
 
                   const SizedBox(height: 20),
                   const WorkTile(
-                    role: "Production Engineer (Kebabs)",
-                    company: "Fairy Meadow Kebabs",
-                    date: "2024 - Present",
+                    role: "SOFTWARE DEVELOPER (CONTRACT)",
+                    company: "Elements Bar & Grill",
+                    date: "June 2024 – July 2026",
                     description:
-                        "Debugging hunger in a high-concurrency environment. I balance a full-time Master's degree while ensuring zero downtime on garlic sauce deployment.",
+                        "Architected and developed a comprehensive ERP system from scratch to centralize operations, replacing legacy manual processes across a multi-location restaurant chain.",
                     isLast: false,
                   ),
                   const WorkTile(
-                    role: "SOFTWARE DEVELOPER",
+                    role: "SOFTWARE DEVELOPER (PART-TIME)",
                     company: "BinaryCraft",
-                    date: "May 2021 - June 2024",
+                    date: "May 2021 – June 2024",
                     description:
-                        "Developed and maintained 8+ cross platform mobile applications using Flutter. Collaborated with cross-functional teams to design, develop, and deploy new features. Built the entire ERM system for Sydney based Restaurant.",
+                        "Developed and maintained 8+ cross platform mobile applications using Flutter. Collaborated with cross-functional teams to design, develop, and deploy new features.",
                     isLast: false,
                   ),
                   const WorkTile(
@@ -166,7 +167,45 @@ class PortfolioHome extends StatelessWidget {
                   ),
 
                   const SizedBox(height: 60),
+                  const SystemDesignPhilosophySection(),
+                  const SizedBox(height: 60),
                   const SectionTitle(title: "OWN PROJECTS"),
+                  const SizedBox(height: 30),
+
+                  ProjectItem(
+                    title: "Elements ERP System",
+                    badge: "FLUTTER / PYTHON / SQL",
+                    isCommercial: true,
+                    description:
+                        "I engineered a secure, enterprise-grade ERP using RESTful APIs to connect the front-end to a highly optimized SQL database, ensuring zero data loss during high-concurrency dinner rushes.",
+                    // archImagePath: "assets/elements_architecture.png",
+                    archDescription:
+                        "I completely decoupled the mobile ordering system from the heavy payroll database so the app never freezes during peak dinner hours. The Flutter app sends lightweight JSON payloads to the Python API, which instantly updates the SQL inventory tables.",
+                    metrics: [
+                      ProjectMetric(
+                        icon: Icons.storefront,
+                        label: "Scope",
+                        value: "Multi-location",
+                      ),
+                      ProjectMetric(
+                        icon: Icons.timer,
+                        label: "Order Latency",
+                        value: "<50ms",
+                        valueHighlight: Colors.greenAccent[400],
+                      ),
+                      ProjectMetric(
+                        icon: Icons.inventory_2_outlined,
+                        label: "Inventory Tracking",
+                        value: "Real-time",
+                      ),
+                      ProjectMetric(
+                        icon: Icons.fact_check,
+                        label: "Test Coverage",
+                        value: "85% (TDD)",
+                        valueHighlight: Colors.greenAccent[400],
+                      ),
+                    ],
+                  ),
                   const SizedBox(height: 30),
 
                   ProjectItem(
@@ -275,6 +314,9 @@ class PortfolioHome extends StatelessWidget {
                   const SizedBox(height: 60),
 
                   const TechSection(),
+                  const SizedBox(height: 60),
+
+                  const TechNotesSection(),
                   const SizedBox(height: 60),
 
                   // // A simple, hacker-style stats row for DSA
@@ -1508,6 +1550,102 @@ class LeetCodeSection extends StatelessWidget {
   }
 }
 
+class SystemDesignPhilosophySection extends StatelessWidget {
+  const SystemDesignPhilosophySection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isMobile = MediaQuery.of(context).size.width < 768;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(title: "SYSTEM ARCHITECTURE & DESIGN"),
+        const SizedBox(height: 24),
+        if (isMobile)
+          const Column(
+            children: [
+              SystemDesignCard(
+                icon: Icons.layers_clear,
+                accentColor: Colors.blueAccent,
+                title: "Decoupling for Speed",
+                description:
+                    "I separate heavy backend processing from the user interface. By decoupling the client from the database, I ensure the UI never freezes during complex queries.",
+                proof:
+                    "Applied in Elements ERP: Flutter client isolated from Python database layer.",
+              ),
+              SizedBox(height: 20),
+              SystemDesignCard(
+                icon: Icons.integration_instructions,
+                accentColor: Colors.purpleAccent,
+                title: "Automated Quality & CI/CD",
+                description:
+                    "I utilize Test-Driven Development (TDD) and automated deployment pipelines to ensure code quality, minimize regressions, and securely ship features to production.",
+                proof: "Applied across all commercial and personal projects.",
+              ),
+              SizedBox(height: 20),
+              SystemDesignCard(
+                icon: Icons.security,
+                accentColor: Colors.tealAccent,
+                title: "Secure Data Routing",
+                description:
+                    "I do not expose databases directly to clients. I build secure API gateways that handle authentication and protect core business logic from direct access.",
+                proof:
+                    "Applied in StepWise: AWS API Gateway routing to FastAPI.",
+              ),
+            ],
+          )
+        else
+          const Column(
+            children: [
+              IntrinsicHeight(
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Expanded(
+                      child: SystemDesignCard(
+                        icon: Icons.layers_clear,
+                        accentColor: Colors.blueAccent,
+                        title: "Decoupling for Speed",
+                        description:
+                            "I separate heavy backend processing from the user interface. By decoupling the client from the database, I ensure the UI never freezes during complex queries.",
+                        proof:
+                            "Applied in Elements ERP: Flutter client isolated from Python database layer.",
+                      ),
+                    ),
+                    SizedBox(width: 20),
+                    Expanded(
+                      child: SystemDesignCard(
+                        icon: Icons.integration_instructions,
+                        accentColor: Colors.purpleAccent,
+                        title: "Automated Quality & CI/CD",
+                        description:
+                            "I utilize Test-Driven Development (TDD) and automated deployment pipelines to ensure code quality, minimize regressions, and securely ship features to production.",
+                        proof:
+                            "Applied across all commercial and personal projects.",
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(height: 20),
+              SystemDesignCard(
+                icon: Icons.security,
+                accentColor: Colors.tealAccent,
+                isWide: true,
+                title: "Secure Data Routing",
+                description:
+                    "I do not expose databases directly to clients. I build secure API gateways that handle authentication and protect core business logic from direct access.",
+                proof:
+                    "Applied in StepWise: AWS API Gateway routing to FastAPI.",
+              ),
+            ],
+          ),
+      ],
+    );
+  }
+}
+
 class SectionTitle extends StatelessWidget {
   final String title;
   const SectionTitle({super.key, required this.title});
@@ -1639,24 +1777,34 @@ class TechSection extends StatelessWidget {
         const SectionTitle(title: "TECHNICAL CAPABILITIES"),
         const SizedBox(height: 24),
 
-        // 1. The UI Layer (React and Flutter)
         _buildSkillCategory(
           context,
-          title: "// USER INTERFACE (FRONTEND)",
-          skills: ["React", "Next.js", "Flutter", "Dart", "Tailwind CSS"],
+          title: "// CORE ENGINEERING STACK",
+          skills: [
+            "Java",
+            "PostgreSQL",
+            "SQL",
+            "RESTful APIs",
+            "CI/CD",
+            "Git",
+            "Flutter",
+            "Python",
+            "React",
+          ],
         ),
         const SizedBox(height: 20),
 
-        // 2. The Logic Layer (Python and APIs)
+        _buildSkillCategory(
+          context,
+          title: "// USER INTERFACE (FRONTEND)",
+          skills: ["Next.js", "Dart", "Tailwind CSS"],
+        ),
+        const SizedBox(height: 20),
+
         _buildSkillCategory(
           context,
           title: "// BUSINESS LOGIC (BACKEND)",
-          skills: [
-            "Python",
-            "FastAPI",
-            "RESTful Architecture",
-            "SQL / PostgreSQL",
-          ],
+          skills: ["FastAPI"],
         ),
         const SizedBox(height: 20),
 
@@ -1673,11 +1821,10 @@ class TechSection extends StatelessWidget {
         ),
         const SizedBox(height: 20),
 
-        // 4. The Ops Layer (Required by Quantium Grads)
         _buildSkillCategory(
           context,
           title: "// INFRASTRUCTURE & PROCESS",
-          skills: ["Git Version Control", "Vercel", "Agile / Scrum", "CI/CD"],
+          skills: ["Vercel", "Agile / Scrum"],
         ),
       ],
     );
@@ -1709,6 +1856,77 @@ class TechSection extends StatelessWidget {
           children: skills
               .map((skill) => AnimatedTechChip(label: skill))
               .toList(),
+        ),
+      ],
+    );
+  }
+}
+
+class TechNotesSection extends StatelessWidget {
+  const TechNotesSection({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final primaryText = Theme.of(context).colorScheme.primary;
+    final secondaryText = isDark ? Colors.grey[400] : Colors.grey[600];
+    final cardColor = Theme.of(context).cardColor;
+    final borderColor = isDark ? Colors.grey[800]! : Colors.grey[300]!;
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionTitle(title: "TECH NOTES: SOLVING TECHNICAL DEBT"),
+        const SizedBox(height: 20),
+        Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(24),
+          decoration: BoxDecoration(
+            color: cardColor,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(color: borderColor),
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Refactoring for Performance: Removing Technical Debt in SQL",
+                style: GoogleFonts.jetBrainsMono(
+                  color: primaryText,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 16),
+              Text(
+                "While auditing the early backend of the Elements ERP system, I noticed the inventory dashboard was slowing down as our database grew. The root cause was a nested SQL query relying on multiple unindexed JOINs to calculate real-time stock levels.",
+                style: GoogleFonts.jetBrainsMono(
+                  color: secondaryText,
+                  fontSize: 13,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "Instead of throwing more server power at the problem, I decided to remove the technical debt. I refactored the database schema to include proper indexing on the foreign keys and rewrote the query to use eager loading via our ORM.",
+                style: GoogleFonts.jetBrainsMono(
+                  color: secondaryText,
+                  fontSize: 13,
+                  height: 1.6,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Text(
+                "This single refactor dropped the query execution time from 1.2 seconds to under 40ms, drastically reducing server load and making the frontend feel instantly responsive. It was a great reminder that good software engineering isn't just about building new features; it is about sustaining and optimizing what is already there.",
+                style: GoogleFonts.jetBrainsMono(
+                  color: secondaryText,
+                  fontSize: 13,
+                  height: 1.6,
+                ),
+              ),
+            ],
+          ),
         ),
       ],
     );
