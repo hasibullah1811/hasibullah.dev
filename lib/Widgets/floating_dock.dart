@@ -6,7 +6,7 @@ import 'package:hasib_website/main.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class _DockIcon extends StatefulWidget {
-  final IconData icon;
+  final Widget icon;
   final VoidCallback onTap;
 
   const _DockIcon({required this.icon, required this.onTap});
@@ -37,10 +37,12 @@ class _DockIconState extends State<_DockIcon> {
         child: AnimatedContainer(
           duration: const Duration(milliseconds: 200),
           transform: Matrix4.identity()..scale(_isHovered ? 1.2 : 1.0),
-          child: Icon(
-            widget.icon,
-            color: _isHovered ? Colors.white : Colors.grey[500],
-            size: 20,
+          child: IconTheme(
+            data: IconThemeData(
+              color: _isHovered ? Colors.white : Colors.grey[500],
+              size: 20,
+            ),
+            child: widget.icon,
           ),
         ),
       ),
@@ -88,24 +90,24 @@ class FloatingDock extends StatelessWidget {
         children: [
           // Standard Links
           _DockIcon(
-            icon: FontAwesomeIcons.github,
+            icon: FaIcon(FontAwesomeIcons.github),
             onTap: () => _launchUrl('https://github.com/hasibullah1811'),
           ),
           const SizedBox(width: 20),
           _DockIcon(
-            icon: FontAwesomeIcons.linkedin,
+            icon: FaIcon(FontAwesomeIcons.linkedin),
             onTap: () => _launchUrl(
               'https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/',
             ),
           ),
           const SizedBox(width: 20),
           _DockIcon(
-            icon: FontAwesomeIcons.envelope,
+            icon: FaIcon(FontAwesomeIcons.envelope),
             onTap: () => _launchUrl('mailto:hasib.mobiledev@gmail.com'),
           ),
           const SizedBox(width: 20),
           _DockIcon(
-            icon: FontAwesomeIcons.download,
+            icon: FaIcon(FontAwesomeIcons.download),
             onTap: () => _launchUrl(
               'https://raw.githubusercontent.com/hasibullah1811/hasibullah.dev/main/assets/Hasibullah_Hasib_Resume.pdf',
             ),
@@ -121,7 +123,9 @@ class FloatingDock extends StatelessWidget {
           const SizedBox(width: 20),
           // Inside FloatingDock...
           _DockIcon(
-            icon: isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            icon: Icon(
+              isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,
+            ),
             onTap: () {
               if (isDark) {
                 // 1. Pick a joke

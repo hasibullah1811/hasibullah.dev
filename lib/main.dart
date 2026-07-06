@@ -183,23 +183,23 @@ class PortfolioHome extends StatelessWidget {
                         "I completely decoupled the mobile ordering system from the heavy payroll database so the app never freezes during peak dinner hours. The Flutter app sends lightweight JSON payloads to the Python API, which instantly updates the SQL inventory tables.",
                     metrics: [
                       ProjectMetric(
-                        icon: Icons.storefront,
+                        icon: Icon(Icons.storefront),
                         label: "Scope",
                         value: "Multi-location",
                       ),
                       ProjectMetric(
-                        icon: Icons.timer,
+                        icon: Icon(Icons.timer),
                         label: "Order Latency",
                         value: "<50ms",
                         valueHighlight: Colors.greenAccent[400],
                       ),
                       ProjectMetric(
-                        icon: Icons.inventory_2_outlined,
+                        icon: Icon(Icons.inventory_2_outlined),
                         label: "Inventory Tracking",
                         value: "Real-time",
                       ),
                       ProjectMetric(
-                        icon: Icons.fact_check,
+                        icon: Icon(Icons.fact_check),
                         label: "Test Coverage",
                         value: "85% (TDD)",
                         valueHighlight: Colors.greenAccent[400],
@@ -220,12 +220,12 @@ class PortfolioHome extends StatelessWidget {
 
                     metrics: [
                       ProjectMetric(
-                        icon: Icons.people_outline,
+                        icon: Icon(Icons.people_outline),
                         label: "Concurrent Users",
                         value: "500+",
                       ),
                       ProjectMetric(
-                        icon: Icons.storage,
+                        icon: Icon(Icons.storage),
                         label: "DB Query Optimization",
                         value: "40% faster",
                         valueHighlight: Colors.greenAccent[400],
@@ -245,14 +245,14 @@ class PortfolioHome extends StatelessWidget {
                         "The React frontend captures user parameters and transmits them to the Python backend via REST. The backend processes the chunking logic using LangChain, queries the LLM, and returns the vectorized overlaps back to the UI for D3.js rendering. This decouples the heavy mathematical lifting from the client interface.",
                     metrics: [
                       ProjectMetric(
-                        icon: Icons.speed,
+                        icon: Icon(Icons.speed),
                         label: "Lighthouse Performance",
                         value: "98",
                         valueHighlight:
                             Colors.greenAccent[400], // Makes it glow green
                       ),
                       ProjectMetric(
-                        icon: Icons.memory,
+                        icon: Icon(Icons.memory),
                         label: "Vector Processing Latency",
                         value: "<120ms",
                         valueHighlight: Colors.cyanAccent[400],
@@ -273,14 +273,14 @@ class PortfolioHome extends StatelessWidget {
                         "The Architecture Breakdown 1. Core Framework: Next.js 15 (App Router). It uses Server Components to fetch and render your MDX theory for instant SEO and Client Components to handle the high-frequency state updates in your math sandboxes. 2. Content System: A decoupled MDX workflow. This allows you to write simple Markdown for your lessons while 'injecting' complex React components like your KNN and K-Means canvases directly into the narrative. 3. Visualization Engine: A 'Pure SVG' Pipeline. To maintain your minimalist aesthetic, the app skips heavy charting libraries in favor of native <svg> elements driven by React state, with d3-delaunay serving as a headless math engine for complex geometry. 4. Infrastructure: A serverless deployment on Vercel with Porkbun handling the DNS. This setup ensures that your visualizations are served from the edge, minimizing latency for users worldwide.",
                     metrics: [
                       ProjectMetric(
-                        icon: Icons.speed,
+                        icon: Icon(Icons.speed),
                         label: "Lighthouse Performance",
                         value: "99",
                         valueHighlight:
                             Colors.greenAccent[400], // Makes it glow green
                       ),
                       ProjectMetric(
-                        icon: Icons.memory,
+                        icon: Icon(Icons.memory),
                         label: "Vector Processing Latency",
                         value: "<100ms",
                         valueHighlight: Colors.cyanAccent[400],
@@ -715,10 +715,10 @@ class _TerminalChatState extends State<TerminalChat> {
             IconButton(
               onPressed: _showHelp,
               tooltip: "List Commands",
-              icon: Icon(
-                FontAwesomeIcons.circleExclamation, // The icon you asked for
+              icon: FaIcon(
+                FontAwesomeIcons.circleExclamation,
                 size: 18,
-                color: accentColor.withOpacity(0.8), // Subtle accent color
+                color: accentColor.withOpacity(0.8),
               ),
             ),
           ],
@@ -914,13 +914,13 @@ class ActiveThreadsSection extends StatelessWidget {
                     "Researching & building Low-Resource Machine Translation systems for Bengali Language",
               ),
               const SizedBox(height: 12),
-              _buildProcessLog(
-                context,
-                pid: "0001",
-                status: "BACKGROUND",
-                task:
-                    "Optimizing the garlic sauce to meat ratio at Fairy Meadow Kebabs.",
-              ),
+              // _buildProcessLog(
+              //   context,
+              //   pid: "0001",
+              //   status: "BACKGROUND",
+              //   task:
+              //       "Optimizing the garlic sauce to meat ratio at Fairy Meadow Kebabs.",
+              // ),
             ],
           ),
         ),
@@ -995,9 +995,9 @@ class LocationSection extends StatelessWidget {
                   color: isDark ? Colors.grey[900] : Colors.grey[100],
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
+                child: FaIcon(
                   FontAwesomeIcons.locationDot,
-                  color: Theme.of(context).colorScheme.tertiary, // Blue accent
+                  color: Theme.of(context).colorScheme.tertiary,
                   size: 20,
                 ),
               ),
@@ -1018,7 +1018,7 @@ class LocationSection extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      Icon(
+                      FaIcon(
                         FontAwesomeIcons.earthAmericas,
                         size: 12,
                         color: secondaryText,
@@ -1164,10 +1164,10 @@ class AchievementItem extends StatelessWidget {
                 color: const Color(0xFFFFD700).withOpacity(0.3), // Gold border
               ),
             ),
-            child: const Icon(
+            child: FaIcon(
               FontAwesomeIcons.trophy,
               size: 16,
-              color: Color(0xFFFFD700), // Gold Color
+              color: Color(0xFFFFD700),
             ),
           ),
           const SizedBox(width: 16),
@@ -1367,7 +1367,7 @@ class LocationTile extends StatelessWidget {
       children: [
         Row(
           children: [
-            Icon(
+            FaIcon(
               FontAwesomeIcons.earthAmericas,
               size: 12,
               color: secondaryText,
@@ -1434,7 +1434,7 @@ class LeetCodeSection extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Icon(
+                      FaIcon(
                         FontAwesomeIcons.code,
                         color: secondaryText,
                         size: 20,
@@ -1563,10 +1563,14 @@ class SystemDesignPhilosophySection extends StatelessWidget {
         const SectionTitle(title: "SYSTEM ARCHITECTURE & DESIGN"),
         const SizedBox(height: 24),
         if (isMobile)
-          const Column(
+          Column(
             children: [
               SystemDesignCard(
-                icon: Icons.layers_clear,
+                icon: Icon(
+                  Icons.layers_clear,
+                  size: 28,
+                  color: Colors.blueAccent,
+                ),
                 accentColor: Colors.blueAccent,
                 title: "Decoupling for Speed",
                 description:
@@ -1576,7 +1580,11 @@ class SystemDesignPhilosophySection extends StatelessWidget {
               ),
               SizedBox(height: 20),
               SystemDesignCard(
-                icon: Icons.integration_instructions,
+                icon: Icon(
+                  Icons.integration_instructions,
+                  size: 28,
+                  color: Colors.purpleAccent,
+                ),
                 accentColor: Colors.purpleAccent,
                 title: "Automated Quality & CI/CD",
                 description:
@@ -1585,7 +1593,7 @@ class SystemDesignPhilosophySection extends StatelessWidget {
               ),
               SizedBox(height: 20),
               SystemDesignCard(
-                icon: Icons.security,
+                icon: Icon(Icons.security, size: 28, color: Colors.tealAccent),
                 accentColor: Colors.tealAccent,
                 title: "Secure Data Routing",
                 description:
@@ -1596,7 +1604,7 @@ class SystemDesignPhilosophySection extends StatelessWidget {
             ],
           )
         else
-          const Column(
+          Column(
             children: [
               IntrinsicHeight(
                 child: Row(
@@ -1604,7 +1612,11 @@ class SystemDesignPhilosophySection extends StatelessWidget {
                   children: [
                     Expanded(
                       child: SystemDesignCard(
-                        icon: Icons.layers_clear,
+                        icon: Icon(
+                          Icons.layers_clear,
+                          size: 28,
+                          color: Colors.blueAccent,
+                        ),
                         accentColor: Colors.blueAccent,
                         title: "Decoupling for Speed",
                         description:
@@ -1616,7 +1628,11 @@ class SystemDesignPhilosophySection extends StatelessWidget {
                     SizedBox(width: 20),
                     Expanded(
                       child: SystemDesignCard(
-                        icon: Icons.integration_instructions,
+                        icon: Icon(
+                          Icons.integration_instructions,
+                          size: 28,
+                          color: Colors.purpleAccent,
+                        ),
                         accentColor: Colors.purpleAccent,
                         title: "Automated Quality & CI/CD",
                         description:
@@ -1630,7 +1646,7 @@ class SystemDesignPhilosophySection extends StatelessWidget {
               ),
               SizedBox(height: 20),
               SystemDesignCard(
-                icon: Icons.security,
+                icon: Icon(Icons.security, size: 32, color: Colors.tealAccent),
                 accentColor: Colors.tealAccent,
                 isWide: true,
                 title: "Secure Data Routing",
@@ -1710,7 +1726,7 @@ class WorkTile extends StatelessWidget {
                 borderRadius: BorderRadius.circular(8),
                 border: Border.all(color: Colors.grey[800]!),
               ),
-              child: Icon(
+              child: FaIcon(
                 FontAwesomeIcons.briefcase,
                 size: 14,
                 color: isDark ? Colors.grey[400] : Colors.white,
@@ -1999,9 +2015,9 @@ class PublicationTile extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Icon(
+              FaIcon(
                 FontAwesomeIcons.fileLines,
-                color: Theme.of(context).colorScheme.tertiary, // Blue accent
+                color: Theme.of(context).colorScheme.tertiary,
                 size: 20,
               ),
               const SizedBox(width: 16),
@@ -2048,7 +2064,7 @@ class PublicationTile extends StatelessWidget {
                           onTap: () {
                             _launchUrl(link);
                           },
-                          child: Icon(
+                          child: FaIcon(
                             FontAwesomeIcons.arrowUpRightFromSquare,
                             size: 12,
                             color: secondaryText,

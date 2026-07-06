@@ -62,9 +62,7 @@ class ProjectItem extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               decoration: BoxDecoration(
-                color: isCommercial
-                    ? Colors.amber.withOpacity(0.1)
-                    : cardColor,
+                color: isCommercial ? Colors.amber.withOpacity(0.1) : cardColor,
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(
                   color: isCommercial
@@ -74,11 +72,13 @@ class ProjectItem extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  Icon(
-                    isCommercial ? Icons.verified : FontAwesomeIcons.code,
-                    size: 10,
-                    color: isCommercial ? Colors.amber[700] : secondaryText,
-                  ),
+                  isCommercial
+                      ? Icon(Icons.verified, size: 10, color: Colors.amber[700])
+                      : FaIcon(
+                          FontAwesomeIcons.code,
+                          size: 10,
+                          color: secondaryText,
+                        ),
                   const SizedBox(width: 6),
                   Text(
                     isCommercial
@@ -87,8 +87,9 @@ class ProjectItem extends StatelessWidget {
                     style: GoogleFonts.jetBrainsMono(
                       color: isCommercial ? Colors.amber[700] : secondaryText,
                       fontSize: 10,
-                      fontWeight:
-                          isCommercial ? FontWeight.bold : FontWeight.normal,
+                      fontWeight: isCommercial
+                          ? FontWeight.bold
+                          : FontWeight.normal,
                     ),
                   ),
                 ],
@@ -127,7 +128,10 @@ class ProjectItem extends StatelessWidget {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    Icon(metric.icon, size: 12, color: secondaryText),
+                    IconTheme(
+                      data: IconThemeData(size: 12, color: secondaryText),
+                      child: metric.icon,
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       "${metric.label}: ",
@@ -163,9 +167,9 @@ class ProjectItem extends StatelessWidget {
               // 1. Architecture Button (Fires the Modal)
               if (archImagePath != null && archDescription != null)
                 _ProjectLink(
-                  icon: Icons.account_tree_outlined, // Native flutter icon
+                  icon: Icon(Icons.account_tree_outlined, size: 14),
                   label: "Architecture",
-                  isHighlight: true, // Let's make this stand out
+                  isHighlight: true,
                   onTap: () {
                     showDialog(
                       context: context,
@@ -181,7 +185,7 @@ class ProjectItem extends StatelessWidget {
               // 2. GitHub Link
               if (repoUrl != null)
                 _ProjectLink(
-                  icon: FontAwesomeIcons.github,
+                  icon: FaIcon(FontAwesomeIcons.github, size: 14),
                   label: "Code",
                   onTap: () => _launchUrl(repoUrl!),
                 ),
@@ -189,7 +193,10 @@ class ProjectItem extends StatelessWidget {
               // 3. Live Demo Link
               if (liveUrl != null)
                 _ProjectLink(
-                  icon: FontAwesomeIcons.arrowUpRightFromSquare,
+                  icon: FaIcon(
+                    FontAwesomeIcons.arrowUpRightFromSquare,
+                    size: 14,
+                  ),
                   label: "Live Demo",
                   onTap: () => _launchUrl(liveUrl!),
                 ),
@@ -206,7 +213,7 @@ class ProjectItem extends StatelessWidget {
 
 // Small helper widget for the link buttons
 class _ProjectLink extends StatefulWidget {
-  final IconData icon;
+  final Widget icon;
   final String label;
   final VoidCallback onTap;
   final bool isHighlight;
@@ -245,12 +252,14 @@ class _ProjectLinkState extends State<_ProjectLink> {
           transform: Matrix4.translationValues(0, _isHovered ? -2 : 0, 0),
           child: Row(
             children: [
-              Icon(
-                widget.icon,
-                size: 14,
-                color: _isHovered
-                    ? Theme.of(context).colorScheme.secondary
-                    : color,
+              IconTheme(
+                data: IconThemeData(
+                  size: 14,
+                  color: _isHovered
+                      ? Theme.of(context).colorScheme.secondary
+                      : color,
+                ),
+                child: widget.icon,
               ),
               const SizedBox(width: 8),
               Text(
@@ -276,7 +285,7 @@ class _ProjectLinkState extends State<_ProjectLink> {
 }
 
 class ProjectMetric {
-  final IconData icon;
+  final Widget icon;
   final String label;
   final String value;
   final Color?

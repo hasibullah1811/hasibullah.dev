@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SystemDesignCard extends StatelessWidget {
-  final IconData icon;
+  final Widget icon;
   final String title;
   final String description;
   final String proof;
@@ -42,7 +42,7 @@ class SystemDesignCard extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (!isWide) ...[
-          Icon(icon, size: 28, color: accentColor),
+          icon,
           const SizedBox(height: 16),
         ],
         Text(title, style: titleStyle),
@@ -71,7 +71,7 @@ class SystemDesignCard extends StatelessWidget {
           ? Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(icon, size: 32, color: accentColor),
+                icon,
                 const SizedBox(width: 20),
                 Expanded(child: content),
               ],
