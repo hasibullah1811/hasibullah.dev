@@ -1,8 +1,7 @@
 name: hasib_website
-description: "Software Engineer portfolio of Hasibullah Hasib. Specializing in high-performance UI architecture, business logic, and applied AI systems."
+description: "AI-Native Full-Stack Developer & Mobile Engineer portfolio of Hasibullah Hasib."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
-
+publish_to: 'none'
 
 version: 1.0.0+1
 
@@ -13,11 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
   google_fonts: ^6.1.0
-  font_awesome_flutter: 
   url_launcher: ^6.2.0
-  flutter_svg: ^2.2.4
 
 dev_dependencies:
   flutter_test:
@@ -25,11 +21,8 @@ dev_dependencies:
 
   flutter_lints: ^5.0.0
 
-
 flutter:
-
   uses-material-design: true
-
 
   assets:
     - assets/

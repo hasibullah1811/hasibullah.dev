@@ -4,33 +4,32 @@
   <base href="$FLUTTER_BASE_HREF">
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="hasib_website">
+  <meta name="apple-mobile-web-app-title" content="Hasibullah Hasib">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
   <link rel="icon" type="image/png" href="favicon.png"/>
   <!-- Primary Meta Tags -->
-  <title>Hasibullah Hasib | Software Engineer</title>
-  <meta name="title" content="Hasibullah Hasib | Software Engineer">
-  <meta name="description" content="Software Engineer portfolio of Hasibullah Hasib. Specializing in high-performance UI architecture, business logic, and applied AI systems.">
+  <title>Hasibullah Hasib | AI-Native Full-Stack Developer</title>
+  <meta name="title" content="Hasibullah Hasib | AI-Native Full-Stack Developer">
+  <meta name="description" content="AI-Native Full-Stack Developer & Mobile Engineer based in Sydney, NSW.">
 
   <!-- Open Graph / Facebook / LinkedIn / Slack -->
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://hasibullah.dev/">
-  <meta property="og:title" content="Hasibullah Hasib | Software Engineer">
-  <meta property="og:description" content="Specializing in scalable user interfaces, robust business logic, and AI integration.">
+  <meta property="og:title" content="Hasibullah Hasib | AI-Native Full-Stack Developer">
+  <meta property="og:description" content="AI-Native Full-Stack Developer & Mobile Engineer based in Sydney, NSW.">
   <meta property="og:image" content="https://hasibullah.dev/og_image.png">
 
   <!-- Twitter / X -->
   <meta property="twitter:card" content="summary_large_image">
   <meta property="twitter:url" content="https://hasibullah.dev/">
-  <meta property="twitter:title" content="Hasibullah Hasib | Software Engineer">
-  <meta property="twitter:description" content="Specializing in scalable user interfaces, robust business logic, and AI integration.">
+  <meta property="twitter:title" content="Hasibullah Hasib | AI-Native Full-Stack Developer">
+  <meta property="twitter:description" content="AI-Native Full-Stack Developer & Mobile Engineer based in Sydney, NSW.">
   <meta property="twitter:image" content="https://hasibullah.dev/og_image.png">
   
   <!-- Theme Color for mobile browsers -->
-  <meta name="theme-color" content="#0D1B2A">
+  <meta name="theme-color" content="#0A0A0A">
   <link rel="manifest" href="manifest.json">
 
   <style>
@@ -66,6 +65,15 @@
     </div>
   </div>
 
+  <script>
+    window.addEventListener('flutter-first-frame', function () {
+      var loader = document.getElementById('loader');
+      if (!loader) return;
+      loader.style.opacity = '0';
+      loader.style.transition = 'opacity 0.4s';
+      setTimeout(function () { loader.remove(); }, 400);
+    });
+  </script>
   <script src="flutter_bootstrap.js" async></script>
 </body>
 </html>
