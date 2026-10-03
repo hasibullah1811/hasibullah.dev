@@ -27,81 +27,123 @@ const portfolio = PortfolioContent(
     // 'cv/Hasibullah_Hasib_CV.pdf' and add the file under web/cv/.
     cvUrl: null,
   ),
-  journey: [
-    JourneyStop(
-      period: '2020',
-      place: 'Dhaka, Bangladesh',
-      title: 'Built Helping Hand',
-      detail:
-          'A COVID-19 lockdown app connecting people who needed help with '
-          'local volunteers. It grew to 2,000 active users.',
-    ),
-    JourneyStop(
-      period: '2021 – 2024',
-      place: 'Dhaka, Bangladesh',
-      // TODO(confirm): exact title — "Mobile Developer" or "Software Developer".
-      title: 'Software Developer (part-time)',
-      organisation: 'Binary Craft',
-      bullets: [
-        'Delivered 5 property and invoice management apps with Flutter and '
-            'React, making invoice processing 20% faster for clients.',
-        'Delivered software directly to international clients, which led '
-            'to a development contract with Elements Bar & Grill in Australia.',
-      ],
-    ),
-    JourneyStop(
-      period: '2021',
-      place: 'Publication',
-      title: 'Published research as primary author',
-      detail:
-          'Deep learning to aid prescription processing and inventory '
-          'management for local pharmacies (IJSCM).',
-    ),
-    JourneyStop(
-      period: '2023',
-      place: 'Gulshan, Bangladesh',
-      title: 'Taught programming fundamentals',
-      organisation: 'New Horizons CLC',
-      detail: 'Taught about 20 students the foundations of programming.',
-    ),
-    JourneyStop(
-      // TODO(confirm): start month — June or July 2024.
-      period: '2024 – Jul 2026',
-      place: 'Sydney, NSW',
-      // TODO(confirm): exact title — "Full-Stack Developer" or
-      // "Software Developer (Contract)".
-      title: 'Software Developer',
-      organisation: 'Elements Bar & Grill',
-      bullets: [
-        'Built an ERP system with a Python backend that centralised inventory '
-            'and logistics across 5 restaurant locations.',
-        'Built a Flutter iPad app that routes 500–700 daily orders straight '
-            'to kitchen printers, speeding up food preparation.',
-        'Built a Flutter app with real-time, location-based clock-in and '
-            'clock-out that tracks hours for 180 staff.',
-      ],
-    ),
-    JourneyStop(
-      period: 'Since Nov 2025',
-      place: 'Side project',
-      title: 'Building StepWise',
-      detail:
-          'A personal guide to settling in Australia, shaped by my own move. '
-          'In private beta.',
-    ),
-    JourneyStop(
-      period: '2026',
-      place: 'Sydney, NSW',
-      title: 'Master of IT in Artificial Intelligence',
-      organisation: 'Macquarie University',
-    ),
-    JourneyStop(
-      period: 'Now',
-      place: 'Wollongong, NSW',
-      title: 'Looking for my next full-time role',
-      detail: 'Open to relocation and remote.',
-    ),
-  ],
+  journey: Journey(
+    title: 'From Dhaka to Wollongong',
+    origin: 'Dhaka',
+    destination: 'Wollongong',
+    move: 'Moved to Australia',
+    chapters: [
+      JourneyChapter(
+        name: 'Bangladesh',
+        period: '2020 – 2024',
+        // Runs alongside the entries below as a thin side bar.
+        span: JourneySpan(
+          startYear: 2021,
+          period: '2021 – 2024',
+          place: 'Dhaka, Bangladesh',
+          // TODO(confirm): exact title — "Mobile Developer" or
+          // "Software Developer".
+          title: 'Software Developer (part-time)',
+          organisation: 'Binary Craft',
+          label: 'Binary Craft · part-time',
+          bullets: [
+            'Delivered 5 property and invoice management apps with Flutter '
+                'and React, making invoice processing 20% faster for clients.',
+            'Delivered software directly to international clients, which led '
+                'to a development contract with Elements Bar & Grill in '
+                'Australia.',
+          ],
+        ),
+        stops: [
+          JourneyStop(
+            year: 2020,
+            period: '2020',
+            place: 'Dhaka, Bangladesh',
+            title: 'Built Helping Hand',
+            detail:
+                'A COVID-19 lockdown app connecting people who needed help '
+                'with local volunteers.',
+            metrics: [Metric(2000, 'active users')],
+          ),
+          JourneyStop(
+            year: 2021,
+            period: '2021',
+            place: 'Publication',
+            title: 'Published research as primary author',
+            detail:
+                'Deep learning to aid prescription processing and inventory '
+                'management for local pharmacies (IJSCM).',
+          ),
+          JourneyStop(
+            year: 2023,
+            period: '2023',
+            place: 'Gulshan, Bangladesh',
+            title: 'Taught programming fundamentals',
+            organisation: 'New Horizons CLC',
+            detail: 'Taught the foundations of programming.',
+            metrics: [Metric(20, 'students', approximate: true)],
+          ),
+          JourneyStop(
+            year: 2023,
+            period: '2023',
+            place: 'Dhaka, Bangladesh',
+            title: 'BSc in Computer Science and Engineering',
+            organisation: 'North South University',
+          ),
+        ],
+      ),
+      JourneyChapter(
+        name: 'Australia',
+        period: '2024 – now',
+        stops: [
+          JourneyStop(
+            year: 2024,
+            period: '2024 – 2026',
+            place: 'Sydney, NSW',
+            // TODO(confirm): exact title — "Full-Stack Developer" or
+            // "Software Developer (Contract)".
+            title: 'Software Developer',
+            organisation: 'Elements Bar & Grill',
+            metrics: [
+              Metric(5, 'restaurant locations'),
+              Metric(180, 'staff on clock-in'),
+            ],
+            bullets: [
+              'Built an ERP system with a Python backend that centralised '
+                  'inventory and logistics across every location.',
+              'Built a Flutter iPad app that routes 500–700 daily orders '
+                  'straight to kitchen printers, speeding up food preparation.',
+              'Built a Flutter app with real-time, location-based clock-in and '
+                  'clock-out for the whole team.',
+            ],
+          ),
+          JourneyStop(
+            year: 2025,
+            period: 'Since Nov 2025',
+            place: 'Side project',
+            title: 'Building StepWise',
+            detail:
+                'A personal guide to settling in Australia, shaped by my own '
+                'move. In private beta.',
+          ),
+          JourneyStop(
+            year: 2026,
+            period: '2026',
+            place: 'Sydney, NSW',
+            title: 'Master of IT in Artificial Intelligence',
+            organisation: 'Macquarie University',
+          ),
+          JourneyStop(
+            year: 2026,
+            period: 'Now',
+            place: 'Wollongong, NSW',
+            title: 'Looking for my next full-time role',
+            detail: 'Open to relocation and remote.',
+          ),
+        ],
+      ),
+    ],
+  ),
   caseStudies: [
     CaseStudy(
       name: 'StepWise',
@@ -117,14 +159,12 @@ const portfolio = PortfolioContent(
             'front end to the API and database.',
         'Turning a person\'s situation into a personalised AI action plan '
             'that covers visas and jobs.',
-        'Shaping the REST API and PostgreSQL data model for the web beta '
-            'first, so a mobile app can follow on the same backend.',
+        'Building the FastAPI backend and PostgreSQL data model for the web '
+            'beta first, so a mobile app can follow on the same backend.',
       ],
-      // TODO(confirm): backend framework (Flask, AWS API Gateway, or both)
-      // and AI provider. Only agreed parts are listed.
-      stack: ['Flutter', 'REST APIs', 'PostgreSQL'],
+      stack: ['Flutter', 'FastAPI', 'PostgreSQL', 'Gemini on Vertex AI'],
       outcome: 'In private beta. Not yet publicly released.',
-      // TODO(confirm): link https://www.thestepwise.com/ during the beta?
+      // Not linked while in development / private beta.
       links: [],
       image: 'assets/images/stepwise.jpg',
       imageAlt:
@@ -159,6 +199,9 @@ const portfolio = PortfolioContent(
       name: 'Prism',
       period: 'Jan 2026',
       status: 'Open source',
+      // TODO(confirm): framing — this copy combines the old site's
+      // description (vector matches, token attribution) and the repo's
+      // (auditing text-splitting before embeddings).
       tagline: 'Opening the black box of RAG pipelines.',
       problem:
           'Chunking and retrieval choices make or break a RAG system, but they '
@@ -180,7 +223,7 @@ const portfolio = PortfolioContent(
   ],
   projects: [
     Project(
-      name: 'LandDrop',
+      name: 'LanDrop',
       period: 'May 2026',
       description:
           'Zero-configuration file sharing and media streaming on your local '
@@ -261,8 +304,7 @@ const portfolio = PortfolioContent(
     Credential(
       kind: 'Education',
       title: 'Bachelor of Science in Computer Science and Engineering',
-      // TODO(confirm): graduation year (2023 or 2024) before adding it.
-      detail: 'North South University · Dhaka, Bangladesh',
+      detail: 'North South University · Dhaka, Bangladesh · 2023',
     ),
     Credential(
       kind: 'Publication',

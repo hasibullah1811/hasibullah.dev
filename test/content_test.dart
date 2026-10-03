@@ -60,6 +60,13 @@ void main() {
     }
   });
 
+  test('journey entries are chronological within each chapter', () {
+    for (final chapter in portfolio.journey.chapters) {
+      final years = chapter.stops.map((s) => s.year).toList();
+      expect(years, [...years]..sort(), reason: chapter.name);
+    }
+  });
+
   test('every linked local file exists', () {
     final local = [
       for (final c in portfolio.caseStudies) ...c.links.map((l) => l.url),
@@ -88,13 +95,30 @@ List<String> _allStrings() {
     p.workRights,
     p.email,
     ...p.coreStack,
-    for (final s in portfolio.journey) ...[
-      s.period,
-      s.place,
-      s.title,
-      ?s.organisation,
-      ?s.detail,
-      ...s.bullets,
+    portfolio.journey.title,
+    portfolio.journey.origin,
+    portfolio.journey.destination,
+    portfolio.journey.move,
+    for (final chapter in portfolio.journey.chapters) ...[
+      chapter.name,
+      chapter.period,
+      if (chapter.span case final span?) ...[
+        span.period,
+        span.place,
+        span.title,
+        span.organisation,
+        span.label,
+        ...span.bullets,
+      ],
+      for (final s in chapter.stops) ...[
+        s.period,
+        s.place,
+        s.title,
+        ?s.organisation,
+        ?s.detail,
+        ...s.bullets,
+        ...s.metrics.map((m) => m.label),
+      ],
     ],
     for (final c in portfolio.caseStudies) ...[
       c.name,

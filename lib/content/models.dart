@@ -41,22 +41,113 @@ class LinkItem {
   final String url;
 }
 
+/// A number that counts up when its journey card appears.
+class Metric {
+  const Metric(this.value, this.label, {this.approximate = false});
+
+  final int value;
+  final String label;
+
+  /// Shown with a leading "~", e.g. "~20 students".
+  final bool approximate;
+
+  String format(int current) =>
+      '${approximate ? '~' : ''}${formatThousands(current)}';
+}
+
+String formatThousands(int value) => value.toString().replaceAllMapped(
+  RegExp(r'\B(?=(\d{3})+(?!\d))'),
+  (_) => ',',
+);
+
 class JourneyStop {
   const JourneyStop({
+    required this.year,
     required this.period,
     required this.place,
     required this.title,
     this.organisation,
     this.detail,
     this.bullets = const [],
+    this.metrics = const [],
   });
 
+  /// Sort key. Entries are shown in chronological order within a chapter.
+  final int year;
   final String period;
   final String place;
   final String title;
   final String? organisation;
   final String? detail;
   final List<String> bullets;
+  final List<Metric> metrics;
+}
+
+/// Work that ran alongside a chapter's other entries (shown as a side bar).
+class JourneySpan {
+  const JourneySpan({
+    required this.startYear,
+    required this.period,
+    required this.place,
+    required this.title,
+    required this.organisation,
+    required this.label,
+    this.bullets = const [],
+  });
+
+  final int startYear;
+  final String period;
+  final String place;
+  final String title;
+  final String organisation;
+
+  /// Short text written along the side bar.
+  final String label;
+  final List<String> bullets;
+
+  /// On narrow screens the span is shown as an ordinary entry.
+  JourneyStop asStop() => JourneyStop(
+    year: startYear,
+    period: period,
+    place: place,
+    title: title,
+    organisation: organisation,
+    bullets: bullets,
+  );
+}
+
+class JourneyChapter {
+  const JourneyChapter({
+    required this.name,
+    required this.period,
+    required this.stops,
+    this.span,
+  });
+
+  final String name;
+  final String period;
+  final List<JourneyStop> stops;
+  final JourneySpan? span;
+}
+
+class Journey {
+  const Journey({
+    required this.title,
+    required this.origin,
+    required this.destination,
+    required this.move,
+    required this.chapters,
+  });
+
+  final String title;
+
+  /// Labels at the two ends of the route line.
+  final String origin;
+  final String destination;
+
+  /// Marker between the chapters.
+  final String move;
+  final List<JourneyChapter> chapters;
 }
 
 class CaseStudy {
@@ -135,7 +226,7 @@ class PortfolioContent {
   });
 
   final Profile profile;
-  final List<JourneyStop> journey;
+  final Journey journey;
   final List<CaseStudy> caseStudies;
   final List<Project> projects;
   final List<SkillGroup> skills;

@@ -5,7 +5,7 @@ and the public CV must agree with this file. Change facts here first, then in th
 
 Items marked `TODO(confirm)` are unresolved. Do not publish them until confirmed.
 
-Last reviewed: 2026-10-03
+Last reviewed: 2026-10-03 (facts round 2 applied)
 
 ---
 
@@ -39,7 +39,7 @@ Never published: phone number, personal Gmail, the original resume PDF.
 
 ### Elements Bar & Grill — Sydney, NSW
 - Role: Full-Stack Developer (site) vs Software Developer (Contract) (resume) — `TODO(confirm)`. Site shows "Software Developer" until confirmed
-- Dates: `TODO(confirm)` June vs July 2024 – July 2026. Site shows "2024 – Jul 2026" until confirmed
+- Dates: 2024 – 2026 (no start or end month shown, by decision)
 - Highlights (current site copy):
   - ERP system with a Python backend centralising inventory and logistics across 5 restaurant locations
   - Flutter iPad app routing 500–700 daily orders straight to kitchen printers
@@ -64,7 +64,7 @@ Never published: phone number, personal Gmail, the original resume PDF.
 | Degree | School | Location | Year |
 |---|---|---|---|
 | Master of Information Technology in Artificial Intelligence | Macquarie University | Sydney, NSW | 2026 — completion month `TODO(confirm)` (resume says "Graduating July 2026") |
-| Bachelor of Science in Computer Science and Engineering | North South University | Dhaka, Bangladesh | `TODO(confirm)` 2023 vs 2024 |
+| Bachelor of Science in Computer Science and Engineering | North South University | Dhaka, Bangladesh | 2023 |
 
 ## Publication
 
@@ -79,12 +79,12 @@ Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 
 ### 1. StepWise — lead case study
 - Status: **In development / private beta. Not publicly released — never claim a launch.**
-- URL: https://www.thestepwise.com/ — show or not while in beta: `TODO(confirm)`
+- URL: https://www.thestepwise.com/ — **not linked** while in development / private beta (decision)
 - Started: Nov 2025
 - Why: built from my own experience of moving to Australia
 - What it is: a personal guide to settling in Australia — an AI action plan covering visas and jobs
-- Stack: Flutter, PostgreSQL, REST APIs; backend `TODO(confirm)` Flask vs AWS API Gateway vs both. Note: the old `assets/stepwise-diagram` showed **FastAPI + Vertex AI (Gemini 2.5 Flash) + Supabase**, a third answer, so it is not on the site; AI/LLM provider `TODO(confirm)`
-- Outcome so far: `TODO(confirm)` (beta users, waitlist, or leave out)
+- Stack: Flutter front end; FastAPI + PostgreSQL backend; AI via Gemini on Google Cloud Vertex AI. (Not Flask, not AWS API Gateway. The resume still says API Gateway; fix it in the next CV update)
+- Outcome so far: in private beta, no public metrics
 - Assets: `assets/images/stepwise.jpg` (screenshot). The architecture diagram is withheld; see stack
 
 ### 2. Minima
@@ -103,9 +103,9 @@ Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 - Code: https://github.com/hasibullah1811/prism
 - Assets: `web/img/prism-architecture.png` (linked, not embedded)
 
-### 4. LandDrop
+### 4. LanDrop
 - Date: May 2026
-- Name spelling: `TODO(confirm)` "LandDrop" (resume) vs repo name `landrop`
+- Name spelling: "LanDrop" (repo: `landrop`). The resume says "LandDrop"; fix it in the next CV update
 - What it is: zero-configuration local-network file sharing and media streaming, with real-time sync, HTTP video streaming and a TV-optimised UI
 - Stack: `TODO(confirm)`
 - Code: https://github.com/hasibullah1811/landrop

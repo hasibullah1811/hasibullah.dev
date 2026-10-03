@@ -73,7 +73,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
                     gap,
                     KeyedSubtree(
                       key: _journeyKey,
-                      child: JourneySection(stops: content.journey),
+                      child: JourneySection(journey: content.journey),
                     ),
                     gap,
                     KeyedSubtree(
