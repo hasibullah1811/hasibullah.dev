@@ -1,65 +1,51 @@
-# Minimalist Developer Portfolio ⚡️
+# hasibullah.dev
 
-A clean, document-style portfolio website built with **Flutter Web**. 
-Designed for developers who prefer content, code, and clarity over flashy animations.
+Portfolio of Hasibullah Hasib, Software Developer. Built with Flutter web and
+deployed on Vercel.
 
-## 🚀 Live Demo
-[https://hasibullah.dev]
+Live: https://www.hasibullah.dev/
 
-## ✨ Features
+## Editing content
 
-* **Terminal Aesthetic:** Uses `JetBrains Mono` for that authentic coding environment feel.
-* **Theme Toggle:** Seamless switching between **Dark Mode** (Hacker style) and **Light Mode** (Paper style).
-* **Responsive Design:** Looks like a document on Desktop, adapts natively to Mobile.
-* **Custom Sections:**
-    * **LeetCode Stats:** Visual progress bars for competitive programming.
-    * **Timeline:** Vertical timeline for Education history.
-    * **Publications:** Academic citation style layout.
-    * **Tech Stack:** Grid layout for skills.
-* **Personality:** Includes a "Production Engineer (Kebabs)" role to show resilience and humor.
+All copy lives in **`lib/content/portfolio_content.dart`**: profile, journey,
+case studies, projects, skills and credentials. It is plain data, so no UI
+code needs to change. `docs/facts.md` is the human-readable source of truth
+the content must match.
 
-## 🛠 Tech Stack
+A few things also appear in `web/index.html` (the loading state, meta tags and
+structured data), so crawlers and slow connections see real content before
+Flutter loads. `test/content_test.dart` fails if the title, location, work
+rights or links drift between the two.
 
-* **Framework:** [Flutter](https://flutter.dev/) (Dart)
-* **Fonts:** [Google Fonts](https://pub.dev/packages/google_fonts) (JetBrains Mono & Playfair Display)
-* **Icons:** [FontAwesome](https://pub.dev/packages/font_awesome_flutter)
+To show the CV button, put the redacted PDF at `web/cv/Hasibullah_Hasib_CV.pdf`
+and set `cvUrl: 'cv/Hasibullah_Hasib_CV.pdf'` in the profile.
 
-## 📦 Installation & Setup
+## Structure
 
-1.  **Clone the repository**
-    ```bash
-    git clone [https://github.com/hasibullah1811/hasibullah.dev.git](https://github.com/hasibullah1811/hasibullah.dev.git)
-    cd hasibullah.dev
-    ```
+```
+lib/
+  content/      models.dart, portfolio_content.dart   ← edit here
+  theme.dart    colours, type scale, button styles
+  ui/           page shell, sections, shared widgets
+web/            index.html (loading state + SEO), icons, OG image, architecture diagrams
+assets/         bundled fonts (Latin subsets) and the StepWise screenshot
+scripts/        Vercel install/build (pinned Flutter)
+docs/           facts.md, deploy.md
+```
 
-2.  **Install dependencies**
-    ```bash
-    flutter pub get
-    ```
+## Development
 
-3.  **Run locally (Web)**
-    ```bash
-    flutter run -d chrome
-    ```
+```bash
+flutter pub get
+flutter run -d chrome
+flutter test
+flutter build web --release --wasm
+```
 
-4.  **Build for Production**
-    ```bash
-    flutter build web --release
-    ```
+The Flutter version is pinned in `pubspec.yaml`. See `docs/deploy.md` for the
+CI and Vercel pipeline.
 
-## 🎨 Customization
+## Credits
 
-The entire content is currently located in `lib/main.dart` for simplicity. To personalize this for yourself:
-
-1.  **Update Personal Info:** Look for the `HeaderSection` class to change the bio and name.
-2.  **Update Projects:** Modify the `ProjectItem` widgets in the `PortfolioHome` list.
-3.  **Update Colors:** Change the `ColorScheme` in the `ThemeData` block inside `main()`.
-
-## 🤝 Credits & Inspiration
-
-* **Design Inspiration:** [Aditya Kumar](https://adityak.dev) - The layout was heavily inspired by his minimalist portfolio concept.
-* **Developed by:** [Hasib Ullah](https://github.com/hasibullah1811)
-
-## 📄 License
-
-This project is open source and available under the [MIT License](LICENSE).
+Fonts: Inter, Source Serif 4 and JetBrains Mono, all under the SIL Open Font
+License 1.1. Bundled as Latin subsets.
