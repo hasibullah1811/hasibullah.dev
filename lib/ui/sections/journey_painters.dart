@@ -253,8 +253,7 @@ class ContourPainter extends CustomPainter {
 
   final Animation<double> drift;
 
-  static final _stroke = Paint()
-    ..color = AppColors.line.withValues(alpha: 0.6)
+  final _stroke = Paint()
     ..style = PaintingStyle.stroke
     ..strokeWidth = 1;
 
@@ -265,6 +264,7 @@ class ContourPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (_cachedSize != size) {
       _paths = _contours(size);
+      _stroke.shader = _edgeFade(size);
       _cachedSize = size;
     }
     final angle = drift.value * 2 * math.pi;
@@ -275,43 +275,21 @@ class ContourPainter extends CustomPainter {
       canvas.drawPath(path, _stroke);
     }
     canvas.restore();
-    _fadeEdges(canvas, size);
   }
 
-  /// Fades the lines into the paper at every edge instead of a hard clip.
-  /// Plain gradient rects, so no offscreen layer is needed each frame.
-  static void _fadeEdges(Canvas canvas, Size size) {
+  /// Fades the lines out toward the left and right edges instead of a hard
+  /// clip. The fade is in the stroke's alpha, not painted over the lines, so
+  /// the page's dot grid still shows through. The rings sit far enough from
+  /// the top and bottom that those edges need no fade.
+  static Shader _edgeFade(Size size) {
     const fade = 72.0;
-    const clear = Color(0x00FAF7F2);
-    void edge(Rect rect, Alignment from, Alignment to) => canvas.drawRect(
-      rect,
-      Paint()
-        ..shader = LinearGradient(
-          begin: from,
-          end: to,
-          colors: const [AppColors.paper, clear],
-        ).createShader(rect),
-    );
-    edge(
-      Rect.fromLTWH(0, 0, fade, size.height),
-      Alignment.centerLeft,
-      Alignment.centerRight,
-    );
-    edge(
-      Rect.fromLTWH(size.width - fade, 0, fade, size.height),
-      Alignment.centerRight,
-      Alignment.centerLeft,
-    );
-    edge(
-      Rect.fromLTWH(0, 0, size.width, fade),
-      Alignment.topCenter,
-      Alignment.bottomCenter,
-    );
-    edge(
-      Rect.fromLTWH(0, size.height - fade, size.width, fade),
-      Alignment.bottomCenter,
-      Alignment.topCenter,
-    );
+    final colour = AppColors.line.withValues(alpha: 0.6);
+    final clear = colour.withValues(alpha: 0);
+    final edge = size.width > fade * 2 ? fade / size.width : 0.5;
+    return LinearGradient(
+      colors: [clear, colour, colour, clear],
+      stops: [0, edge, 1 - edge, 1],
+    ).createShader(Offset.zero & size);
   }
 
   static List<Path> _contours(Size size) {

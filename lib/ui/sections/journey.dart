@@ -6,7 +6,7 @@ import '../widgets/common.dart';
 import 'journey_cards.dart';
 import 'journey_painters.dart';
 
-/// The journey as a route from Dhaka to Wollongong.
+/// The journey as a route from Bangladesh to Australia.
 ///
 /// Layers, bottom to top, each behind its own RepaintBoundary:
 ///  1. drifting contour lines (paused when off screen),
@@ -328,7 +328,6 @@ class _JourneySectionState extends State<JourneySection>
           child: _reveal(
             row,
             (reveal) => LiftCard(
-              reduced: _reduced,
               child: StopContent(stop: row.stop!, reveal: reveal),
             ),
           ),
@@ -433,6 +432,10 @@ class _SpanNote extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           BulletList(span.bullets),
+          if (span.stack.isNotEmpty) ...[
+            const SizedBox(height: 4),
+            TagList(span.stack),
+          ],
         ],
       ),
     );

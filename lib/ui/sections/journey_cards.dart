@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../content/models.dart';
 import '../../theme.dart';
+import '../motion.dart';
 import '../widgets/common.dart';
 
 /// Fades and slides its child in once, when the route line reaches
@@ -31,11 +32,11 @@ class _RevealOnceState extends State<RevealOnce>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1500),
+    duration: Motion.revealWithCount,
   );
   late final Animation<double> _fade = CurvedAnimation(
     parent: _controller,
-    curve: const Interval(0, 0.3, curve: Curves.easeOut),
+    curve: const Interval(0, 0.3, curve: Motion.curve),
   );
 
   @override
@@ -82,60 +83,11 @@ class _RevealOnceState extends State<RevealOnce>
         opacity: _fade.value,
         alwaysIncludeSemantics: true,
         child: Transform.translate(
-          offset: Offset(0, 14 * (1 - _fade.value)),
+          offset: Offset(0, Motion.rise * (1 - _fade.value)),
           child: child,
         ),
       ),
       child: child,
-    );
-  }
-}
-
-/// A journey card that lifts slightly on hover.
-class LiftCard extends StatefulWidget {
-  const LiftCard({super.key, required this.child, required this.reduced});
-
-  final Widget child;
-  final bool reduced;
-
-  @override
-  State<LiftCard> createState() => _LiftCardState();
-}
-
-class _LiftCardState extends State<LiftCard> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedContainer(
-        duration: widget.reduced
-            ? Duration.zero
-            : const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-        width: double.infinity,
-        transform: Matrix4.translationValues(0, _hovered ? -3 : 0, 0),
-        padding: EdgeInsets.all(isCompact(context) ? 16 : 18),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _hovered ? const Color(0xFFD9D1C3) : AppColors.line,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(
-                0xFF1B1916,
-              ).withValues(alpha: _hovered ? 0.07 : 0),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: widget.child,
-      ),
     );
   }
 }
@@ -192,12 +144,16 @@ class StopContent extends StatelessWidget {
           const SizedBox(height: 12),
           BulletList(stop.bullets),
         ],
+        if (stop.stack.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          TagList(stop.stack),
+        ],
       ],
     );
   }
 }
 
-/// Counts up from zero as the card is revealed. The final value reserves
+/// Counts up from zero as its card or section is revealed. The final value reserves
 /// the width, so the layout never shifts while counting.
 class CountUpMetric extends StatelessWidget {
   const CountUpMetric({super.key, required this.metric, required this.reveal});
@@ -220,7 +176,7 @@ class CountUpMetric extends StatelessWidget {
       parent: reveal,
       curve: const Interval(0.2, 1, curve: Curves.easeOutCubic),
     );
-    final finalText = metric.format(metric.value);
+    final finalText = metric.formatAt(1);
 
     return Semantics(
       label: '$finalText ${metric.label}',
@@ -238,10 +194,8 @@ class CountUpMetric extends StatelessWidget {
               ),
               AnimatedBuilder(
                 animation: count,
-                builder: (context, _) => Text(
-                  metric.format((metric.value * count.value).round()),
-                  style: _numberStyle,
-                ),
+                builder: (context, _) =>
+                    Text(metric.formatAt(count.value), style: _numberStyle),
               ),
             ],
           ),

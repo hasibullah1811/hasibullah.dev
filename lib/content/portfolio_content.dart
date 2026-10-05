@@ -10,27 +10,50 @@ const portfolio = PortfolioContent(
   profile: Profile(
     name: 'Hasibullah Hasib',
     title: 'Software Developer',
-    summary:
-        'I build production software end to end: an ERP and Flutter apps '
-        'that run five restaurant locations in Sydney, and open-source tools '
-        'that make RAG and machine learning easier to see.',
-    location: 'Wollongong, NSW',
+    tagline:
+        'Software developer building practical apps in Flutter, Python and '
+        'FastAPI.',
+    // Shown on the page. The meta description in web/index.html keeps
+    // "Wollongong" for search.
+    location: 'NSW, Australia',
     openTo: 'Open to relocation and remote',
     status: 'Open to full-time roles',
     workRights: 'Full working rights (Subclass 485)',
-    coreStack: ['Flutter', 'Python', 'React', 'PostgreSQL'],
+    workRightsShort: 'Full working rights',
+    closing:
+        "I'm open to full-time roles in NSW, remote or somewhere new. Email "
+        'is the quickest way to reach me.',
     email: 'hi@hasibullah.dev',
     linkedIn: 'https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/',
     github: 'https://github.com/hasibullah1811',
+    leetCode: 'https://leetcode.com/u/hasibullah/',
     website: 'https://www.hasibullah.dev/',
     // Hidden until a corrected, redacted CV is approved. Then set to
     // 'cv/Hasibullah_Hasib_CV.pdf' and add the file under web/cv/.
     cvUrl: null,
   ),
+  about: About(
+    title: 'Things people actually use',
+    text:
+        "I'm a software developer who builds things people actually use. In "
+        'Dhaka I made a COVID-19 help app that reached 2,000 users. In '
+        'Australia I built an ERP system and staff apps that run across five '
+        "restaurants, and now I'm building StepWise, an app for people "
+        "settling into a new country, because I've made that move myself. I "
+        'work mostly with Flutter, Python and FastAPI, and I hold a '
+        "Master's in IT (AI) from Macquarie. I'm open to full-time roles, "
+        'with full working rights in Australia.',
+    metrics: [
+      Metric(5, 'restaurant locations'),
+      Metric(500, 'daily orders', upTo: 700),
+      Metric(180, 'staff'),
+      Metric(2000, 'users'),
+    ],
+  ),
   journey: Journey(
-    title: 'From Dhaka to Wollongong',
-    origin: 'Dhaka',
-    destination: 'Wollongong',
+    title: 'From Bangladesh to Australia',
+    origin: 'Dhaka, Bangladesh',
+    destination: 'NSW, Australia',
     move: 'Moved to Australia',
     chapters: [
       JourneyChapter(
@@ -53,6 +76,7 @@ const portfolio = PortfolioContent(
                 'to a development contract with Elements Bar & Grill in '
                 'Australia.',
           ],
+          stack: ['Flutter', 'React'],
         ),
         stops: [
           JourneyStop(
@@ -64,6 +88,7 @@ const portfolio = PortfolioContent(
                 'A COVID-19 lockdown app connecting people who needed help '
                 'with local volunteers.',
             metrics: [Metric(2000, 'active users')],
+            stack: ['Flutter', 'Python', 'Flask', 'Firebase'],
           ),
           JourneyStop(
             year: 2021,
@@ -116,6 +141,7 @@ const portfolio = PortfolioContent(
               'Built a Flutter app with real-time, location-based clock-in and '
                   'clock-out for the whole team.',
             ],
+            stack: ['Python', 'Flutter'],
           ),
           JourneyStop(
             year: 2025,
@@ -125,6 +151,7 @@ const portfolio = PortfolioContent(
             detail:
                 'A personal guide to settling in Australia, shaped by my own '
                 'move. In private beta.',
+            stack: ['Flutter', 'FastAPI', 'PostgreSQL'],
           ),
           JourneyStop(
             year: 2026,
@@ -136,7 +163,7 @@ const portfolio = PortfolioContent(
           JourneyStop(
             year: 2026,
             period: 'Now',
-            place: 'Wollongong, NSW',
+            place: 'NSW, Australia',
             title: 'Looking for my next full-time role',
             detail: 'Open to relocation and remote.',
           ),
@@ -149,6 +176,7 @@ const portfolio = PortfolioContent(
       name: 'StepWise',
       period: 'Since Nov 2025',
       status: 'In development · private beta',
+      featured: true,
       tagline: 'A personal guide to settling in Australia.',
       problem:
           'When I moved to Australia, working out visas and jobs meant a lot '
@@ -194,6 +222,11 @@ const portfolio = PortfolioContent(
         LinkItem('Code', 'https://github.com/hasibullah1811/minima'),
         LinkItem('Architecture', 'img/minima-architecture.png'),
       ],
+      diagram: 'img/minima-architecture.png',
+      diagramAlt:
+          'Minima architecture: GitHub and Porkbun DNS deploy to Vercel; a '
+          'Next.js 15 app routes to MDX lessons, whose interactive components '
+          'run React state through d3-delaunay into native SVG.',
     ),
     CaseStudy(
       name: 'Prism',
@@ -219,6 +252,11 @@ const portfolio = PortfolioContent(
         LinkItem('Code', 'https://github.com/hasibullah1811/prism'),
         LinkItem('Architecture', 'img/prism-architecture.png'),
       ],
+      diagram: 'img/prism-architecture.png',
+      diagramAlt:
+          'Prism architecture: a React client on Vercel posts text to a '
+          'FastAPI server on Render, which runs LangChain, Tiktoken and '
+          'scikit-learn PCA and returns vectors, tokens and scores as JSON.',
     ),
   ],
   projects: [

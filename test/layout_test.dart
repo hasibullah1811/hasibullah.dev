@@ -39,10 +39,17 @@ void main() {
       await _pumpApp(tester, size: size);
 
       expect(tester.takeException(), isNull);
-      expect(find.text(portfolio.profile.name), findsOneWidget);
-      expect(find.text(portfolio.profile.title), findsWidgets);
-      expect(find.text(portfolio.profile.workRights), findsWidgets);
+      final profile = portfolio.profile;
+      expect(find.text(profile.name), findsOneWidget);
+      expect(find.text(profile.tagline), findsOneWidget);
+      expect(
+        find.textContaining(profile.workRightsShort),
+        findsWidgets,
+        reason: 'availability line',
+      );
+      expect(find.textContaining(profile.location), findsWidgets);
       for (final heading in [
+        portfolio.about.title,
         journey.title,
         'Case studies',
         'What I work with',
@@ -77,14 +84,37 @@ void main() {
     await _pumpApp(tester, reducedMotion: true);
 
     // Final numbers, no count-up.
-    for (final value in ['2,000', '5', '180', '~20']) {
+    for (final value in ['2,000', '5', '180', '~20', '500–700']) {
       expect(find.text(value, skipOffstage: false), findsWidgets);
     }
-    // Every journey card fully visible.
+    // Every journey card and revealed section fully visible.
     final opacities = tester
         .widgetList<Opacity>(find.byType(Opacity, skipOffstage: false))
         .map((o) => o.opacity);
     expect(opacities, everyElement(1.0));
+    final fades = tester
+        .widgetList<FadeTransition>(
+          find.byType(FadeTransition, skipOffstage: false),
+        )
+        .map((f) => f.opacity.value);
+    expect(fades, everyElement(1.0));
+  });
+
+  testWidgets('LeetCode is linked in the hero and contact section', (
+    tester,
+  ) async {
+    await _pumpApp(tester);
+    expect(find.widgetWithText(OutlinedButton, 'LeetCode'), findsOneWidget);
+    expect(
+      find.byTooltip('LeetCode', skipOffstage: false),
+      findsOneWidget,
+      reason: 'contact icon link',
+    );
+  });
+
+  testWidgets('the core stack strip is gone', (tester) async {
+    await _pumpApp(tester);
+    expect(find.text('CORE STACK', skipOffstage: false), findsNothing);
   });
 
   testWidgets('text is selectable and links are focusable buttons', (

@@ -5,7 +5,7 @@ and the public CV must agree with this file. Change facts here first, then in th
 
 Items marked `TODO(confirm)` are unresolved. Do not publish them until confirmed.
 
-Last reviewed: 2026-10-03 (facts round 2 applied)
+Last reviewed: 2026-10-05 (round 3: location, LeetCode, About copy)
 
 ---
 
@@ -15,7 +15,8 @@ Last reviewed: 2026-10-03 (facts round 2 applied)
 |---|---|
 | Name | Hasibullah Hasib |
 | Title (everywhere) | Software Developer |
-| Location | Wollongong, NSW |
+| Location (on the page) | NSW, Australia |
+| Location (meta description only) | Wollongong, NSW |
 | Open to | Relocation and remote |
 | Status | Open to full-time roles |
 | Work rights | Full working rights (Subclass 485) |
@@ -28,10 +29,19 @@ Last reviewed: 2026-10-03 (facts round 2 applied)
 | Email | hi@hasibullah.dev |
 | LinkedIn | https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/ |
 | GitHub | https://github.com/hasibullah1811 |
+| LeetCode | https://leetcode.com/u/hasibullah/ |
 | Website (canonical) | https://www.hasibullah.dev/ — apex `hasibullah.dev` currently 307-redirects here |
 | CV (public) | Not published yet. Button hidden until a corrected source CV is redacted and approved. Path will be `/cv/Hasibullah_Hasib_CV.pdf` |
 
 Never published: phone number, personal Gmail, the original resume PDF.
+
+## Hero and About
+
+- Hero tagline: "Software developer building practical apps in Flutter, Python and FastAPI."
+- About (owner's wording, keep as is): "I'm a software developer who builds things people actually use. In Dhaka I made a COVID-19 help app that reached 2,000 users. In Australia I built an ERP system and staff apps that run across five restaurants, and now I'm building StepWise, an app for people settling into a new country, because I've made that move myself. I work mostly with Flutter, Python and FastAPI, and I hold a Master's in IT (AI) from Macquarie. I'm open to full-time roles, with full working rights in Australia."
+- About numbers: 5 restaurant locations · 500–700 daily orders · 180 staff · 2,000 users
+- Journey heading: "From Bangladesh to Australia"
+- No "core stack" summary. Stack is shown as tags on project cards and journey entries
 
 ---
 
@@ -93,7 +103,7 @@ Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 - Stack: TypeScript, MDX
 - Live: https://www.tryminima.com/
 - Code: https://github.com/hasibullah1811/minima
-- Assets: `web/img/minima-architecture.png` (linked, not embedded)
+- Assets: `web/img/minima-architecture.png` (shown inline, loaded on scroll, and linked full size)
 
 ### 3. Prism — RAG visualiser
 - Date: Jan 2026, open source
@@ -101,7 +111,7 @@ Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 - Stack: React, Python, vector database
 - Live: https://prism-xi-three.vercel.app/
 - Code: https://github.com/hasibullah1811/prism
-- Assets: `web/img/prism-architecture.png` (linked, not embedded)
+- Assets: `web/img/prism-architecture.png` (shown inline, loaded on scroll, and linked full size)
 
 ### 4. LanDrop
 - Date: May 2026

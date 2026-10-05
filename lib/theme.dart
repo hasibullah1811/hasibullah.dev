@@ -1,23 +1,28 @@
 import 'package:flutter/material.dart';
 
-// "Route map" palette: warm paper, dark ink, one terracotta accent.
-// Every text colour here is at least 4.5:1 on both paper and surface.
+// White page, dark ink, one terracotta accent.
+// Every text colour here is at least 4.5:1 on paper, surface, tint and
+// accentSoft, and on the brightest background dot (see DotBackground).
 class AppColors {
-  static const paper = Color(0xFFFAF7F2);
+  static const paper = Color(0xFFFFFFFF);
   static const surface = Color(0xFFFFFFFF);
+
+  /// Tags and other quiet fills on white.
+  static const tint = Color(0xFFF6F4F1);
   static const ink = Color(0xFF1B1916);
   static const inkSoft = Color(0xFF45413A);
-  static const muted = Color(0xFF6B655C);
-  static const line = Color(0xFFE6E0D5);
-  static const accent = Color(0xFFB4472B);
-  static const accentSoft = Color(0xFFF5E6DF);
-  static const available = Color(0xFF2E7D4F);
+  static const muted = Color(0xFF615B52);
+  static const line = Color(0xFFE8E6E1);
+  static const lineStrong = Color(0xFFD6D2CA);
+  static const accent = Color(0xFFA63F25);
+  static const accentSoft = Color(0xFFFBEFEA);
+  static const available = Color(0xFF277046);
 }
 
 class AppFonts {
   static const serif = 'SourceSerif4';
-  static const sans = 'Inter';
-  static const mono = 'JetBrainsMono';
+  static const sans = 'Geist';
+  static const mono = 'GeistMono';
 }
 
 class AppText {
@@ -116,7 +121,7 @@ ThemeData buildTheme() {
       secondary: AppColors.accent,
     ),
     textSelectionTheme: const TextSelectionThemeData(
-      selectionColor: Color(0x33B4472B),
+      selectionColor: Color(0x33A63F25),
     ),
     filledButtonTheme: FilledButtonThemeData(
       style: FilledButton.styleFrom(

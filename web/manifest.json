@@ -1,11 +1,11 @@
 {
   "name": "Hasibullah Hasib — Software Developer",
   "short_name": "Hasibullah",
-  "description": "Portfolio of Hasibullah Hasib, Software Developer in Wollongong, NSW.",
+  "description": "Portfolio of Hasibullah Hasib, Software Developer in NSW, Australia.",
   "start_url": ".",
   "display": "browser",
-  "background_color": "#FAF7F2",
-  "theme_color": "#FAF7F2",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
   "icons": [
     { "src": "icons/Icon-192.png", "sizes": "192x192", "type": "image/png" },
     { "src": "icons/Icon-512.png", "sizes": "512x512", "type": "image/png" },
