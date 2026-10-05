@@ -47,5 +47,6 @@ CI and Vercel pipeline.
 
 ## Credits
 
-Fonts: Inter, Source Serif 4 and JetBrains Mono, all under the SIL Open Font
+Fonts: Geist, Geist Mono and Source Serif 4, all under the SIL Open Font
 License 1.1. Bundled as Latin subsets.
+Icons: LinkedIn, GitHub and LeetCode marks from Simple Icons (CC0).
