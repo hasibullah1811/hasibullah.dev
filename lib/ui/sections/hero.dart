@@ -58,6 +58,7 @@ class _HeroSectionState extends State<HeroSection>
     final profile = widget.profile;
     final compact = isCompact(context);
     final cv = profile.cvUrl;
+    final text = AppText.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -80,7 +81,7 @@ class _HeroSectionState extends State<HeroSection>
             headingLevel: 1,
             child: Text(
               profile.name,
-              style: AppText.display.copyWith(fontSize: compact ? 36 : 46),
+              style: text.display.copyWith(fontSize: compact ? 36 : 46),
             ),
           ),
         ),
@@ -91,7 +92,7 @@ class _HeroSectionState extends State<HeroSection>
             constraints: const BoxConstraints(maxWidth: 620),
             child: Text(
               profile.tagline,
-              style: AppText.lead.copyWith(fontSize: compact ? 18 : 20),
+              style: text.lead.copyWith(fontSize: compact ? 18 : 20),
             ),
           ),
         ),
@@ -180,6 +181,7 @@ class _Availability extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -191,10 +193,9 @@ class _Availability extends StatelessWidget {
             padding: const EdgeInsets.only(top: 1),
             child: Text(
               parts.join('  ·  '),
-              style: AppText.label.copyWith(
-                fontSize: 13,
-                color: AppColors.available,
-              ),
+              style: AppText.of(
+                context,
+              ).label.copyWith(fontSize: 13, color: c.available),
             ),
           ),
         ),
@@ -270,7 +271,7 @@ class _PulseDotState extends State<_PulseDot>
       child: RepaintBoundary(
         child: CustomPaint(
           size: const Size.square(20),
-          painter: _PulsePainter(_pulse),
+          painter: _PulsePainter(_pulse, AppColors.of(context).available),
         ),
       ),
     );
@@ -278,9 +279,10 @@ class _PulseDotState extends State<_PulseDot>
 }
 
 class _PulsePainter extends CustomPainter {
-  _PulsePainter(this.pulse) : super(repaint: pulse);
+  _PulsePainter(this.pulse, this.color) : super(repaint: pulse);
 
   final Animation<double> pulse;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -290,12 +292,13 @@ class _PulsePainter extends CustomPainter {
       canvas.drawCircle(
         centre,
         4 + 6 * t,
-        Paint()..color = AppColors.available.withValues(alpha: 0.35 * (1 - t)),
+        Paint()..color = color.withValues(alpha: 0.35 * (1 - t)),
       );
     }
-    canvas.drawCircle(centre, 4, Paint()..color = AppColors.available);
+    canvas.drawCircle(centre, 4, Paint()..color = color);
   }
 
   @override
-  bool shouldRepaint(_PulsePainter old) => old.pulse != pulse;
+  bool shouldRepaint(_PulsePainter old) =>
+      old.pulse != pulse || old.color != color;
 }

@@ -102,6 +102,8 @@ class StopContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final organisation = stop.organisation;
     final detail = stop.detail;
+    final c = AppColors.of(context);
+    final text = AppText.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -111,23 +113,20 @@ class StopContent extends StatelessWidget {
             children: [
               TextSpan(
                 text: stop.period,
-                style: AppText.label.copyWith(color: AppColors.accent),
+                style: text.label.copyWith(color: c.accent),
               ),
               TextSpan(text: '  ·  ${stop.place}'),
             ],
           ),
-          style: AppText.label,
+          style: text.label,
         ),
         const SizedBox(height: 6),
-        Text(stop.title, style: AppText.title),
+        Text(stop.title, style: text.title),
         if (organisation != null)
-          Text(
-            organisation,
-            style: AppText.body.copyWith(color: AppColors.muted),
-          ),
+          Text(organisation, style: text.body.copyWith(color: c.muted)),
         if (detail != null) ...[
           const SizedBox(height: 4),
-          Text(detail, style: AppText.body),
+          Text(detail, style: text.body),
         ],
         if (stop.metrics.isNotEmpty) ...[
           const SizedBox(height: 12),
@@ -166,12 +165,12 @@ class CountUpMetric extends StatelessWidget {
     fontWeight: FontWeight.w600,
     fontSize: 26,
     height: 1.1,
-    color: AppColors.ink,
     fontFeatures: [FontFeature.tabularFigures()],
   );
 
   @override
   Widget build(BuildContext context) {
+    final numberStyle = _numberStyle.copyWith(color: AppColors.of(context).ink);
     final count = CurvedAnimation(
       parent: reveal,
       curve: const Interval(0.2, 1, curve: Curves.easeOutCubic),
@@ -184,23 +183,37 @@ class CountUpMetric extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              SelectionContainer.disabled(
-                child: Visibility.maintain(
-                  visible: false,
-                  child: Text(finalText, style: _numberStyle),
+          // One line always; scales down rather than wrap in a narrow card.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Stack(
+              children: [
+                SelectionContainer.disabled(
+                  child: Visibility.maintain(
+                    visible: false,
+                    child: Text(finalText, style: numberStyle, maxLines: 1),
+                  ),
                 ),
-              ),
-              AnimatedBuilder(
-                animation: count,
-                builder: (context, _) =>
-                    Text(metric.formatAt(count.value), style: _numberStyle),
-              ),
-            ],
+                AnimatedBuilder(
+                  animation: count,
+                  builder: (context, _) => Text(
+                    metric.formatAt(count.value),
+                    style: numberStyle,
+                    maxLines: 1,
+                  ),
+                ),
+              ],
+            ),
           ),
           const SizedBox(height: 2),
-          Text(metric.label, style: AppText.label),
+          Text(
+            metric.label,
+            style: AppText.of(context).label,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+          ),
         ],
       ),
     );

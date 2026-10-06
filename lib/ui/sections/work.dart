@@ -30,7 +30,10 @@ class WorkSection extends StatelessWidget {
         ],
         const SizedBox(height: 28),
         ScrollReveal(
-          child: Text('Earlier and smaller projects', style: AppText.cardTitle),
+          child: Text(
+            'Earlier and smaller projects',
+            style: AppText.of(context).cardTitle,
+          ),
         ),
         const SizedBox(height: 16),
         _ProjectGrid(projects),
@@ -51,6 +54,8 @@ class _CaseStudyCard extends StatelessWidget {
     final diagram = study.diagram;
     final featured = study.featured;
     final compact = isCompact(context);
+    final c = AppColors.of(context);
+    final text = AppText.of(context);
 
     final body = Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,20 +66,20 @@ class _CaseStudyCard extends StatelessWidget {
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
             if (featured)
-              Text('FEATURED', style: AppText.eyebrow.copyWith(fontSize: 11)),
+              Text('FEATURED', style: text.eyebrow.copyWith(fontSize: 11)),
             if (status != null)
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                 decoration: BoxDecoration(
-                  color: AppColors.accentSoft,
+                  color: c.accentSoft,
                   borderRadius: BorderRadius.circular(6),
                 ),
                 child: Text(
                   status,
-                  style: AppText.label.copyWith(color: AppColors.accent),
+                  style: text.label.copyWith(color: c.accent),
                 ),
               ),
-            Text(study.period, style: AppText.label),
+            Text(study.period, style: text.label),
           ],
         ),
         const SizedBox(height: 12),
@@ -84,20 +89,20 @@ class _CaseStudyCard extends StatelessWidget {
           child: Text(
             study.name,
             style: featured
-                ? AppText.sectionTitle.copyWith(fontSize: compact ? 28 : 32)
-                : AppText.cardTitle,
+                ? text.sectionTitle.copyWith(fontSize: compact ? 28 : 32)
+                : text.cardTitle,
           ),
         ),
         const SizedBox(height: 4),
         Text(
           study.tagline,
-          style: AppText.lead.copyWith(fontSize: featured ? 18 : 17),
+          style: text.lead.copyWith(fontSize: featured ? 18 : 17),
         ),
         if (image != null) ...[
           const SizedBox(height: 20),
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: AppColors.line),
+              border: Border.all(color: c.line),
               borderRadius: BorderRadius.circular(8),
             ),
             clipBehavior: Clip.antiAlias,
@@ -118,12 +123,12 @@ class _CaseStudyCard extends StatelessWidget {
         const SizedBox(height: 20),
         _Part(
           label: 'Problem',
-          child: Text(study.problem, style: AppText.body),
+          child: Text(study.problem, style: text.body),
         ),
         _Part(label: 'What I did', child: BulletList(study.work)),
         _Part(
           label: 'Outcome',
-          child: Text(study.outcome, style: AppText.body),
+          child: Text(study.outcome, style: text.body),
         ),
         TagList(study.stack),
         if (study.links.isNotEmpty) ...[
@@ -147,7 +152,7 @@ class _CaseStudyCard extends StatelessWidget {
       duration: Motion.draw + Motion.reveal,
       builder: (context, reveal) => LiftCard(
         padding: EdgeInsets.zero,
-        borderColor: AppColors.lineStrong,
+        borderColor: c.lineStrong,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -184,13 +189,14 @@ class _DiagramState extends State<_Diagram> {
   @override
   Widget build(BuildContext context) {
     final reduced = Motion.reduced(context);
+    final c = AppColors.of(context);
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          border: Border.all(color: AppColors.line),
+          color: c.surface,
+          border: Border.all(color: c.line),
           borderRadius: BorderRadius.circular(8),
         ),
         clipBehavior: Clip.antiAlias,
@@ -230,7 +236,7 @@ class _DiagramState extends State<_Diagram> {
                           padding: const EdgeInsets.all(16),
                           child: Text(
                             widget.alt ?? 'Architecture diagram',
-                            style: AppText.label,
+                            style: AppText.of(context).label,
                             textAlign: TextAlign.center,
                           ),
                         ),
@@ -252,12 +258,13 @@ class _Part extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = AppText.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label.toUpperCase(), style: AppText.label),
+          Text(label.toUpperCase(), style: text.label),
           const SizedBox(height: 6),
           child,
         ],
@@ -291,23 +298,21 @@ class _ProjectCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = AppText.of(context);
     return LiftCard(
       padding: EdgeInsets.all(isCompact(context) ? 18 : 24),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(project.period, style: AppText.label),
+          Text(project.period, style: text.label),
           const SizedBox(height: 6),
           Semantics(
             header: true,
             headingLevel: 3,
-            child: Text(
-              project.name,
-              style: AppText.title.copyWith(fontSize: 17),
-            ),
+            child: Text(project.name, style: text.title.copyWith(fontSize: 17)),
           ),
           const SizedBox(height: 6),
-          Text(project.description, style: AppText.body),
+          Text(project.description, style: text.body),
           const SizedBox(height: 12),
           TagList(project.stack),
           const SizedBox(height: 4),

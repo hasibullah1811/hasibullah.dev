@@ -44,7 +44,7 @@ const portfolio = PortfolioContent(
         "Master's in IT (AI) from Macquarie. I'm open to full-time roles, "
         'with full working rights in Australia.',
     metrics: [
-      Metric(5, 'restaurant locations'),
+      Metric(5, 'locations'),
       Metric(500, 'daily orders', upTo: 700),
       Metric(180, 'staff'),
       Metric(2000, 'users'),
@@ -345,6 +345,12 @@ const portfolio = PortfolioContent(
       detail: 'North South University · Dhaka, Bangladesh · 2023',
     ),
     Credential(
+      kind: 'Membership',
+      title: 'Australian Computer Society (ACS)',
+      detail: 'Member',
+    ),
+    // Full width, in its own row below the three cards above.
+    Credential(
       kind: 'Publication',
       title:
           'Deep learning to aid prescription processing & inventory management '
@@ -356,11 +362,7 @@ const portfolio = PortfolioContent(
         'Read the paper',
         'https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037',
       ),
-    ),
-    Credential(
-      kind: 'Membership',
-      title: 'Australian Computer Society (ACS)',
-      detail: 'Member',
+      wide: true,
     ),
   ],
 );

@@ -63,6 +63,9 @@ class _JourneySectionState extends State<JourneySection>
   double get _contentX => _spineLane + _sideLane + 12;
   double get _bulge => _compact ? 26 : 46;
 
+  AppColors get _colors => AppColors.of(context);
+  AppText get _text => AppText.of(context);
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -219,7 +222,9 @@ class _JourneySectionState extends State<JourneySection>
                     Positioned.fill(
                       child: ExcludeSemantics(
                         child: RepaintBoundary(
-                          child: CustomPaint(painter: ContourPainter(_drift)),
+                          child: CustomPaint(
+                            painter: ContourPainter(_drift, _colors.line),
+                          ),
                         ),
                       ),
                     ),
@@ -231,6 +236,7 @@ class _JourneySectionState extends State<JourneySection>
                               geometry: _geometry,
                               drawY: _drawY,
                               reduced: _reduced,
+                              colors: _colors,
                             ),
                           ),
                         ),
@@ -278,9 +284,9 @@ class _JourneySectionState extends State<JourneySection>
                 fit: BoxFit.scaleDown,
                 child: Text(
                   label.toUpperCase(),
-                  style: AppText.label.copyWith(
+                  style: _text.label.copyWith(
                     fontSize: 11,
-                    color: AppColors.accent,
+                    color: _colors.accent,
                   ),
                 ),
               ),
@@ -299,7 +305,7 @@ class _JourneySectionState extends State<JourneySection>
         child: Text(
           (row.kind == _Kind.origin ? journey.origin : journey.destination)
               .toUpperCase(),
-          style: AppText.eyebrow,
+          style: _text.eyebrow,
         ),
       ),
       _Kind.chapter => _withLane(
@@ -312,11 +318,11 @@ class _JourneySectionState extends State<JourneySection>
               Semantics(
                 header: true,
                 headingLevel: 3,
-                child: Text(row.chapter!.name, style: AppText.cardTitle),
+                child: Text(row.chapter!.name, style: _text.cardTitle),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 3),
-                child: Text(row.chapter!.period, style: AppText.label),
+                child: Text(row.chapter!.period, style: _text.label),
               ),
             ],
           ),
@@ -351,14 +357,14 @@ class _JourneySectionState extends State<JourneySection>
             children: [
               Text(
                 journey.chapters.map((c) => c.name).join('  →  ').toUpperCase(),
-                style: AppText.label,
+                style: _text.label,
               ),
               const SizedBox(height: 4),
               Text(
                 journey.move,
-                style: AppText.cardTitle.copyWith(
+                style: _text.cardTitle.copyWith(
                   fontSize: 20,
-                  color: AppColors.accent,
+                  color: _colors.accent,
                 ),
               ),
             ],
@@ -407,6 +413,8 @@ class _SpanNote extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final text = AppText.of(context);
     return Padding(
       padding: const EdgeInsets.only(left: 4, top: 2, bottom: 12),
       child: Column(
@@ -417,19 +425,16 @@ class _SpanNote extends StatelessWidget {
               children: [
                 TextSpan(
                   text: span.period,
-                  style: AppText.label.copyWith(color: AppColors.accent),
+                  style: text.label.copyWith(color: c.accent),
                 ),
                 const TextSpan(text: '  ·  alongside everything above'),
               ],
             ),
-            style: AppText.label,
+            style: text.label,
           ),
           const SizedBox(height: 6),
-          Text(span.title, style: AppText.title),
-          Text(
-            span.organisation,
-            style: AppText.body.copyWith(color: AppColors.muted),
-          ),
+          Text(span.title, style: text.title),
+          Text(span.organisation, style: text.body.copyWith(color: c.muted)),
           const SizedBox(height: 8),
           BulletList(span.bullets),
           if (span.stack.isNotEmpty) ...[

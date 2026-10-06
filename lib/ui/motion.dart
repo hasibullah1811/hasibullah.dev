@@ -157,7 +157,7 @@ class DrawLine extends StatelessWidget {
     required this.progress,
     this.width,
     this.thickness = 2,
-    this.color = AppColors.accent,
+    this.color,
     this.start = 0.25,
   });
 
@@ -166,7 +166,9 @@ class DrawLine extends StatelessWidget {
   /// Full width when drawn; null fills the available width.
   final double? width;
   final double thickness;
-  final Color color;
+
+  /// Defaults to the theme's accent.
+  final Color? color;
 
   /// Where in [progress] the line starts drawing.
   final double start;
@@ -181,7 +183,9 @@ class DrawLine extends StatelessWidget {
       child: SizedBox(
         width: width ?? double.infinity,
         height: thickness,
-        child: CustomPaint(painter: _LinePainter(drawn, color)),
+        child: CustomPaint(
+          painter: _LinePainter(drawn, color ?? AppColors.of(context).accent),
+        ),
       ),
     );
   }

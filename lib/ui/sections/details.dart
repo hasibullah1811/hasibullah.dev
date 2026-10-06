@@ -18,6 +18,7 @@ class SkillsSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final compact = isCompact(context);
+    final text = AppText.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -39,7 +40,7 @@ class SkillsSection extends StatelessWidget {
                       ),
                       child: Text(
                         group.name,
-                        style: AppText.title.copyWith(fontSize: 15),
+                        style: text.title.copyWith(fontSize: 15),
                       ),
                     ),
                   ),
@@ -56,8 +57,9 @@ class SkillsSection extends StatelessWidget {
   }
 }
 
-/// Education, the publication and membership as small cards, each with an
-/// accent rule that draws in as it arrives.
+/// Education and membership as three equal cards, then the publication as
+/// one full-width card. Every card has the same padding, radius and
+/// spacing, and an accent rule that draws in as it arrives.
 class CredentialsSection extends StatelessWidget {
   const CredentialsSection({super.key, required this.credentials});
 
@@ -65,6 +67,14 @@ class CredentialsSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final narrow = [
+      for (final c in credentials)
+        if (!c.wide) c,
+    ];
+    final wide = [
+      for (final c in credentials)
+        if (c.wide) c,
+    ];
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -74,28 +84,30 @@ class CredentialsSection extends StatelessWidget {
         ),
         LayoutBuilder(
           builder: (context, constraints) {
-            final columns = constraints.maxWidth >= 560 ? 2 : 1;
-            const gap = 12.0;
-            final width =
-                (constraints.maxWidth - gap * (columns - 1)) / columns;
-            return Wrap(
-              spacing: gap,
-              runSpacing: gap,
+            final columns = constraints.maxWidth >= 600
+                ? narrow.length.clamp(1, 3)
+                : 1;
+            return EqualGrid(
+              columns: columns,
               children: [
-                for (final (i, item) in credentials.indexed)
-                  SizedBox(
-                    width: width,
-                    child: ScrollReveal(
-                      duration: Motion.draw + Motion.reveal,
-                      delay: Duration(milliseconds: 80 * (i % columns)),
-                      builder: (context, reveal) =>
-                          _CredentialCard(item, reveal: reveal),
-                    ),
+                for (final (i, item) in narrow.indexed)
+                  ScrollReveal(
+                    duration: Motion.draw + Motion.reveal,
+                    delay: Duration(milliseconds: 80 * (i % columns)),
+                    builder: (context, reveal) =>
+                        _CredentialCard(item, reveal: reveal),
                   ),
               ],
             );
           },
         ),
+        for (final item in wide) ...[
+          const SizedBox(height: 12),
+          ScrollReveal(
+            duration: Motion.draw + Motion.reveal,
+            builder: (context, reveal) => _CredentialCard(item, reveal: reveal),
+          ),
+        ],
       ],
     );
   }
@@ -109,17 +121,18 @@ class _CredentialCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = AppText.of(context);
     return LiftCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.kind.toUpperCase(), style: AppText.eyebrow),
+          Text(item.kind.toUpperCase(), style: text.eyebrow),
           const SizedBox(height: 6),
           DrawLine(progress: reveal, width: 32, start: 0.3),
           const SizedBox(height: 12),
-          Text(item.title, style: AppText.title),
+          Text(item.title, style: text.title),
           const SizedBox(height: 4),
-          Text(item.detail, style: AppText.body.copyWith(fontSize: 14)),
+          Text(item.detail, style: text.body.copyWith(fontSize: 14)),
           if (item.link case final link?)
             Padding(
               padding: const EdgeInsets.only(top: 4),
@@ -142,10 +155,12 @@ class ContactSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cv = profile.cvUrl;
+    final c = AppColors.of(context);
+    final text = AppText.of(context);
     return ScrollReveal(
       duration: Motion.draw + Motion.reveal,
       builder: (context, reveal) => Panel(
-        color: AppColors.accentSoft,
+        color: c.accentSoft,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -153,7 +168,7 @@ class ContactSection extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text('CONTACT', style: AppText.eyebrow),
+                  Text('CONTACT', style: text.eyebrow),
                   const SizedBox(height: 6),
                   DrawLine(progress: reveal, start: 0.3),
                 ],
@@ -163,10 +178,10 @@ class ContactSection extends StatelessWidget {
             Semantics(
               header: true,
               headingLevel: 2,
-              child: Text("Let's talk", style: AppText.sectionTitle),
+              child: Text("Let's talk", style: text.sectionTitle),
             ),
             const SizedBox(height: 10),
-            Text(profile.closing, style: AppText.body.copyWith(fontSize: 16)),
+            Text(profile.closing, style: text.body.copyWith(fontSize: 16)),
             const SizedBox(height: 20),
             Wrap(
               spacing: 10,
@@ -266,7 +281,7 @@ class _CopyEmailState extends State<_CopyEmail> {
             _copied ? Icons.check_rounded : Icons.copy_rounded,
             key: ValueKey(_copied),
             size: 18,
-            color: _copied ? AppColors.available : null,
+            color: _copied ? AppColors.of(context).available : null,
           ),
         ),
         label: Semantics(
@@ -328,6 +343,7 @@ class _LiftIconButtonState extends State<_LiftIconButton> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return AnimatedSlide(
       offset: Offset(0, _hovered ? -0.06 : 0),
       duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
@@ -336,12 +352,12 @@ class _LiftIconButtonState extends State<_LiftIconButton> {
         tooltip: widget.label,
         onPressed: widget.onPressed,
         onHover: (value) => setState(() => _hovered = value),
-        color: _hovered ? AppColors.accent : AppColors.ink,
+        color: _hovered ? c.accent : c.ink,
         iconSize: 20,
         style: IconButton.styleFrom(
           minimumSize: const Size(44, 44),
-          side: const BorderSide(color: AppColors.lineStrong),
-          backgroundColor: AppColors.surface,
+          side: BorderSide(color: c.lineStrong),
+          backgroundColor: c.surface,
         ),
         icon: widget.icon,
       ),
@@ -361,7 +377,7 @@ class SiteFooter extends StatelessWidget {
       children: [
         Text(
           '© ${DateTime.now().year} ${profile.name} · Built with Flutter ·',
-          style: AppText.label,
+          style: AppText.of(context).label,
         ),
         const InlineLink(
           label: 'Source',

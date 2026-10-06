@@ -121,22 +121,26 @@ class RoutePainter extends CustomPainter {
     required this.geometry,
     required this.drawY,
     required this.reduced,
-  }) : super(repaint: Listenable.merge([geometry, drawY]));
+    required this.colors,
+  }) : _track = Paint()
+         ..color = colors.isDark ? colors.lineStrong : colors.line
+         ..strokeWidth = 2
+         ..style = PaintingStyle.stroke
+         ..strokeCap = StrokeCap.round,
+       _progress = Paint()
+         ..color = colors.accent
+         ..strokeWidth = 2
+         ..style = PaintingStyle.stroke
+         ..strokeCap = StrokeCap.round,
+       super(repaint: Listenable.merge([geometry, drawY]));
 
   final ValueNotifier<JourneyGeometry?> geometry;
   final ValueNotifier<double> drawY;
   final bool reduced;
+  final AppColors colors;
 
-  static final _track = Paint()
-    ..color = AppColors.line
-    ..strokeWidth = 2
-    ..style = PaintingStyle.stroke
-    ..strokeCap = StrokeCap.round;
-  static final _progress = Paint()
-    ..color = AppColors.accent
-    ..strokeWidth = 2
-    ..style = PaintingStyle.stroke
-    ..strokeCap = StrokeCap.round;
+  final Paint _track;
+  final Paint _progress;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -184,14 +188,14 @@ class RoutePainter extends CustomPainter {
       ..lineTo(s.x, s.bottom - 8)
       ..quadraticBezierTo(s.x, s.bottom, s.x + 8, s.bottom)
       ..lineTo(s.hookTo, s.bottom);
-    canvas.drawPath(hook, bar..color = AppColors.accentSoft);
+    canvas.drawPath(hook, bar..color = colors.accentSoft);
     if (y > s.top) {
       final metric = hook.computeMetrics().first;
       final reached = (y - s.top).clamp(0.0, metric.length);
       canvas.drawPath(
         metric.extractPath(0, reached),
         bar
-          ..color = AppColors.accent.withValues(alpha: 0.55)
+          ..color = colors.accent.withValues(alpha: 0.55)
           ..strokeWidth = 2,
       );
     }
@@ -202,8 +206,7 @@ class RoutePainter extends CustomPainter {
     canvas.drawCircle(
       c,
       radius,
-      Paint()
-        ..color = lit && !node.chapter ? AppColors.accent : AppColors.paper,
+      Paint()..color = lit && !node.chapter ? colors.accent : colors.paper,
     );
     canvas.drawCircle(
       c,
@@ -211,47 +214,55 @@ class RoutePainter extends CustomPainter {
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 2
-        ..color = lit ? AppColors.accent : AppColors.line,
+        ..color = lit ? colors.accent : _track.color,
     );
     if (node.chapter && lit) {
-      canvas.drawCircle(c, 3, Paint()..color = AppColors.accent);
+      canvas.drawCircle(c, 3, Paint()..color = colors.accent);
     }
   }
 
   void _glow(Canvas canvas, Offset c) {
+    // A little stronger on the dark page, where the same alpha reads weaker.
+    final alpha = colors.isDark ? 0.45 : 0.35;
     canvas.drawCircle(
       c,
       14,
       Paint()
         ..shader = RadialGradient(
           colors: [
-            AppColors.accent.withValues(alpha: 0.35),
-            AppColors.accent.withValues(alpha: 0),
+            colors.accent.withValues(alpha: alpha),
+            colors.accent.withValues(alpha: 0),
           ],
         ).createShader(Rect.fromCircle(center: c, radius: 14)),
     );
-    canvas.drawCircle(c, 4.5, Paint()..color = AppColors.accent);
+    canvas.drawCircle(c, 4.5, Paint()..color = colors.accent);
     canvas.drawCircle(
       c,
       4.5,
       Paint()
         ..style = PaintingStyle.stroke
         ..strokeWidth = 1.5
-        ..color = AppColors.paper,
+        ..color = colors.paper,
     );
   }
 
   @override
   bool shouldRepaint(RoutePainter old) =>
-      old.reduced != reduced || old.geometry != geometry || old.drawY != drawY;
+      old.reduced != reduced ||
+      old.geometry != geometry ||
+      old.drawY != drawY ||
+      old.colors != colors;
 }
 
 /// Faint topographic contour lines that drift slowly. Kept at roughly 1.15:1
 /// against the paper colour so they never compete with text.
 class ContourPainter extends CustomPainter {
-  ContourPainter(this.drift) : super(repaint: drift);
+  ContourPainter(this.drift, this.line) : super(repaint: drift);
 
   final Animation<double> drift;
+
+  /// The theme's line colour; drawn at 60%.
+  final Color line;
 
   final _stroke = Paint()
     ..style = PaintingStyle.stroke
@@ -264,7 +275,7 @@ class ContourPainter extends CustomPainter {
   void paint(Canvas canvas, Size size) {
     if (_cachedSize != size) {
       _paths = _contours(size);
-      _stroke.shader = _edgeFade(size);
+      _stroke.shader = _edgeFade(size, line);
       _cachedSize = size;
     }
     final angle = drift.value * 2 * math.pi;
@@ -281,9 +292,9 @@ class ContourPainter extends CustomPainter {
   /// clip. The fade is in the stroke's alpha, not painted over the lines, so
   /// the page's dot grid still shows through. The rings sit far enough from
   /// the top and bottom that those edges need no fade.
-  static Shader _edgeFade(Size size) {
+  static Shader _edgeFade(Size size, Color line) {
     const fade = 72.0;
-    final colour = AppColors.line.withValues(alpha: 0.6);
+    final colour = line.withValues(alpha: 0.6);
     final clear = colour.withValues(alpha: 0);
     final edge = size.width > fade * 2 ? fade / size.width : 0.5;
     return LinearGradient(
@@ -320,5 +331,6 @@ class ContourPainter extends CustomPainter {
   }
 
   @override
-  bool shouldRepaint(ContourPainter old) => old.drift != drift;
+  bool shouldRepaint(ContourPainter old) =>
+      old.drift != drift || old.line != line;
 }

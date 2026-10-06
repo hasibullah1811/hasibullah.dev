@@ -242,12 +242,16 @@ class Credential {
     required this.title,
     required this.detail,
     this.link,
+    this.wide = false,
   });
 
   final String kind;
   final String title;
   final String detail;
   final LinkItem? link;
+
+  /// Takes a full-width row of its own below the other cards.
+  final bool wide;
 }
 
 class About {

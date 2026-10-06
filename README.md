@@ -17,6 +17,9 @@ structured data), so crawlers and slow connections see real content before
 Flutter loads. `test/content_test.dart` fails if the title, location, work
 rights or links drift between the two.
 
+The background code symbols are listed in `codeSymbols` at the top of
+`lib/ui/widgets/page_background.dart`.
+
 To show the CV button, put the redacted PDF at `web/cv/Hasibullah_Hasib_CV.pdf`
 and set `cvUrl: 'cv/Hasibullah_Hasib_CV.pdf'` in the profile.
 
@@ -25,12 +28,13 @@ and set `cvUrl: 'cv/Hasibullah_Hasib_CV.pdf'` in the profile.
 ```
 lib/
   content/      models.dart, portfolio_content.dart   ← edit here
-  theme.dart    colours, type scale, button styles
-  ui/           page shell, sections, shared widgets
+  theme.dart    light and dark colour tokens, type scale, button styles
+  platform/     the few browser APIs used directly (stored theme, theme-color)
+  ui/           page shell, sections, theme toggle and transition, shared widgets
 web/            index.html (loading state + SEO), icons, OG image, architecture diagrams
 assets/         bundled fonts (Latin subsets) and the StepWise screenshot
 scripts/        Vercel install/build (pinned Flutter)
-docs/           facts.md, deploy.md
+docs/           facts.md, deploy.md, theme.md (palette, contrast, dark mode)
 ```
 
 ## Development

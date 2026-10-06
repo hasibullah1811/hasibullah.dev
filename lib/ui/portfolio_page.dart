@@ -8,7 +8,7 @@ import 'sections/hero.dart';
 import 'sections/journey.dart';
 import 'sections/work.dart';
 import 'widgets/common.dart';
-import 'widgets/dot_background.dart';
+import 'widgets/page_background.dart';
 
 const contentMaxWidth = 760.0;
 
@@ -57,7 +57,8 @@ class _PortfolioPageState extends State<PortfolioPage> {
     // The scroll view spans the full window so the wheel works anywhere and
     // the scrollbar sits at the window edge; only the content is constrained.
     return Scaffold(
-      body: DotBackground(
+      body: PageBackground(
+        textColumnWidth: contentMaxWidth,
         child: Stack(
           children: [
             SelectionArea(
@@ -152,7 +153,9 @@ class _ScrollProgress extends StatelessWidget {
     return IgnorePointer(
       child: ExcludeSemantics(
         child: RepaintBoundary(
-          child: CustomPaint(painter: _ProgressPainter(controller)),
+          child: CustomPaint(
+            painter: _ProgressPainter(controller, AppColors.of(context).accent),
+          ),
         ),
       ),
     );
@@ -160,9 +163,10 @@ class _ScrollProgress extends StatelessWidget {
 }
 
 class _ProgressPainter extends CustomPainter {
-  _ProgressPainter(this.controller) : super(repaint: controller);
+  _ProgressPainter(this.controller, this.color) : super(repaint: controller);
 
   final ScrollController controller;
+  final Color color;
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -177,12 +181,13 @@ class _ProgressPainter extends CustomPainter {
     );
     canvas.drawRect(
       Rect.fromLTWH(0, 0, size.width * progress, size.height),
-      Paint()..color = AppColors.accent,
+      Paint()..color = color,
     );
   }
 
   @override
-  bool shouldRepaint(_ProgressPainter old) => old.controller != controller;
+  bool shouldRepaint(_ProgressPainter old) =>
+      old.controller != controller || old.color != color;
 }
 
 class _TopNav extends StatelessWidget {
@@ -202,8 +207,9 @@ class _TopNav extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     final navStyle = TextButton.styleFrom(
-      foregroundColor: AppColors.inkSoft,
+      foregroundColor: c.inkSoft,
       textStyle: const TextStyle(
         fontFamily: AppFonts.sans,
         fontWeight: FontWeight.w500,
@@ -224,7 +230,7 @@ class _TopNav extends StatelessWidget {
             padding: const EdgeInsets.only(right: 12),
             child: Text(
               'hasibullah.dev',
-              style: AppText.label.copyWith(color: AppColors.ink),
+              style: AppText.of(context).label.copyWith(color: c.ink),
             ),
           ),
           for (final (label, onPressed) in [

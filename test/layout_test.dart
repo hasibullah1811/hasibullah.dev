@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:hasib_website/content/models.dart';
 import 'package:hasib_website/content/portfolio_content.dart';
 import 'package:hasib_website/main.dart';
+import 'package:hasib_website/ui/theme_controller.dart';
+import 'package:hasib_website/ui/widgets/common.dart';
 
 /// The journey background drifts forever while visible, so tests pump for a
 /// fixed time instead of waiting to settle.
@@ -9,6 +12,7 @@ Future<void> _pumpApp(
   WidgetTester tester, {
   Size size = const Size(1440, 900),
   bool reducedMotion = false,
+  String? theme,
 }) async {
   tester.view.physicalSize = size;
   tester.view.devicePixelRatio = 1;
@@ -18,7 +22,9 @@ Future<void> _pumpApp(
         const FakeAccessibilityFeatures(disableAnimations: true);
     addTearDown(tester.platformDispatcher.clearAccessibilityFeaturesTestValue);
   }
-  await tester.pumpWidget(const PortfolioApp());
+  await tester.pumpWidget(
+    PortfolioApp(themeController: ThemeController(stored: theme)),
+  );
   await tester.pump();
   await tester.pump(const Duration(seconds: 2));
 }
@@ -33,6 +39,93 @@ void main() {
   };
 
   for (final MapEntry(key: name, value: size) in sizes.entries) {
+    for (final theme in ['light', 'dark']) {
+      testWidgets('renders every section without overflow on $name ($theme)', (
+        tester,
+      ) async {
+        await _pumpApp(tester, size: size, theme: theme);
+        expect(tester.takeException(), isNull);
+        expect(
+          Theme.of(tester.element(find.text('hasibullah.dev'))).brightness.name,
+          theme,
+        );
+      });
+    }
+
+    testWidgets('stat cards share one size and the column edge on $name', (
+      tester,
+    ) async {
+      await _pumpApp(tester, size: size);
+      final cards = [
+        for (final m in portfolio.about.metrics)
+          tester.getRect(
+            find
+                .ancestor(
+                  of: find.text(m.label, skipOffstage: false),
+                  matching: find.byType(LiftCard),
+                )
+                .first,
+          ),
+      ];
+      final header = tester.getRect(
+        find.text(portfolio.about.title, skipOffstage: false),
+      );
+      for (final card in cards) {
+        expect(card.width, moreOrLessEquals(cards.first.width, epsilon: 0.01));
+        expect(
+          card.height,
+          moreOrLessEquals(cards.first.height, epsilon: 0.01),
+        );
+      }
+      expect(cards.first.left, moreOrLessEquals(header.left, epsilon: 0.01));
+      final perRow = cards.where((c) => c.top == cards.first.top).length;
+      expect(perRow, size.width < 600 ? 2 : 4);
+      // Every label on one line.
+      for (final m in portfolio.about.metrics) {
+        final label = tester.getRect(find.text(m.label, skipOffstage: false));
+        expect(label.height, lessThan(20), reason: m.label);
+      }
+    });
+
+    testWidgets('credential cards: three equal, publication full width on '
+        '$name', (tester) async {
+      await _pumpApp(tester, size: size);
+      Rect card(Credential c) => tester.getRect(
+        find
+            .ancestor(
+              of: find.text(c.title, skipOffstage: false),
+              matching: find.byType(LiftCard),
+            )
+            .first,
+      );
+      final narrow = portfolio.credentials.where((c) => !c.wide).toList();
+      final wide = portfolio.credentials.where((c) => c.wide).toList();
+      expect(narrow, hasLength(3));
+      expect(wide, hasLength(1));
+      final rects = narrow.map(card).toList();
+      final pub = card(wide.single);
+      for (final r in rects) {
+        expect(r.width, moreOrLessEquals(rects.first.width, epsilon: 0.01));
+        expect(r.left, greaterThanOrEqualTo(pub.left - 0.01));
+      }
+      if (size.width >= 600) {
+        for (final r in rects) {
+          expect(r.top, rects.first.top);
+          expect(r.height, moreOrLessEquals(rects.first.height, epsilon: 0.01));
+        }
+        expect(rects.last.right, moreOrLessEquals(pub.right, epsilon: 0.01));
+      } else {
+        // One column, every card the publication's width.
+        expect(rects.first.width, moreOrLessEquals(pub.width, epsilon: 0.01));
+      }
+      expect(pub.top, greaterThan(rects.last.bottom));
+      expect(
+        find.text(wide.single.title, skipOffstage: false),
+        findsOneWidget,
+        reason: 'full publication title',
+      );
+    });
+
     testWidgets('renders every section without overflow on $name', (
       tester,
     ) async {

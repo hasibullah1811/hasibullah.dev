@@ -15,6 +15,7 @@ class AboutSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = AppText.of(context);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -22,33 +23,22 @@ class AboutSection extends StatelessWidget {
         ScrollReveal(
           child: ConstrainedBox(
             constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(about.text, style: AppText.lead.copyWith(fontSize: 17)),
+            child: Text(about.text, style: text.lead.copyWith(fontSize: 17)),
           ),
         ),
         const SizedBox(height: 28),
         ScrollReveal(
           duration: Motion.revealWithCount,
           builder: (context, reveal) => LayoutBuilder(
-            builder: (context, constraints) {
-              final columns = constraints.maxWidth >= 600 ? 4 : 2;
-              const gap = 12.0;
-              final width =
-                  (constraints.maxWidth - gap * (columns - 1)) / columns;
-              return Wrap(
-                spacing: gap,
-                runSpacing: gap,
-                children: [
-                  for (final metric in about.metrics)
-                    SizedBox(
-                      width: width,
-                      child: LiftCard(
-                        padding: const EdgeInsets.all(16),
-                        child: CountUpMetric(metric: metric, reveal: reveal),
-                      ),
-                    ),
-                ],
-              );
-            },
+            builder: (context, constraints) => EqualGrid(
+              columns: constraints.maxWidth >= 600 ? 4 : 2,
+              children: [
+                for (final metric in about.metrics)
+                  LiftCard(
+                    child: CountUpMetric(metric: metric, reveal: reveal),
+                  ),
+              ],
+            ),
           ),
         ),
       ],

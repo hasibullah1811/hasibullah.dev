@@ -90,7 +90,8 @@ class _UnderlineButtonState extends State<UnderlineButton> {
         builder: (context) {
           // The button's foreground colour, so the line matches the text.
           final color =
-              DefaultTextStyle.of(context).style.color ?? AppColors.accent;
+              DefaultTextStyle.of(context).style.color ??
+              AppColors.of(context).accent;
           return TweenAnimationBuilder<double>(
             tween: Tween(end: active ? 1 : 0),
             duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
@@ -156,6 +157,7 @@ class SectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final text = AppText.of(context);
     return Padding(
       padding: const EdgeInsets.only(bottom: 28),
       child: ScrollReveal(
@@ -167,7 +169,7 @@ class SectionHeader extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  Text(eyebrow.toUpperCase(), style: AppText.eyebrow),
+                  Text(eyebrow.toUpperCase(), style: text.eyebrow),
                   const SizedBox(height: 6),
                   DrawLine(progress: reveal, start: 0.3),
                 ],
@@ -177,7 +179,7 @@ class SectionHeader extends StatelessWidget {
             Semantics(
               header: true,
               headingLevel: 2,
-              child: Text(title, style: AppText.sectionTitle),
+              child: Text(title, style: text.sectionTitle),
             ),
           ],
         ),
@@ -193,6 +195,8 @@ class TagList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final label = AppText.of(context).label.copyWith(color: c.inkSoft);
     return Wrap(
       spacing: 6,
       runSpacing: 6,
@@ -201,13 +205,10 @@ class TagList extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
-              color: AppColors.tint,
+              color: c.tint,
               borderRadius: BorderRadius.circular(6),
             ),
-            child: Text(
-              item,
-              style: AppText.label.copyWith(color: AppColors.inkSoft),
-            ),
+            child: Text(item, style: label),
           ),
       ],
     );
@@ -221,6 +222,8 @@ class BulletList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final body = AppText.of(context).body;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -235,13 +238,13 @@ class BulletList extends StatelessWidget {
                   child: Container(
                     width: 5,
                     height: 5,
-                    decoration: const BoxDecoration(
-                      color: AppColors.accent,
+                    decoration: BoxDecoration(
+                      color: c.accent,
                       shape: BoxShape.circle,
                     ),
                   ),
                 ),
-                Expanded(child: Text(item, style: AppText.body)),
+                Expanded(child: Text(item, style: body)),
               ],
             ),
           ),
@@ -250,8 +253,12 @@ class BulletList extends StatelessWidget {
   }
 }
 
-/// A card that lifts slightly on hover. Opaque white, so text on it never
-/// sits on the background dots.
+/// A card that lifts slightly on hover. Opaque, so text on it never sits on
+/// the background dots or symbols. Light cards gain a soft shadow on hover;
+/// dark cards only a stronger border.
+///
+/// Every card on the site uses [LiftCard.defaultPadding] and
+/// [LiftCard.radius] unless it is a feature card.
 class LiftCard extends StatefulWidget {
   const LiftCard({
     super.key,
@@ -262,8 +269,13 @@ class LiftCard extends StatefulWidget {
 
   final Widget child;
 
-  /// Defaults to 16 on compact screens and 18 otherwise.
+  /// Defaults to [defaultPadding].
   final EdgeInsetsGeometry? padding;
+
+  static const radius = 12.0;
+
+  static EdgeInsets defaultPadding(BuildContext context) =>
+      EdgeInsets.all(isCompact(context) ? 16 : 18);
   final Color? borderColor;
 
   @override
@@ -275,30 +287,35 @@ class _LiftCardState extends State<LiftCard> {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
+    final rest = widget.borderColor ?? c.line;
+    final noShadow = c.hoverShadow.withValues(alpha: 0);
+    // Only the hover amount animates. Colours come straight from the theme,
+    // so a theme switch doesn't start an animation in every card at once.
     return MouseRegion(
       onEnter: (_) => setState(() => _hovered = true),
       onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedContainer(
+      child: TweenAnimationBuilder<double>(
+        tween: Tween(end: _hovered ? 1 : 0),
         duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
         curve: Motion.curve,
-        width: double.infinity,
-        transform: Matrix4.translationValues(0, _hovered ? -Motion.lift : 0, 0),
-        padding: widget.padding ?? EdgeInsets.all(isCompact(context) ? 16 : 18),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _hovered
-                ? AppColors.lineStrong
-                : widget.borderColor ?? AppColors.line,
+        builder: (context, t, child) => Container(
+          width: double.infinity,
+          transform: Matrix4.translationValues(0, -Motion.lift * t, 0),
+          padding: widget.padding ?? LiftCard.defaultPadding(context),
+          decoration: BoxDecoration(
+            color: c.surface,
+            borderRadius: BorderRadius.circular(LiftCard.radius),
+            border: Border.all(color: Color.lerp(rest, c.lineStrong, t)!),
+            boxShadow: [
+              BoxShadow(
+                color: Color.lerp(noShadow, c.hoverShadow, t)!,
+                blurRadius: 18,
+                offset: const Offset(0, 8),
+              ),
+            ],
           ),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.ink.withValues(alpha: _hovered ? 0.07 : 0),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
+          child: child,
         ),
         child: widget.child,
       ),
@@ -314,15 +331,72 @@ class Panel extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = AppColors.of(context);
     return Container(
       width: double.infinity,
       padding: EdgeInsets.all(isCompact(context) ? 18 : 24),
       decoration: BoxDecoration(
-        color: color ?? AppColors.surface,
-        border: Border.all(color: AppColors.line),
-        borderRadius: BorderRadius.circular(12),
+        color: color ?? c.surface,
+        border: Border.all(color: c.line),
+        borderRadius: BorderRadius.circular(LiftCard.radius),
       ),
       child: child,
+    );
+  }
+}
+
+/// Lays [children] out [columns] to a row, every cell the same width and
+/// every cell in a row the same height. A short last row keeps the same
+/// cell width. Starts flush with the content column's left edge.
+class EqualGrid extends StatelessWidget {
+  const EqualGrid({
+    super.key,
+    required this.columns,
+    required this.children,
+    this.gap = 12,
+  });
+
+  final int columns;
+  final List<Widget> children;
+  final double gap;
+
+  @override
+  Widget build(BuildContext context) {
+    if (columns <= 1) {
+      return Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          for (final (i, child) in children.indexed) ...[
+            if (i > 0) SizedBox(height: gap),
+            child,
+          ],
+        ],
+      );
+    }
+    final rows = <Widget>[];
+    for (var start = 0; start < children.length; start += columns) {
+      if (start > 0) rows.add(SizedBox(height: gap));
+      rows.add(
+        IntrinsicHeight(
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              for (var i = start; i < start + columns; i++) ...[
+                if (i > start) SizedBox(width: gap),
+                Expanded(
+                  child: i < children.length
+                      ? children[i]
+                      : const SizedBox.shrink(),
+                ),
+              ],
+            ],
+          ),
+        ),
+      );
+    }
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: rows,
     );
   }
 }

@@ -15,6 +15,9 @@ dependencies:
     sdk: flutter
 
   url_launcher: ^6.3.3
+  # Already a dependency of url_launcher_web. Used directly for the stored
+  # theme choice (localStorage) and the page's theme-color meta tag.
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:
