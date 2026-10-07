@@ -15,6 +15,9 @@ dependencies:
     sdk: flutter
 
   url_launcher: ^6.3.3
+  # Already a dependency of url_launcher_web. Used directly for the stored
+  # theme choice (localStorage) and the page's theme-color meta tag.
+  web: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -28,24 +31,25 @@ flutter:
   assets:
     - assets/images/
 
-  # Latin subsets of Inter, Source Serif 4 and JetBrains Mono (SIL OFL 1.1),
-  # bundled so the site makes no runtime requests to Google Fonts.
+  # Latin subsets of Geist, Geist Mono (assets/fonts/OFL-Geist.txt) and
+  # Source Serif 4 (SIL OFL 1.1), bundled so the site makes no runtime
+  # requests to Google Fonts. web/index.html preloads the same files.
   fonts:
-    - family: Inter
+    - family: Geist
       fonts:
-        - asset: assets/fonts/Inter-400.ttf
+        - asset: assets/fonts/Geist-400.ttf
           weight: 400
-        - asset: assets/fonts/Inter-500.ttf
+        - asset: assets/fonts/Geist-500.ttf
           weight: 500
-        - asset: assets/fonts/Inter-600.ttf
+        - asset: assets/fonts/Geist-600.ttf
           weight: 600
     - family: SourceSerif4
       fonts:
         - asset: assets/fonts/SourceSerif4-600.ttf
           weight: 600
-    - family: JetBrainsMono
+    - family: GeistMono
       fonts:
-        - asset: assets/fonts/JetBrainsMono-400.ttf
+        - asset: assets/fonts/GeistMono-400.ttf
           weight: 400
-        - asset: assets/fonts/JetBrainsMono-500.ttf
+        - asset: assets/fonts/GeistMono-500.ttf
           weight: 500

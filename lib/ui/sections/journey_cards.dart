@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../content/models.dart';
 import '../../theme.dart';
+import '../motion.dart';
 import '../widgets/common.dart';
 
 /// Fades and slides its child in once, when the route line reaches
@@ -31,11 +32,11 @@ class _RevealOnceState extends State<RevealOnce>
     with SingleTickerProviderStateMixin {
   late final AnimationController _controller = AnimationController(
     vsync: this,
-    duration: const Duration(milliseconds: 1500),
+    duration: Motion.revealWithCount,
   );
   late final Animation<double> _fade = CurvedAnimation(
     parent: _controller,
-    curve: const Interval(0, 0.3, curve: Curves.easeOut),
+    curve: const Interval(0, 0.3, curve: Motion.curve),
   );
 
   @override
@@ -82,60 +83,11 @@ class _RevealOnceState extends State<RevealOnce>
         opacity: _fade.value,
         alwaysIncludeSemantics: true,
         child: Transform.translate(
-          offset: Offset(0, 14 * (1 - _fade.value)),
+          offset: Offset(0, Motion.rise * (1 - _fade.value)),
           child: child,
         ),
       ),
       child: child,
-    );
-  }
-}
-
-/// A journey card that lifts slightly on hover.
-class LiftCard extends StatefulWidget {
-  const LiftCard({super.key, required this.child, required this.reduced});
-
-  final Widget child;
-  final bool reduced;
-
-  @override
-  State<LiftCard> createState() => _LiftCardState();
-}
-
-class _LiftCardState extends State<LiftCard> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: AnimatedContainer(
-        duration: widget.reduced
-            ? Duration.zero
-            : const Duration(milliseconds: 180),
-        curve: Curves.easeOut,
-        width: double.infinity,
-        transform: Matrix4.translationValues(0, _hovered ? -3 : 0, 0),
-        padding: EdgeInsets.all(isCompact(context) ? 16 : 18),
-        decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(12),
-          border: Border.all(
-            color: _hovered ? const Color(0xFFD9D1C3) : AppColors.line,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: const Color(
-                0xFF1B1916,
-              ).withValues(alpha: _hovered ? 0.07 : 0),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: widget.child,
-      ),
     );
   }
 }
@@ -150,6 +102,8 @@ class StopContent extends StatelessWidget {
   Widget build(BuildContext context) {
     final organisation = stop.organisation;
     final detail = stop.detail;
+    final c = AppColors.of(context);
+    final text = AppText.of(context);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -159,23 +113,20 @@ class StopContent extends StatelessWidget {
             children: [
               TextSpan(
                 text: stop.period,
-                style: AppText.label.copyWith(color: AppColors.accent),
+                style: text.label.copyWith(color: c.accent),
               ),
               TextSpan(text: '  ·  ${stop.place}'),
             ],
           ),
-          style: AppText.label,
+          style: text.label,
         ),
         const SizedBox(height: 6),
-        Text(stop.title, style: AppText.title),
+        Text(stop.title, style: text.title),
         if (organisation != null)
-          Text(
-            organisation,
-            style: AppText.body.copyWith(color: AppColors.muted),
-          ),
+          Text(organisation, style: text.body.copyWith(color: c.muted)),
         if (detail != null) ...[
           const SizedBox(height: 4),
-          Text(detail, style: AppText.body),
+          Text(detail, style: text.body),
         ],
         if (stop.metrics.isNotEmpty) ...[
           const SizedBox(height: 12),
@@ -192,12 +143,16 @@ class StopContent extends StatelessWidget {
           const SizedBox(height: 12),
           BulletList(stop.bullets),
         ],
+        if (stop.stack.isNotEmpty) ...[
+          const SizedBox(height: 12),
+          TagList(stop.stack),
+        ],
       ],
     );
   }
 }
 
-/// Counts up from zero as the card is revealed. The final value reserves
+/// Counts up from zero as its card or section is revealed. The final value reserves
 /// the width, so the layout never shifts while counting.
 class CountUpMetric extends StatelessWidget {
   const CountUpMetric({super.key, required this.metric, required this.reveal});
@@ -210,17 +165,17 @@ class CountUpMetric extends StatelessWidget {
     fontWeight: FontWeight.w600,
     fontSize: 26,
     height: 1.1,
-    color: AppColors.ink,
     fontFeatures: [FontFeature.tabularFigures()],
   );
 
   @override
   Widget build(BuildContext context) {
+    final numberStyle = _numberStyle.copyWith(color: AppColors.of(context).ink);
     final count = CurvedAnimation(
       parent: reveal,
       curve: const Interval(0.2, 1, curve: Curves.easeOutCubic),
     );
-    final finalText = metric.format(metric.value);
+    final finalText = metric.formatAt(1);
 
     return Semantics(
       label: '$finalText ${metric.label}',
@@ -228,25 +183,37 @@ class CountUpMetric extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Stack(
-            children: [
-              SelectionContainer.disabled(
-                child: Visibility.maintain(
-                  visible: false,
-                  child: Text(finalText, style: _numberStyle),
+          // One line always; scales down rather than wrap in a narrow card.
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Stack(
+              children: [
+                SelectionContainer.disabled(
+                  child: Visibility.maintain(
+                    visible: false,
+                    child: Text(finalText, style: numberStyle, maxLines: 1),
+                  ),
                 ),
-              ),
-              AnimatedBuilder(
-                animation: count,
-                builder: (context, _) => Text(
-                  metric.format((metric.value * count.value).round()),
-                  style: _numberStyle,
+                AnimatedBuilder(
+                  animation: count,
+                  builder: (context, _) => Text(
+                    metric.formatAt(count.value),
+                    style: numberStyle,
+                    maxLines: 1,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           const SizedBox(height: 2),
-          Text(metric.label, style: AppText.label),
+          Text(
+            metric.label,
+            style: AppText.of(context).label,
+            maxLines: 1,
+            softWrap: false,
+            overflow: TextOverflow.fade,
+          ),
         ],
       ),
     );

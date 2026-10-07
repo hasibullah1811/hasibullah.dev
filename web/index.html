@@ -6,28 +6,48 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Hasibullah Hasib — Software Developer</title>
-  <meta name="description" content="Software Developer in Wollongong, NSW with Full working rights (Subclass 485). Open to full-time roles, relocation and remote. Flutter, Python, React and PostgreSQL.">
+  <meta name="description" content="Software Developer in Wollongong, NSW with Full working rights (Subclass 485). Open to full-time roles, relocation and remote. Flutter, Python and FastAPI.">
   <link rel="canonical" href="https://www.hasibullah.dev/">
 
   <meta property="og:type" content="profile">
   <meta property="og:url" content="https://www.hasibullah.dev/">
   <meta property="og:title" content="Hasibullah Hasib — Software Developer">
-  <meta property="og:description" content="Wollongong, NSW · Full working rights (Subclass 485) · Open to full-time roles.">
+  <meta property="og:description" content="NSW, Australia · Full working rights (Subclass 485) · Open to full-time roles.">
   <meta property="og:image" content="https://www.hasibullah.dev/og_image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="Hasibullah Hasib, Software Developer, Wollongong NSW">
+  <meta property="og:image:alt" content="Hasibullah Hasib, Software Developer, NSW, Australia">
 
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="Hasibullah Hasib — Software Developer">
-  <meta name="twitter:description" content="Wollongong, NSW · Full working rights (Subclass 485) · Open to full-time roles.">
+  <meta name="twitter:description" content="NSW, Australia · Full working rights (Subclass 485) · Open to full-time roles.">
   <meta name="twitter:image" content="https://www.hasibullah.dev/og_image.png">
 
   <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
   <link rel="icon" type="image/png" sizes="48x48" href="favicon.png">
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="manifest" href="manifest.json">
-  <meta name="theme-color" content="#FAF7F2">
+  <meta name="theme-color" content="#FFFFFF">
+  <meta name="color-scheme" content="light dark">
+  <!--
+    Theme before first paint: the visitor's stored choice (localStorage
+    "theme", written by lib/platform/browser_web.dart), else the system
+    setting. Sets <html data-theme> for the loader below and the theme-color
+    meta, so nothing flashes the wrong theme while Flutter loads. Colours
+    match AppColors.light/dark.paper in lib/theme.dart.
+  -->
+  <script>
+    (function () {
+      var theme = null;
+      try { theme = localStorage.getItem('theme'); } catch (e) {}
+      if (theme !== 'light' && theme !== 'dark') {
+        theme = window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+      }
+      document.documentElement.setAttribute('data-theme', theme);
+      var meta = document.querySelector('meta[name="theme-color"]');
+      if (meta) meta.setAttribute('content', theme === 'dark' ? '#171412' : '#FFFFFF');
+    })();
+  </script>
 
   <script type="application/ld+json">
   {
@@ -37,7 +57,7 @@
     "jobTitle": "Software Developer",
     "url": "https://www.hasibullah.dev/",
     "email": "mailto:hi@hasibullah.dev",
-    "address": { "@type": "PostalAddress", "addressLocality": "Wollongong", "addressRegion": "NSW", "addressCountry": "AU" },
+    "address": { "@type": "PostalAddress", "addressRegion": "NSW", "addressCountry": "AU" },
     "alumniOf": [
       { "@type": "CollegeOrUniversity", "name": "Macquarie University" },
       { "@type": "CollegeOrUniversity", "name": "North South University" }
@@ -45,7 +65,8 @@
     "memberOf": { "@type": "Organization", "name": "Australian Computer Society" },
     "sameAs": [
       "https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/",
-      "https://github.com/hasibullah1811"
+      "https://github.com/hasibullah1811",
+      "https://leetcode.com/u/hasibullah/"
     ]
   }
   </script>
@@ -57,51 +78,70 @@
     Flutter's first frame. Keep it in sync with lib/content/portfolio_content.dart;
     test/content_test.dart checks the key facts.
   -->
+  <!-- Preloaded so the loading state and Flutter (which fetches the same
+       URLs from FontManifest.json) both get the fonts without a flash. -->
+  <link rel="preload" href="assets/assets/fonts/Geist-400.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/Geist-500.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/Geist-600.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/SourceSerif4-600.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/GeistMono-500.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/assets/fonts/GeistMono-400.ttf" as="font" type="font/ttf" crossorigin>
   <style>
-    @font-face { font-family: "Inter"; font-weight: 400; font-display: swap; src: url("assets/assets/fonts/Inter-400.ttf") format("truetype"); }
-    @font-face { font-family: "Inter"; font-weight: 500; font-display: swap; src: url("assets/assets/fonts/Inter-500.ttf") format("truetype"); }
-    @font-face { font-family: "Inter"; font-weight: 600; font-display: swap; src: url("assets/assets/fonts/Inter-600.ttf") format("truetype"); }
+    @font-face { font-family: "Geist"; font-weight: 400; font-display: swap; src: url("assets/assets/fonts/Geist-400.ttf") format("truetype"); }
+    @font-face { font-family: "Geist"; font-weight: 500; font-display: swap; src: url("assets/assets/fonts/Geist-500.ttf") format("truetype"); }
+    @font-face { font-family: "Geist"; font-weight: 600; font-display: swap; src: url("assets/assets/fonts/Geist-600.ttf") format("truetype"); }
     @font-face { font-family: "Source Serif 4"; font-weight: 600; font-display: swap; src: url("assets/assets/fonts/SourceSerif4-600.ttf") format("truetype"); }
-    @font-face { font-family: "JetBrains Mono"; font-weight: 500; font-display: swap; src: url("assets/assets/fonts/JetBrainsMono-500.ttf") format("truetype"); }
-    html, body { margin: 0; background: #FAF7F2; }
+    @font-face { font-family: "Geist Mono"; font-weight: 500; font-display: swap; src: url("assets/assets/fonts/GeistMono-500.ttf") format("truetype"); }
+    /* Light and dark tokens; keep in sync with AppColors in lib/theme.dart. */
+    :root {
+      --paper: #FFFFFF; --surface: #FFFFFF; --ink: #1B1916; --ink-soft: #45413A;
+      --muted: #615B52; --line: #E8E6E1; --accent: #A63F25; --available: #277046;
+    }
+    :root[data-theme="dark"] {
+      --paper: #171412; --surface: #201C19; --ink: #F3EEE7; --ink-soft: #D3CBC0;
+      --muted: #ABA296; --line: #4A423B; --accent: #E8957A; --available: #7CC79A;
+    }
+    /* Without JavaScript there is no data-theme; follow the system. */
+    @media (prefers-color-scheme: dark) {
+      :root:not([data-theme]) {
+        --paper: #171412; --surface: #201C19; --ink: #F3EEE7; --ink-soft: #D3CBC0;
+        --muted: #ABA296; --line: #4A423B; --accent: #E8957A; --available: #7CC79A;
+      }
+    }
+    html, body { margin: 0; background: var(--paper); }
     body { overflow: hidden; }
     #loading {
       position: fixed; inset: 0; z-index: 10; overflow-y: auto;
-      background: #FAF7F2; color: #45413A;
-      font: 17px/1.5 "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      background: var(--paper); color: var(--ink-soft);
+      font: 17px/1.5 "Geist", system-ui, -apple-system, "Segoe UI", sans-serif;
       transition: opacity .3s ease;
     }
     #loading .wrap { max-width: 696px; margin: 0 auto; padding: 124px 32px 48px; }
     #loading .status {
-      display: inline-flex; align-items: center; gap: 8px; padding: 6px 12px;
-      border: 1px solid #E6E0D5; border-radius: 999px; background: #fff;
-      font: 500 12px/1.4 "JetBrains Mono", ui-monospace, monospace; letter-spacing: .4px; color: #2E7D4F;
+      display: inline-flex; align-items: center; gap: 11px; padding-left: 5px;
+      font: 500 13px/1.4 "Geist Mono", ui-monospace, monospace; letter-spacing: .4px; color: var(--available);
     }
-    #loading .status::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: #2E7D4F; }
-    #loading h1 { margin: 20px 0 8px; font: 600 46px/1.1 "Source Serif 4", Georgia, serif; letter-spacing: -.5px; color: #1B1916; }
-    #loading .title { margin: 0; font-size: 22px; font-weight: 500; color: #1B1916; }
-    #loading .summary { margin: 16px 0 24px; max-width: 620px; }
-    #loading .facts { margin: 0 0 24px; padding: 0; list-style: none; font-size: 15px; }
-    #loading .facts li { margin: 4px 0; }
-    #loading .facts b { font-weight: 600; color: #1B1916; }
+    #loading .status::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--available); }
+    #loading h1 { margin: 20px 0 8px; font: 600 46px/1.1 "Source Serif 4", Georgia, serif; letter-spacing: -.5px; color: var(--ink); }
+    #loading .tagline { margin: 12px 0 28px; max-width: 620px; font-size: 20px; }
     #loading .links { display: flex; flex-wrap: wrap; gap: 10px; }
     #loading .links a {
-      padding: 12px 18px; border: 1px solid #E6E0D5; border-radius: 8px; background: #fff;
-      color: #1B1916; font-weight: 600; font-size: 14px; text-decoration: none;
+      padding: 12px 18px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface);
+      color: var(--ink); font-weight: 600; font-size: 14px; text-decoration: none;
     }
-    #loading .links a:first-child { background: #1B1916; border-color: #1B1916; color: #FAF7F2; }
-    #loading .links a:focus-visible { outline: 2px solid #B4472B; outline-offset: 2px; }
-    #loading .progress { margin-top: 40px; height: 2px; width: 160px; background: #E6E0D5; overflow: hidden; border-radius: 2px; }
+    #loading .links a:first-child { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+    #loading .links a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    #loading .progress { margin-top: 40px; height: 2px; width: 160px; background: var(--line); overflow: hidden; border-radius: 2px; }
     #loading .progress::after {
-      content: ""; display: block; height: 100%; width: 40%; background: #B4472B;
+      content: ""; display: block; height: 100%; width: 40%; background: var(--accent);
       animation: slide 1.2s ease-in-out infinite;
     }
-    #loading .progress-label { margin-top: 10px; font: 500 12px/1.4 "JetBrains Mono", ui-monospace, monospace; color: #6B655C; }
+    #loading .progress-label { margin-top: 10px; font: 500 12px/1.4 "Geist Mono", ui-monospace, monospace; color: var(--muted); }
     @keyframes slide { from { transform: translateX(-100%); } to { transform: translateX(250%); } }
     @media (max-width: 599px) {
       #loading .wrap { padding: 100px 20px 40px; }
       #loading h1 { font-size: 36px; }
-      #loading .title { font-size: 20px; }
+      #loading .tagline { font-size: 18px; }
     }
     @media (prefers-reduced-motion: reduce) {
       #loading { transition: none; }
@@ -112,21 +152,16 @@
 <body>
   <main id="loading" aria-busy="true">
     <div class="wrap">
-      <span class="status">Open to full-time roles</span>
+      <span class="status">Open to full-time roles · Full working rights (Subclass 485) · NSW, Australia</span>
       <h1>Hasibullah Hasib</h1>
-      <p class="title">Software Developer</p>
-      <p class="summary">I build production software end to end: an ERP and Flutter apps that run five restaurant locations in Sydney, and open-source tools that make RAG and machine learning easier to see.</p>
-      <ul class="facts">
-        <li><b>Work rights:</b> Full working rights (Subclass 485)</li>
-        <li><b>Based in:</b> Wollongong, NSW · Open to relocation and remote</li>
-        <li><b>Core stack:</b> Flutter · Python · React · PostgreSQL</li>
-      </ul>
+      <p class="tagline">Software developer building practical apps in Flutter, Python and FastAPI.</p>
       <nav class="links" aria-label="Contact">
         <a href="mailto:hi@hasibullah.dev">Email</a>
         <a href="https://www.linkedin.com/in/md-hasibullah-hasib-39a89a3a5/" rel="noopener">LinkedIn</a>
         <a href="https://github.com/hasibullah1811" rel="noopener">GitHub</a>
+        <a href="https://leetcode.com/u/hasibullah/" rel="noopener">LeetCode</a>
       </nav>
-      <noscript><p>This site needs JavaScript for the full version: journey, case studies and skills. Everything you need to get in touch is above, or visit <a href="https://www.hasibullah.dev/">https://www.hasibullah.dev/</a>.</p></noscript>
+      <noscript><p>This site needs JavaScript for the full version: about, journey, case studies and skills. Everything you need to get in touch is above, or visit <a href="https://www.hasibullah.dev/">https://www.hasibullah.dev/</a>.</p></noscript>
       <div class="progress" role="progressbar" aria-label="Loading the full site"></div>
       <div class="progress-label">Loading the full site…</div>
     </div>

@@ -4,30 +4,42 @@ class Profile {
   const Profile({
     required this.name,
     required this.title,
-    required this.summary,
+    required this.tagline,
     required this.location,
     required this.openTo,
     required this.status,
     required this.workRights,
-    required this.coreStack,
+    required this.workRightsShort,
+    required this.closing,
     required this.email,
     required this.linkedIn,
     required this.github,
+    required this.leetCode,
     required this.website,
     this.cvUrl,
   });
 
   final String name;
+
+  /// Used in the page title and meta tags.
   final String title;
-  final String summary;
+
+  /// The line under the name in the hero.
+  final String tagline;
   final String location;
   final String openTo;
   final String status;
   final String workRights;
-  final List<String> coreStack;
+
+  /// Shown in the hero's availability line.
+  final String workRightsShort;
+
+  /// The one line in the contact section.
+  final String closing;
   final String email;
   final String linkedIn;
   final String github;
+  final String leetCode;
   final String website;
 
   /// Path to the public, redacted CV. The CV button is hidden while null.
@@ -41,9 +53,9 @@ class LinkItem {
   final String url;
 }
 
-/// A number that counts up when its journey card appears.
+/// A number that counts up when its card or section appears.
 class Metric {
-  const Metric(this.value, this.label, {this.approximate = false});
+  const Metric(this.value, this.label, {this.approximate = false, this.upTo});
 
   final int value;
   final String label;
@@ -51,8 +63,16 @@ class Metric {
   /// Shown with a leading "~", e.g. "~20 students".
   final bool approximate;
 
-  String format(int current) =>
-      '${approximate ? '~' : ''}${formatThousands(current)}';
+  /// Upper end of a range, e.g. 700 in "500–700 daily orders".
+  final int? upTo;
+
+  /// The text at [t] of the count-up, from 0 to 1.
+  String formatAt(double t) {
+    final low = formatThousands((value * t).round());
+    final upTo = this.upTo;
+    final high = upTo == null ? '' : '–${formatThousands((upTo * t).round())}';
+    return '${approximate ? '~' : ''}$low$high';
+  }
 }
 
 String formatThousands(int value) => value.toString().replaceAllMapped(
@@ -70,6 +90,7 @@ class JourneyStop {
     this.detail,
     this.bullets = const [],
     this.metrics = const [],
+    this.stack = const [],
   });
 
   /// Sort key. Entries are shown in chronological order within a chapter.
@@ -81,6 +102,7 @@ class JourneyStop {
   final String? detail;
   final List<String> bullets;
   final List<Metric> metrics;
+  final List<String> stack;
 }
 
 /// Work that ran alongside a chapter's other entries (shown as a side bar).
@@ -93,6 +115,7 @@ class JourneySpan {
     required this.organisation,
     required this.label,
     this.bullets = const [],
+    this.stack = const [],
   });
 
   final int startYear;
@@ -104,6 +127,7 @@ class JourneySpan {
   /// Short text written along the side bar.
   final String label;
   final List<String> bullets;
+  final List<String> stack;
 
   /// On narrow screens the span is shown as an ordinary entry.
   JourneyStop asStop() => JourneyStop(
@@ -113,6 +137,7 @@ class JourneySpan {
     title: title,
     organisation: organisation,
     bullets: bullets,
+    stack: stack,
   );
 }
 
@@ -163,6 +188,9 @@ class CaseStudy {
     this.links = const [],
     this.image,
     this.imageAlt,
+    this.diagram,
+    this.diagramAlt,
+    this.featured = false,
   });
 
   final String name;
@@ -176,6 +204,13 @@ class CaseStudy {
   final List<LinkItem> links;
   final String? image;
   final String? imageAlt;
+
+  /// Architecture diagram under web/, shown inline once scrolled near.
+  final String? diagram;
+  final String? diagramAlt;
+
+  /// Shown as the larger lead card.
+  final bool featured;
 }
 
 class Project {
@@ -207,17 +242,30 @@ class Credential {
     required this.title,
     required this.detail,
     this.link,
+    this.wide = false,
   });
 
   final String kind;
   final String title;
   final String detail;
   final LinkItem? link;
+
+  /// Takes a full-width row of its own below the other cards.
+  final bool wide;
+}
+
+class About {
+  const About({required this.title, required this.text, required this.metrics});
+
+  final String title;
+  final String text;
+  final List<Metric> metrics;
 }
 
 class PortfolioContent {
   const PortfolioContent({
     required this.profile,
+    required this.about,
     required this.journey,
     required this.caseStudies,
     required this.projects,
@@ -226,6 +274,7 @@ class PortfolioContent {
   });
 
   final Profile profile;
+  final About about;
   final Journey journey;
   final List<CaseStudy> caseStudies;
   final List<Project> projects;

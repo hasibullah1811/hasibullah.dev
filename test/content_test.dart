@@ -31,9 +31,32 @@ void main() {
       expect(html, contains(profile.status));
       expect(html, contains('mailto:${profile.email}'));
       expect(html, contains(profile.linkedIn));
+      expect(html, contains(profile.leetCode));
       expect(html, contains(profile.website));
     },
   );
+
+  test('location is "NSW, Australia" on the page; Wollongong only in the '
+      'meta description', () {
+    expect(profile.location, 'NSW, Australia');
+    for (final s in _allStrings()) {
+      expect(s, isNot(contains('Wollongong')), reason: s);
+    }
+    final description = RegExp(
+      r'<meta name="description" content="([^"]*)">',
+    ).firstMatch(html)!.group(1)!;
+    expect(description, contains('Wollongong'));
+    expect(
+      html.replaceFirst(description, '').contains('Wollongong'),
+      isFalse,
+      reason: 'Wollongong outside the meta description',
+    );
+  });
+
+  test('about numbers match the facts', () {
+    final shown = portfolio.about.metrics.map((m) => m.formatAt(1)).toList();
+    expect(shown, ['5', '500–700', '180', '2,000']);
+  });
 
   test('no unresolved or excluded content is published', () {
     final strings = _allStrings();
@@ -49,6 +72,7 @@ void main() {
       (c) => c.name == 'StepWise',
     );
     expect(stepwise.status, contains('private beta'));
+    expect(stepwise.links, isEmpty, reason: 'StepWise is not linked');
     final copy = [
       stepwise.tagline,
       stepwise.problem,
@@ -79,6 +103,9 @@ void main() {
       if (c.image case final image?) {
         expect(File(image).existsSync(), isTrue, reason: image);
       }
+      if (c.diagram case final diagram?) {
+        expect(File('web/$diagram').existsSync(), isTrue, reason: diagram);
+      }
     }
   });
 }
@@ -88,13 +115,17 @@ List<String> _allStrings() {
   return [
     p.name,
     p.title,
-    p.summary,
+    p.tagline,
     p.location,
     p.openTo,
     p.status,
     p.workRights,
+    p.workRightsShort,
+    p.closing,
     p.email,
-    ...p.coreStack,
+    portfolio.about.title,
+    portfolio.about.text,
+    ...portfolio.about.metrics.map((m) => m.label),
     portfolio.journey.title,
     portfolio.journey.origin,
     portfolio.journey.destination,
@@ -109,6 +140,7 @@ List<String> _allStrings() {
         span.organisation,
         span.label,
         ...span.bullets,
+        ...span.stack,
       ],
       for (final s in chapter.stops) ...[
         s.period,
@@ -118,6 +150,7 @@ List<String> _allStrings() {
         ?s.detail,
         ...s.bullets,
         ...s.metrics.map((m) => m.label),
+        ...s.stack,
       ],
     ],
     for (final c in portfolio.caseStudies) ...[
@@ -130,6 +163,7 @@ List<String> _allStrings() {
       ...c.work,
       ...c.stack,
       ...c.links.map((l) => l.label),
+      ?c.diagramAlt,
     ],
     for (final pr in portfolio.projects) ...[
       pr.name,
