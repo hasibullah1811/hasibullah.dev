@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
@@ -57,16 +58,25 @@ void main() {
     final name = colors.brightness.name;
 
     test('every $name text colour meets WCAG AA on every background', () {
-      final symbolAlpha = PageBackground.symbolAlpha(colors);
+      // The strongest background symbol, at its peak, on the centre of the
+      // cursor glow.
+      final glow = Color.alphaBlend(colors.symbolGlowColor, colors.paper);
       final backgrounds = {
         'paper': colors.paper,
         'surface': colors.surface,
         'tint': colors.tint,
         'accentSoft': colors.accentSoft,
-        // The strongest background symbol or dot under page text.
-        'paper + symbol': Color.alphaBlend(
-          colors.ink.withValues(alpha: symbolAlpha),
+        'paper + dot': Color.alphaBlend(
+          colors.ink.withValues(alpha: PageBackground.dotAlpha),
           colors.paper,
+        ),
+        'paper + glow + symbol': Color.alphaBlend(
+          colors.symbolColor.withValues(alpha: colors.symbolPeakOpacity),
+          glow,
+        ),
+        'paper + glow + ink symbol': Color.alphaBlend(
+          colors.ink.withValues(alpha: colors.symbolInkPeakOpacity),
+          glow,
         ),
       };
       final texts = {
@@ -90,12 +100,40 @@ void main() {
     });
   }
 
-  test('background symbols and dots stay faint', () {
+  test('background symbols stay subtle, the glow faint', () {
     for (final colors in [AppColors.light, AppColors.dark]) {
-      final alpha = PageBackground.symbolAlpha(colors);
-      expect(alpha, inInclusiveRange(0.06, 0.08));
+      final name = colors.brightness.name;
+      expect(colors.symbolPeakOpacity, lessThanOrEqualTo(0.4), reason: name);
+      expect(colors.symbolInkPeakOpacity, lessThanOrEqualTo(0.4), reason: name);
+      expect(colors.symbolGlowColor.a, lessThanOrEqualTo(0.08), reason: name);
+      // The colour is opaque; its strength comes from the peak opacity.
+      expect(colors.symbolColor.a, 1.0, reason: name);
     }
     expect(PageBackground.dotAlpha, lessThanOrEqualTo(0.08));
+    expect(PageBackground.reducedScatterScale, lessThan(1));
+    expect(PageBackground.scatterScale, lessThan(1));
+  });
+
+  testWidgets('pointer symbols fade out and the ticker stops', (tester) async {
+    await _pumpApp(tester, theme: 'light');
+    final mouse = await tester.createGesture(kind: PointerDeviceKind.mouse);
+    addTearDown(mouse.removePointer);
+    await mouse.addPointer(location: const Offset(100, 300));
+    for (var i = 1; i <= 12; i++) {
+      await mouse.moveTo(Offset(100 + i * 90.0, 300));
+      await tester.pump(const Duration(milliseconds: 160));
+    }
+    // The symbol ticker, plus whatever else is animating on the page.
+    final running = tester.binding.transientCallbackCount;
+    // Rise 120ms, hold 150ms, fade 900ms. The background keeps time with a
+    // real stopwatch, so let real time pass.
+    await tester.runAsync(
+      () => Future<void>.delayed(const Duration(milliseconds: 1250)),
+    );
+    await tester.pump(const Duration(milliseconds: 16));
+    await tester.pump(const Duration(milliseconds: 16));
+    expect(tester.binding.transientCallbackCount, running - 1);
+    expect(tester.takeException(), isNull);
   });
 
   test('the loader in index.html uses the same palette', () {

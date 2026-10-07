@@ -1,4 +1,21 @@
+import 'dart:ui' show lerpDouble;
+
 import 'package:flutter/material.dart';
+
+// Background code symbols (lib/ui/widgets/page_background.dart).
+//
+// To make the symbols stronger or weaker, change the *SymbolPeak values: the
+// opacity each symbol reaches at its brightest. *GlowPeak is the soft halo
+// under the cursor. These sit at the AA limit: raising any of them makes
+// test/theme_test.dart fail if a text colour would drop below 4.5:1 where it
+// overlaps a symbol. Touch and reduced motion use a fixed fraction of the
+// peak (PageBackground.scatterScale and reducedScatterScale).
+const lightSymbolPeak = 0.14; // terracotta symbols
+const lightInkSymbolPeak = 0.10; // the 1 in 4 drawn in ink
+const lightGlowPeak = 0.05;
+const darkSymbolPeak = 0.21; // lightened terracotta symbols
+const darkInkSymbolPeak = 0.0; // dark mode has no ink symbols
+const darkGlowPeak = 0.05;
 
 /// Every colour the site uses, as a theme extension so widgets read them from
 /// the ambient theme: `AppColors.of(context)`.
@@ -8,9 +25,10 @@ import 'package:flutter/material.dart';
 /// card borders instead of shadows.
 ///
 /// In both themes every text colour (ink, inkSoft, muted, accent, available)
-/// is at least 5.1:1 on paper, surface, tint and accentSoft, and on paper
-/// under the strongest background symbol or dot (ink at 8%). The values are
-/// listed in docs/theme.md; test/theme_test.dart checks them.
+/// is at least 5.1:1 on paper, surface, tint and accentSoft, and at least
+/// 4.5:1 on paper under the strongest background symbol sitting on the
+/// cursor glow. The values are listed in docs/theme.md;
+/// test/theme_test.dart checks them.
 @immutable
 class AppColors extends ThemeExtension<AppColors> {
   const AppColors({
@@ -27,6 +45,10 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.accentSoft,
     required this.available,
     required this.hoverShadow,
+    required this.symbolColor,
+    required this.symbolPeakOpacity,
+    required this.symbolInkPeakOpacity,
+    required this.symbolGlowColor,
   });
 
   static const light = AppColors(
@@ -43,6 +65,10 @@ class AppColors extends ThemeExtension<AppColors> {
     accentSoft: Color(0xFFFBEFEA),
     available: Color(0xFF277046),
     hoverShadow: Color(0x121B1916),
+    symbolColor: Color(0xFFA63F25),
+    symbolPeakOpacity: lightSymbolPeak,
+    symbolInkPeakOpacity: lightInkSymbolPeak,
+    symbolGlowColor: Color.fromRGBO(166, 63, 37, lightGlowPeak),
   );
 
   static const dark = AppColors(
@@ -60,6 +86,10 @@ class AppColors extends ThemeExtension<AppColors> {
     available: Color(0xFF7CC79A),
     // Dark cards lift with a stronger border only.
     hoverShadow: Color(0x00000000),
+    symbolColor: Color(0xFFE8957A),
+    symbolPeakOpacity: darkSymbolPeak,
+    symbolInkPeakOpacity: darkInkSymbolPeak,
+    symbolGlowColor: Color.fromRGBO(232, 149, 122, darkGlowPeak),
   );
 
   final Brightness brightness;
@@ -83,6 +113,16 @@ class AppColors extends ThemeExtension<AppColors> {
 
   /// Shadow under a hovered card; transparent in dark mode.
   final Color hoverShadow;
+
+  /// Background code symbols, opaque; painted at up to [symbolPeakOpacity].
+  final Color symbolColor;
+  final double symbolPeakOpacity;
+
+  /// Peak opacity of the symbols drawn in [ink] instead; 0 for none.
+  final double symbolInkPeakOpacity;
+
+  /// Centre of the halo under the cursor, alpha included.
+  final Color symbolGlowColor;
 
   bool get isDark => brightness == Brightness.dark;
 
@@ -110,6 +150,18 @@ class AppColors extends ThemeExtension<AppColors> {
       accentSoft: mix(accentSoft, other.accentSoft),
       available: mix(available, other.available),
       hoverShadow: mix(hoverShadow, other.hoverShadow),
+      symbolColor: mix(symbolColor, other.symbolColor),
+      symbolPeakOpacity: lerpDouble(
+        symbolPeakOpacity,
+        other.symbolPeakOpacity,
+        t,
+      )!,
+      symbolInkPeakOpacity: lerpDouble(
+        symbolInkPeakOpacity,
+        other.symbolInkPeakOpacity,
+        t,
+      )!,
+      symbolGlowColor: mix(symbolGlowColor, other.symbolGlowColor),
     );
   }
 }

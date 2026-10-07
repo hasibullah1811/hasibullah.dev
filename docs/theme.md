@@ -26,16 +26,37 @@ Dark cards lift with a stronger border and no shadow.
 
 ## Contrast (WCAG 2.x)
 
-Lowest ratio for each text colour across paper, surface, tint, accentSoft and
-paper under the strongest background symbol (ink at 8%):
+Lowest ratio for each text colour across paper, surface, tint, accentSoft, the
+dot grid, and paper under the strongest background symbol sitting on the
+centre of the cursor glow:
 
 | Text      | Light (min) | Dark (min) |
 |-----------|-------------|------------|
-| ink       | 14.97:1     | 12.53:1    |
-| inkSoft   | 8.66:1      | 9.01:1     |
-| muted     | 5.73:1      | 5.75:1     |
-| accent    | 5.34:1      | 6.21:1     |
-| available | 5.13:1      | 7.23:1     |
+| ink       | 13.25:1     | 9.94:1     |
+| inkSoft   | 7.66:1      | 7.14:1     |
+| muted     | 5.07:1      | 4.55:1     |
+| accent    | 4.72:1      | 4.92:1     |
+| available | 4.54:1      | 5.73:1     |
+
+The symbol values set the floor; away from a symbol every pair is above 5.1:1.
+
+## Background symbols
+
+The constants are at the top of `lib/theme.dart`:
+
+| Constant           | Light | Dark | Meaning                              |
+|--------------------|-------|------|--------------------------------------|
+| `*SymbolPeak`      | 0.14  | 0.21 | terracotta (dark: lightened) symbols |
+| `*InkSymbolPeak`   | 0.10  | 0    | the 1 in 4 symbols drawn in ink      |
+| `*GlowPeak`        | 0.05  | 0.05 | halo under the cursor, 160px radius  |
+
+Glyphs are 20px Geist Mono. Each symbol fades in over 120ms, holds 150ms and
+eases out over 900ms; it spawns 30 to 64px from the pointer after 80px of
+travel, at least 56px from any other symbol, with at most 5 visible. Touch
+devices show a fixed scatter at 0.7x the peak, reduced motion at 0.5x.
+
+They sit at the AA limit: raising any of them makes `test/theme_test.dart`
+fail once a text colour would drop below 4.5:1 over a symbol.
 
 Filled buttons (paper on ink): 17.54:1 light, 15.89:1 dark. Every pair clears
 AA (4.5:1) for body text.
