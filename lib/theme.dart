@@ -21,8 +21,8 @@ const darkGlowPeak = 0.05;
 /// the ambient theme: `AppColors.of(context)`.
 ///
 /// Light: white page, dark ink, one terracotta accent.
-/// Dark: warm near-black page, off-white ink, a lightened terracotta, and
-/// card borders instead of shadows.
+/// Dark: warm near-black page, off-white ink and a lightened terracotta.
+/// Cards in both themes use a hairline border and no shadow.
 ///
 /// In both themes every text colour (ink, inkSoft, muted, accent, available)
 /// is at least 5.1:1 on paper, surface, tint and accentSoft, and at least
@@ -44,7 +44,6 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.accent,
     required this.accentSoft,
     required this.available,
-    required this.hoverShadow,
     required this.symbolColor,
     required this.symbolPeakOpacity,
     required this.symbolInkPeakOpacity,
@@ -64,7 +63,6 @@ class AppColors extends ThemeExtension<AppColors> {
     accent: Color(0xFFA63F25),
     accentSoft: Color(0xFFFBEFEA),
     available: Color(0xFF277046),
-    hoverShadow: Color(0x121B1916),
     symbolColor: Color(0xFFA63F25),
     symbolPeakOpacity: lightSymbolPeak,
     symbolInkPeakOpacity: lightInkSymbolPeak,
@@ -85,7 +83,6 @@ class AppColors extends ThemeExtension<AppColors> {
     accentSoft: Color(0xFF38251E),
     available: Color(0xFF7CC79A),
     // Dark cards lift with a stronger border only.
-    hoverShadow: Color(0x00000000),
     symbolColor: Color(0xFFE8957A),
     symbolPeakOpacity: darkSymbolPeak,
     symbolInkPeakOpacity: darkInkSymbolPeak,
@@ -110,9 +107,6 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color accent;
   final Color accentSoft;
   final Color available;
-
-  /// Shadow under a hovered card; transparent in dark mode.
-  final Color hoverShadow;
 
   /// Background code symbols, opaque; painted at up to [symbolPeakOpacity].
   final Color symbolColor;
@@ -149,7 +143,6 @@ class AppColors extends ThemeExtension<AppColors> {
       accent: mix(accent, other.accent),
       accentSoft: mix(accentSoft, other.accentSoft),
       available: mix(available, other.available),
-      hoverShadow: mix(hoverShadow, other.hoverShadow),
       symbolColor: mix(symbolColor, other.symbolColor),
       symbolPeakOpacity: lerpDouble(
         symbolPeakOpacity,
@@ -187,7 +180,7 @@ class AppText {
       sectionTitle = TextStyle(
         fontFamily: AppFonts.serif,
         fontWeight: FontWeight.w600,
-        fontSize: 28,
+        fontSize: 32,
         height: 1.2,
         color: c.ink,
       ),
@@ -213,14 +206,14 @@ class AppText {
       ),
       body = TextStyle(
         fontFamily: AppFonts.sans,
-        fontSize: 15,
+        fontSize: 16,
         height: 1.6,
         color: c.inkSoft,
       ),
       label = TextStyle(
         fontFamily: AppFonts.mono,
         fontWeight: FontWeight.w500,
-        fontSize: 12,
+        fontSize: 13,
         height: 1.4,
         letterSpacing: 0.4,
         color: c.muted,
@@ -264,7 +257,7 @@ ThemeData buildTheme(AppColors c) {
     fontSize: 14,
   );
   final buttonShape = RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(8),
+    borderRadius: BorderRadius.circular(6),
   );
 
   return ThemeData(

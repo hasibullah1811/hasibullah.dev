@@ -46,3 +46,7 @@ app.*.map.json
 
 # Flutter SDK installed by scripts/vercel-install.sh
 /.flutter-sdk/
+
+# Original (unredacted) paper PDFs. Never commit; only redacted public
+# editions go in web/.
+/assets/paper/

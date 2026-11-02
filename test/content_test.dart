@@ -68,20 +68,116 @@ void main() {
   });
 
   test('StepWise is never described as released', () {
-    final stepwise = portfolio.caseStudies.firstWhere(
-      (c) => c.name == 'StepWise',
-    );
+    final stepwise = portfolio.featured;
+    expect(stepwise.name, 'StepWise');
     expect(stepwise.status, contains('private beta'));
+    expect(stepwise.outcome, 'In private beta. Not yet publicly released.');
     expect(stepwise.links, isEmpty, reason: 'StepWise is not linked');
     final copy = [
       stepwise.tagline,
       stepwise.problem,
+      stepwise.built,
       stepwise.outcome,
-      ...stepwise.work,
     ].join(' ').toLowerCase();
     for (final word in ['launched', 'released the', 'live demo', 'users']) {
       expect(copy, isNot(contains(word)), reason: word);
     }
+  });
+
+  test('projects stay compact', () {
+    expect(portfolio.featured.stack.length, inInclusiveRange(3, 5));
+    expect(portfolio.projects.map((p) => p.name), [
+      'Helping Hand',
+      'Minima',
+      'Prism',
+      'MedWay',
+      'LanDrop',
+    ]);
+    for (final p in portfolio.projects) {
+      expect(p.stack.length, lessThanOrEqualTo(3), reason: p.name);
+      expect(p.bullets.length, lessThanOrEqualTo(2), reason: p.name);
+    }
+  });
+
+  group('research', () {
+    final research = portfolio.research;
+    final projects = research.universityProjects;
+
+    test('only the IJSCM paper is published', () {
+      expect(research.published, hasLength(1));
+      expect(
+        research.published.single.detail,
+        contains('International Journal of Supply Chain Management'),
+      );
+    });
+
+    test('university projects are never called publications', () {
+      expect(research.projectTag, 'Unpublished · University project');
+      for (final p in projects) {
+        final copy = [
+          p.title,
+          p.source,
+          p.summary,
+          p.abstract,
+          ?p.coAuthors,
+        ].join(' ').toLowerCase();
+        for (final word in [
+          'publication',
+          'published',
+          'journal',
+          'conference',
+          'peer review',
+          'doi',
+        ]) {
+          expect(copy, isNot(contains(word)), reason: '${p.slug}: $word');
+        }
+      }
+    });
+
+    test('no student IDs or email addresses', () {
+      for (final p in projects) {
+        final copy = [p.title, p.source, p.summary, p.abstract, ?p.coAuthors];
+        for (final s in copy) {
+          expect(s, isNot(contains('@')), reason: s);
+          expect(s, isNot(matches(RegExp(r'\d{7,}'))), reason: s);
+        }
+      }
+    });
+
+    test('slugs are the approved, permanent ones', () {
+      expect(projects.map((p) => p.slug), [
+        'bengali-text-generation-bloom-lora.pdf',
+        'bengali-lora-bloom-adaptation.pdf',
+        'rag-medical-translation-bengali.pdf',
+      ]);
+      final doc = File('docs/papers.md').readAsStringSync();
+      for (final p in projects) {
+        expect(
+          doc,
+          contains('https://www.hasibullah.dev/${p.slug}'),
+          reason: p.slug,
+        );
+      }
+    });
+
+    test('a PDF is linked only once its redacted file is in web/', () {
+      for (final p in projects) {
+        if (p.pdfUrl case final url?) {
+          expect(url, p.slug);
+          expect(File('web/$url').existsSync(), isTrue, reason: url);
+        }
+      }
+      // Needs the supervisor's consent first.
+      expect(
+        projects.firstWhere((p) => p.slug.contains('adaptation')).pdfUrl,
+        isNull,
+      );
+    });
+
+    test('original PDFs can never be committed', () {
+      final ignore = File('.gitignore').readAsStringSync();
+      expect(ignore, contains('/assets/paper/'));
+    });
   });
 
   test('journey entries are chronological within each chapter', () {
@@ -93,19 +189,16 @@ void main() {
 
   test('every linked local file exists', () {
     final local = [
-      for (final c in portfolio.caseStudies) ...c.links.map((l) => l.url),
+      ...portfolio.featured.links.map((l) => l.url),
+      for (final p in portfolio.projects) ...p.links.map((l) => l.url),
+      for (final p in portfolio.research.universityProjects) ?p.pdfUrl,
       ?profile.cvUrl,
     ].where((u) => !u.contains(':'));
     for (final path in local) {
       expect(File('web/$path').existsSync(), isTrue, reason: path);
     }
-    for (final c in portfolio.caseStudies) {
-      if (c.image case final image?) {
-        expect(File(image).existsSync(), isTrue, reason: image);
-      }
-      if (c.diagram case final diagram?) {
-        expect(File('web/$diagram').existsSync(), isTrue, reason: diagram);
-      }
+    if (portfolio.featured.image case final image?) {
+      expect(File(image).existsSync(), isTrue, reason: image);
     }
   });
 }
@@ -153,25 +246,44 @@ List<String> _allStrings() {
         ...s.stack,
       ],
     ],
-    for (final c in portfolio.caseStudies) ...[
+    for (final c in [portfolio.featured]) ...[
       c.name,
       c.period,
+      c.status,
       c.tagline,
       c.problem,
+      c.built,
       c.outcome,
-      ?c.status,
-      ...c.work,
       ...c.stack,
       ...c.links.map((l) => l.label),
-      ?c.diagramAlt,
+      ?c.imageAlt,
     ],
     for (final pr in portfolio.projects) ...[
       pr.name,
       pr.period,
+      ?pr.status,
       pr.description,
+      ...pr.bullets,
+      ...pr.details,
       ...pr.stack,
+      ...pr.links.map((l) => l.label),
     ],
     for (final g in portfolio.skills) ...[g.name, ...g.items],
-    for (final c in portfolio.credentials) ...[c.kind, c.title, c.detail],
+    for (final c in portfolio.education) ...[c.title, c.detail],
+    for (final p in portfolio.research.published) ...[
+      p.title,
+      p.detail,
+      p.link.label,
+    ],
+    for (final p in portfolio.research.universityProjects) ...[
+      p.title,
+      p.source,
+      p.summary,
+      p.abstract,
+      ?p.coAuthors,
+    ],
+    portfolio.research.projectTag,
+    portfolio.research.pdfOnRequest,
+    portfolio.membership,
   ];
 }

@@ -6,6 +6,46 @@ import '../motion.dart';
 
 bool isCompact(BuildContext context) => MediaQuery.sizeOf(context).width < 600;
 
+/// The one spacing scale. Every gap on the page is one of these.
+abstract final class Space {
+  static const xs = 4.0;
+  static const s = 8.0;
+  static const m = 12.0;
+  static const l = 16.0;
+  static const xl = 24.0;
+  static const xxl = 32.0;
+  static const xxxl = 48.0;
+
+  /// Between sections: compact, then wide screens.
+  static const section = 96.0;
+  static const sectionWide = 128.0;
+}
+
+/// The one set of corner radii.
+abstract final class Radii {
+  /// Cards and images.
+  static const card = 12.0;
+
+  /// Tags, chips and buttons.
+  static const small = 6.0;
+}
+
+/// Body text never runs wider than this (about 65–75 characters).
+const bodyMaxWidth = 640.0;
+
+/// Caps [child] at [bodyMaxWidth].
+class Measure extends StatelessWidget {
+  const Measure({super.key, required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => ConstrainedBox(
+    constraints: const BoxConstraints(maxWidth: bodyMaxWidth),
+    child: child,
+  );
+}
+
 // Links are built on url_launcher's [Link], so on the web each one is a real
 // <a href> (middle-click, copy link, screen-reader "link") wrapped in a
 // focusable Material button for keyboard users.
@@ -147,8 +187,8 @@ class InlineLink extends StatelessWidget {
   }
 }
 
-/// Section label with an accent rule that draws in, then the heading.
-/// The whole header fades and rises as it scrolls into view.
+/// Section label, then the heading. Static: the whole section fades in
+/// once, from the page.
 class SectionHeader extends StatelessWidget {
   const SectionHeader({super.key, required this.eyebrow, required this.title});
 
@@ -159,31 +199,92 @@ class SectionHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = AppText.of(context);
     return Padding(
-      padding: const EdgeInsets.only(bottom: 28),
-      child: ScrollReveal(
-        duration: Motion.draw + Motion.reveal,
-        builder: (context, reveal) => Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IntrinsicWidth(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(eyebrow.toUpperCase(), style: text.eyebrow),
-                  const SizedBox(height: 6),
-                  DrawLine(progress: reveal, start: 0.3),
-                ],
-              ),
+      padding: const EdgeInsets.only(bottom: Space.xxl),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(eyebrow.toUpperCase(), style: text.eyebrow),
+          const SizedBox(height: Space.s),
+          Semantics(
+            header: true,
+            headingLevel: 2,
+            child: Text(
+              title,
+              style: isCompact(context)
+                  ? text.sectionTitle.copyWith(fontSize: 26)
+                  : text.sectionTitle,
             ),
-            const SizedBox(height: 10),
-            Semantics(
-              header: true,
-              headingLevel: 2,
-              child: Text(title, style: text.sectionTitle),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
+    );
+  }
+}
+
+/// A small uppercase label above a group of rows.
+class GroupLabel extends StatelessWidget {
+  const GroupLabel(this.label, {super.key});
+
+  final String label;
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.only(bottom: Space.s),
+    child: Text(label.toUpperCase(), style: AppText.of(context).label),
+  );
+}
+
+/// A text toggle such as "Details" or "Abstract". Closed by default; the
+/// owner keeps the state and shows the content below.
+class DisclosureButton extends StatelessWidget {
+  const DisclosureButton({
+    super.key,
+    required this.label,
+    required this.open,
+    required this.onPressed,
+  });
+
+  final String label;
+  final bool open;
+  final VoidCallback onPressed;
+
+  @override
+  Widget build(BuildContext context) {
+    return Semantics(
+      expanded: open,
+      child: TextButton.icon(
+        onPressed: onPressed,
+        iconAlignment: IconAlignment.end,
+        icon: AnimatedRotation(
+          turns: open ? 0.5 : 0,
+          duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
+          child: const Icon(Icons.expand_more_rounded, size: 18),
+        ),
+        label: Text(label),
+      ),
+    );
+  }
+}
+
+/// Content under a [DisclosureButton]. Takes no space while closed.
+class Disclosed extends StatelessWidget {
+  const Disclosed({super.key, required this.open, required this.child});
+
+  final bool open;
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedSize(
+      duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
+      curve: Motion.curve,
+      alignment: Alignment.topLeft,
+      child: open
+          ? Padding(
+              padding: const EdgeInsets.only(top: Space.xs, bottom: Space.s),
+              child: Measure(child: child),
+            )
+          : const SizedBox(width: double.infinity),
     );
   }
 }
@@ -206,7 +307,7 @@ class TagList extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
               color: c.tint,
-              borderRadius: BorderRadius.circular(6),
+              borderRadius: BorderRadius.circular(Radii.small),
             ),
             child: Text(item, style: label),
           ),
@@ -253,92 +354,32 @@ class BulletList extends StatelessWidget {
   }
 }
 
-/// A card that lifts slightly on hover. Opaque, so text on it never sits on
-/// the background dots or symbols. Light cards gain a soft shadow on hover;
-/// dark cards only a stronger border.
-///
-/// Every card on the site uses [LiftCard.defaultPadding] and
-/// [LiftCard.radius] unless it is a feature card.
-class LiftCard extends StatefulWidget {
-  const LiftCard({
-    super.key,
-    required this.child,
-    this.padding,
-    this.borderColor,
-  });
+/// The one card style: opaque surface, hairline border, no shadow. Opaque,
+/// so text on it never sits on the background dots or symbols.
+class AppCard extends StatelessWidget {
+  const AppCard({super.key, required this.child, this.padding, this.color});
 
   final Widget child;
 
   /// Defaults to [defaultPadding].
   final EdgeInsetsGeometry? padding;
 
-  static const radius = 12.0;
+  /// Defaults to the theme's surface.
+  final Color? color;
 
   static EdgeInsets defaultPadding(BuildContext context) =>
-      EdgeInsets.all(isCompact(context) ? 16 : 18);
-  final Color? borderColor;
-
-  @override
-  State<LiftCard> createState() => _LiftCardState();
-}
-
-class _LiftCardState extends State<LiftCard> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final c = AppColors.of(context);
-    final rest = widget.borderColor ?? c.line;
-    final noShadow = c.hoverShadow.withValues(alpha: 0);
-    // Only the hover amount animates. Colours come straight from the theme,
-    // so a theme switch doesn't start an animation in every card at once.
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: TweenAnimationBuilder<double>(
-        tween: Tween(end: _hovered ? 1 : 0),
-        duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
-        curve: Motion.curve,
-        builder: (context, t, child) => Container(
-          width: double.infinity,
-          transform: Matrix4.translationValues(0, -Motion.lift * t, 0),
-          padding: widget.padding ?? LiftCard.defaultPadding(context),
-          decoration: BoxDecoration(
-            color: c.surface,
-            borderRadius: BorderRadius.circular(LiftCard.radius),
-            border: Border.all(color: Color.lerp(rest, c.lineStrong, t)!),
-            boxShadow: [
-              BoxShadow(
-                color: Color.lerp(noShadow, c.hoverShadow, t)!,
-                blurRadius: 18,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: child,
-        ),
-        child: widget.child,
-      ),
-    );
-  }
-}
-
-class Panel extends StatelessWidget {
-  const Panel({super.key, required this.child, this.color});
-
-  final Widget child;
-  final Color? color;
+      EdgeInsets.all(isCompact(context) ? Space.l : Space.xl);
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.all(isCompact(context) ? 18 : 24),
+      padding: padding ?? defaultPadding(context),
       decoration: BoxDecoration(
         color: color ?? c.surface,
         border: Border.all(color: c.line),
-        borderRadius: BorderRadius.circular(LiftCard.radius),
+        borderRadius: BorderRadius.circular(Radii.card),
       ),
       child: child,
     );
@@ -353,7 +394,7 @@ class EqualGrid extends StatelessWidget {
     super.key,
     required this.columns,
     required this.children,
-    this.gap = 12,
+    this.gap = Space.m,
   });
 
   final int columns;

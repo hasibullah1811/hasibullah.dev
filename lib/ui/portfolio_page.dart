@@ -7,6 +7,7 @@ import 'sections/details.dart';
 import 'sections/hero.dart';
 import 'sections/journey.dart';
 import 'sections/work.dart';
+import 'motion.dart';
 import 'widgets/common.dart';
 import 'widgets/page_background.dart';
 
@@ -52,7 +53,7 @@ class _PortfolioPageState extends State<PortfolioPage> {
     final content = widget.content;
     final compact = isCompact(context);
     final gutter = compact ? 20.0 : 32.0;
-    final gap = SizedBox(height: compact ? 72 : 96);
+    final gap = SizedBox(height: compact ? Space.section : Space.sectionWide);
 
     // The scroll view spans the full window so the wheel works anywhere and
     // the scrollbar sits at the window edge; only the content is constrained.
@@ -89,9 +90,13 @@ class _PortfolioPageState extends State<PortfolioPage> {
                           SizedBox(height: compact ? 40 : 64),
                           HeroSection(profile: content.profile),
                           gap,
+                          // One gentle fade per section. The Journey runs
+                          // its own animation, so it is not wrapped.
                           KeyedSubtree(
                             key: _aboutKey,
-                            child: AboutSection(about: content.about),
+                            child: ScrollReveal(
+                              child: AboutSection(about: content.about),
+                            ),
                           ),
                           gap,
                           KeyedSubtree(
@@ -101,22 +106,39 @@ class _PortfolioPageState extends State<PortfolioPage> {
                           gap,
                           KeyedSubtree(
                             key: _workKey,
-                            child: WorkSection(
-                              caseStudies: content.caseStudies,
-                              projects: content.projects,
+                            child: ScrollReveal(
+                              child: WorkSection(
+                                featured: content.featured,
+                                projects: content.projects,
+                              ),
                             ),
                           ),
                           gap,
                           KeyedSubtree(
                             key: _skillsKey,
-                            child: SkillsSection(groups: content.skills),
+                            child: ScrollReveal(
+                              child: SkillsSection(groups: content.skills),
+                            ),
                           ),
                           gap,
-                          CredentialsSection(credentials: content.credentials),
+                          ScrollReveal(
+                            child: EducationSection(
+                              education: content.education,
+                            ),
+                          ),
+                          gap,
+                          ScrollReveal(
+                            child: ResearchSection(
+                              research: content.research,
+                              membership: content.membership,
+                            ),
+                          ),
                           gap,
                           KeyedSubtree(
                             key: _contactKey,
-                            child: ContactSection(profile: content.profile),
+                            child: ScrollReveal(
+                              child: ContactSection(profile: content.profile),
+                            ),
                           ),
                           const SizedBox(height: 40),
                           SiteFooter(profile: content.profile),

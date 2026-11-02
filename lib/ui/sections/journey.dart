@@ -333,7 +333,7 @@ class _JourneySectionState extends State<JourneySection>
           padding: const EdgeInsets.only(bottom: 16),
           child: _reveal(
             row,
-            (reveal) => LiftCard(
+            (reveal) => AppCard(
               child: StopContent(stop: row.stop!, reveal: reveal),
             ),
           ),
