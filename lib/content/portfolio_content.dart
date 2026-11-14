@@ -171,104 +171,88 @@ const portfolio = PortfolioContent(
       ),
     ],
   ),
-  caseStudies: [
-    CaseStudy(
-      name: 'StepWise',
-      period: 'Since Nov 2025',
-      status: 'In development · private beta',
-      featured: true,
-      tagline: 'A personal guide to settling in Australia.',
-      problem:
-          'When I moved to Australia, working out visas and jobs meant a lot '
-          'of confused Googling. StepWise is the tool I wanted then: describe '
-          'your situation and get a clear, step-by-step plan.',
-      work: [
-        'Designing and building the whole product myself, from the Flutter '
-            'front end to the API and database.',
-        'Turning a person\'s situation into a personalised AI action plan '
-            'that covers visas and jobs.',
-        'Building the FastAPI backend and PostgreSQL data model for the web '
-            'beta first, so a mobile app can follow on the same backend.',
+  featured: CaseStudy(
+    name: 'StepWise',
+    period: 'Since Nov 2025',
+    status: 'In development · private beta',
+    tagline: 'A personal guide to settling in Australia.',
+    problem:
+        'When I moved to Australia, working out visas and jobs meant a lot of '
+        'confused Googling.',
+    built:
+        'The whole product on my own: a Flutter front end, a FastAPI and '
+        'PostgreSQL backend, and an AI step that turns a person\'s situation '
+        'into a step-by-step plan for visas and jobs.',
+    outcome: 'In private beta. Not yet publicly released.',
+    stack: ['Flutter', 'FastAPI', 'PostgreSQL', 'Gemini on Vertex AI'],
+    // Not linked while in development / private beta.
+    links: [],
+    image: 'assets/images/stepwise.jpg',
+    imageAlt:
+        'StepWise landing page: "Your Personal Guide to Settling in '
+        'Australia", with a prompt box asking for the steps to get a 485 '
+        'Graduate Visa.',
+  ),
+  projects: [
+    Project(
+      name: 'Helping Hand',
+      period: 'Jul 2020',
+      description:
+          'A COVID-19 lockdown app matching people who needed help with local '
+          'volunteers. 2,000 active users and 50+ help requests a day.',
+      stack: ['Flutter', 'Flask', 'Firebase'],
+      // TODO(confirm): which repo — this one (linked from the resume) or
+      // Helping-hand-CSE115-Project.
+      links: [
+        LinkItem(
+          'Code',
+          'https://github.com/hasibullah1811/covid-19-helping-hand-find-help-nearby',
+        ),
       ],
-      stack: ['Flutter', 'FastAPI', 'PostgreSQL', 'Gemini on Vertex AI'],
-      outcome: 'In private beta. Not yet publicly released.',
-      // Not linked while in development / private beta.
-      links: [],
-      image: 'assets/images/stepwise.jpg',
-      imageAlt:
-          'StepWise landing page: "Your Personal Guide to Settling in '
-          'Australia", with a prompt box asking for the steps to get a 485 '
-          'Graduate Visa.',
     ),
-    CaseStudy(
+    Project(
       name: 'Minima',
       period: 'Ongoing',
       status: 'Open source',
-      tagline: 'The invisible mechanics of machine learning, made visible.',
-      problem:
-          'Machine learning is usually taught as formulas and black boxes, '
-          'which makes it hard to build intuition for what an algorithm is '
-          'actually doing.',
-      work: [
-        'Building an interactive curriculum where each lesson pairs readable '
-            'MDX with sandboxes that run in the browser.',
-        'Letting readers change data, hyperparameters and geometry directly '
-            'and watch the algorithm respond.',
+      description:
+          'An interactive machine learning course: readable lessons with '
+          'sandboxes that run in the browser.',
+      stack: ['TypeScript', 'Next.js', 'MDX'],
+      details: [
+        'Machine learning is usually taught as formulas and black boxes, '
+            'which makes it hard to build intuition for what an algorithm is '
+            'actually doing.',
+        'Readers change data, hyperparameters and geometry directly and '
+            'watch the algorithm respond.',
       ],
-      stack: ['TypeScript', 'Next.js', 'MDX', 'd3'],
-      outcome: 'Live and in active development.',
       links: [
         LinkItem('Live site', 'https://www.tryminima.com/'),
         LinkItem('Code', 'https://github.com/hasibullah1811/minima'),
         LinkItem('Architecture', 'img/minima-architecture.png'),
       ],
-      diagram: 'img/minima-architecture.png',
-      diagramAlt:
-          'Minima architecture: GitHub and Porkbun DNS deploy to Vercel; a '
-          'Next.js 15 app routes to MDX lessons, whose interactive components '
-          'run React state through d3-delaunay into native SVG.',
     ),
-    CaseStudy(
+    Project(
       name: 'Prism',
       period: 'Jan 2026',
       status: 'Open source',
       // TODO(confirm): framing — this copy combines the old site's
       // description (vector matches, token attribution) and the repo's
       // (auditing text-splitting before embeddings).
-      tagline: 'Opening the black box of RAG pipelines.',
-      problem:
-          'Chunking and retrieval choices make or break a RAG system, but they '
-          'are hard to see, especially before you pay for embeddings.',
-      work: [
-        'Built a React app with a Python (FastAPI) backend that shows how '
-            'text is split, embedded and matched.',
-        'Added scatter plots and map views to track vector matches, and JSON '
-            'export of token attribution data for offline analysis.',
+      description:
+          'A visual tool that shows how a RAG pipeline splits, embeds and '
+          'matches text.',
+      stack: ['React', 'FastAPI', 'LangChain'],
+      details: [
+        'Chunking and retrieval choices make or break a RAG system, but they '
+            'are hard to see, especially before you pay for embeddings.',
+        'Scatter plots and map views track vector matches, and token '
+            'attribution data exports as JSON for offline analysis.',
       ],
-      stack: ['React', 'Python', 'FastAPI', 'LangChain', 'scikit-learn'],
-      outcome: 'Open source with a public live demo.',
       links: [
         LinkItem('Live demo', 'https://prism-xi-three.vercel.app/'),
         LinkItem('Code', 'https://github.com/hasibullah1811/prism'),
         LinkItem('Architecture', 'img/prism-architecture.png'),
       ],
-      diagram: 'img/prism-architecture.png',
-      diagramAlt:
-          'Prism architecture: a React client on Vercel posts text to a '
-          'FastAPI server on Render, which runs LangChain, Tiktoken and '
-          'scikit-learn PCA and returns vectors, tokens and scores as JSON.',
-    ),
-  ],
-  projects: [
-    Project(
-      name: 'LanDrop',
-      period: 'May 2026',
-      description:
-          'Zero-configuration file sharing and media streaming on your local '
-          'network, with real-time sync, HTTP video streaming and a TV-friendly '
-          'interface.',
-      stack: ['Python', 'JavaScript'],
-      links: [LinkItem('Code', 'https://github.com/hasibullah1811/landrop')],
     ),
     Project(
       name: 'MedWay',
@@ -276,22 +260,19 @@ const portfolio = PortfolioContent(
       description:
           'A medicine delivery app for Bangladesh, built end to end from the '
           'mobile app to launch.',
+      // TODO(confirm): back end. Only two tags until it is known.
       stack: ['Flutter', 'Dart'],
       links: [LinkItem('Code', 'https://github.com/hasibullah1811/medway')],
     ),
     Project(
-      name: 'Helping Hand',
-      period: 'Jul 2020',
+      name: 'LanDrop',
+      period: 'May 2026',
       description:
-          'A COVID-19 lockdown app matching people who needed help with local '
-          'volunteers. 2,000 active users and 50+ help requests a day.',
-      stack: ['Flutter', 'Python', 'Flask', 'Firebase'],
-      links: [
-        LinkItem(
-          'Code',
-          'https://github.com/hasibullah1811/covid-19-helping-hand-find-help-nearby',
-        ),
-      ],
+          'Zero-configuration file sharing and media streaming on a local '
+          'network, with a TV-friendly interface.',
+      // TODO(confirm): stack.
+      stack: ['Python', 'JavaScript'],
+      links: [LinkItem('Code', 'https://github.com/hasibullah1811/landrop')],
     ),
   ],
   skills: [
@@ -333,36 +314,98 @@ const portfolio = PortfolioContent(
       'Linux',
     ]),
   ],
-  credentials: [
+  education: [
     Credential(
-      kind: 'Education',
       title: 'Master of Information Technology in Artificial Intelligence',
       detail: 'Macquarie University · Sydney, NSW · 2026',
     ),
     Credential(
-      kind: 'Education',
       title: 'Bachelor of Science in Computer Science and Engineering',
       detail: 'North South University · Dhaka, Bangladesh · 2023',
     ),
-    Credential(
-      kind: 'Membership',
-      title: 'Australian Computer Society (ACS)',
-      detail: 'Member',
-    ),
-    // Full width, in its own row below the three cards above.
-    Credential(
-      kind: 'Publication',
-      title:
-          'Deep learning to aid prescription processing & inventory management '
-          'for local pharmacies through smartphone application',
-      detail:
-          'International Journal of Supply Chain Management, Vol. 10, No. 4, '
-          'Aug 2021 · Primary author',
-      link: LinkItem(
-        'Read the paper',
-        'https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037',
-      ),
-      wide: true,
-    ),
   ],
+  research: Research(
+    published: [
+      Publication(
+        title:
+            'Deep learning to aid prescription processing & inventory '
+            'management for local pharmacies through smartphone application',
+        detail:
+            'International Journal of Supply Chain Management, Vol. 10, '
+            'No. 4, Aug 2021 · Primary author',
+        link: LinkItem(
+          'Read the paper',
+          'https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037',
+        ),
+      ),
+    ],
+    // Unpublished course papers: no venue, DOI or peer review. Never call
+    // them publications. Slugs are permanent (docs/papers.md). pdfUrl stays
+    // null until a redacted public edition is added under web/.
+    //
+    // TODO(confirm): co-authors have not yet agreed to be named.
+    universityProjects: [
+      ResearchProject(
+        title:
+            'Optimizing Bengali Text Generation: A Study on Fine-Tuning '
+            'BLOOM-560m with Reduced Parameters for Next Word Prediction',
+        source: 'North South University · CSE 498R Directed Research · 2023',
+        coAuthors: 'Samira Ali and Irfanuddin Ahmed',
+        summary:
+            'Teaching a multilingual language model to predict the next word '
+            'in Bengali by training only a tiny fraction of it.',
+        abstract:
+            'Applied LoRA (Low-Rank Adaptation) to the multilingual BLOOM-560m '
+            'model for Bengali, with only 0.28% of its parameters trainable. '
+            'On a limited Bengali dataset, the adapted model produced more '
+            'coherent, context-aware text than the baseline.',
+        slug: 'bengali-text-generation-bloom-lora.pdf',
+      ),
+      ResearchProject(
+        title:
+            'Enhancing Bengali Language Processing: LoRA-Driven Adaptation in '
+            'BLOOM',
+        source: 'North South University · Senior Design Project · 2023',
+        coAuthors: 'Samira Ali and Irfanuddin Ahmed',
+        summary:
+            'Cutting the trainable part of a 3-billion-parameter model to 4.9 '
+            'million parameters while keeping its Bengali performance.',
+        abstract:
+            'Combined quantization with LoRA to reduce BLOOM\'s trainable '
+            'parameters from 3 billion to 4.9 million (0.16%) with comparable '
+            'performance. Covered next-word prediction, question answering '
+            'and conversation, using the Bangla2B+ dataset, a proprietary '
+            'conversational dataset and more than 300,000 articles. The '
+            'adapted model reached lower perplexity than the original.',
+        slug: 'bengali-lora-bloom-adaptation.pdf',
+        // Do not set pdfUrl until the owner confirms the supervisor's
+        // consent: the report's declaration requires it before disclosure.
+      ),
+      ResearchProject(
+        title:
+            'Domain Transfer for Low-Resource Machine Translation using RAG: '
+            'Solving Retrieval Noise in Clinical English-to-Bengali '
+            'Translation',
+        source: 'Macquarie University · COMP8851 Major Project · 2026',
+        // TODO(confirm): spelling — the cover says "Purayi", the
+        // contribution table "Purayil".
+        coAuthors: 'Rahba Basheer Vayal Purayil',
+        summary:
+            'Using retrieval to get medical terms right in English-to-Bengali '
+            'translation, and studying the grammar problems it can cause.',
+        abstract:
+            'Built a RAG pipeline with Pinecone retrieval, semantic '
+            'embeddings and a quantized Qwen2.5 model, evaluated with BLEU, '
+            'chrF++, BERTScore, glossary matching and a qualitative fluency '
+            'review. Retrieval improved medical terminology but disrupted '
+            'Bengali grammar, a problem the project calls "context '
+            'distraction". Prompt engineering and retrieval optimisation were '
+            'tested to reduce it.',
+        slug: 'rag-medical-translation-bengali.pdf',
+      ),
+    ],
+    projectTag: 'Unpublished · University project',
+    pdfOnRequest: 'PDF available on request',
+  ),
+  membership: 'Member, Australian Computer Society (ACS)',
 );

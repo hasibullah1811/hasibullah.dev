@@ -8,7 +8,7 @@ Live: https://www.hasibullah.dev/
 ## Editing content
 
 All copy lives in **`lib/content/portfolio_content.dart`**: profile, journey,
-case studies, projects, skills and credentials. It is plain data, so no UI
+projects, skills, education and research. It is plain data, so no UI
 code needs to change. `docs/facts.md` is the human-readable source of truth
 the content must match.
 

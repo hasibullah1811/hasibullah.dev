@@ -1,26 +1,19 @@
 import 'package:flutter/material.dart';
 
-import '../theme.dart';
-
-/// The Journey section's motion language, shared by every section.
+/// The site's motion language. Only the Journey animation, the background
+/// symbols, the theme transition, the About count-up and one fade per
+/// section move; nothing animates per card.
 class Motion {
-  /// Fade-and-rise for anything entering the page.
+  /// Fade-and-rise for a section entering the page.
   static const reveal = Duration(milliseconds: 450);
 
   /// Reveals that also count numbers up (the fade takes the first 30%).
   static const revealWithCount = Duration(milliseconds: 1500);
-
-  /// Lines that draw in (section labels, card rules).
-  static const draw = Duration(milliseconds: 700);
   static const hover = Duration(milliseconds: 180);
   static const curve = Curves.easeOut;
-  static const drawCurve = Curves.easeOutCubic;
 
-  /// How far content rises while it fades in.
+  /// How far a section rises while it fades in.
   static const rise = 14.0;
-
-  /// How far a card lifts on hover.
-  static const lift = 3.0;
 
   static bool reduced(BuildContext context) =>
       MediaQuery.disableAnimationsOf(context);
@@ -39,8 +32,9 @@ bool isOnScreen(BuildContext context, {double inset = 0}) {
 /// Fades and rises its child once, when it first scrolls into view.
 ///
 /// [builder] also receives the reveal animation (0 to 1 over [duration]) so
-/// children can draw lines or count numbers as the section arrives. With
-/// reduced motion the animation starts complete.
+/// children can count numbers up as they arrive. With [fade] false only that
+/// animation runs and the child stays still. With reduced motion the
+/// animation starts complete.
 class ScrollReveal extends StatefulWidget {
   const ScrollReveal({
     super.key,
@@ -48,6 +42,7 @@ class ScrollReveal extends StatefulWidget {
     this.builder,
     this.duration = Motion.reveal,
     this.delay = Duration.zero,
+    this.fade = true,
   }) : assert(child != null || builder != null);
 
   final Widget? child;
@@ -55,6 +50,7 @@ class ScrollReveal extends StatefulWidget {
   builder;
   final Duration duration;
   final Duration delay;
+  final bool fade;
 
   @override
   State<ScrollReveal> createState() => _ScrollRevealState();
@@ -134,6 +130,7 @@ class _ScrollRevealState extends State<ScrollReveal>
   @override
   Widget build(BuildContext context) {
     final child = widget.builder?.call(context, _controller) ?? widget.child!;
+    if (!widget.fade) return child;
     // Hidden content stays in the semantics tree and stays selectable.
     return FadeTransition(
       opacity: _fade,
@@ -148,68 +145,4 @@ class _ScrollRevealState extends State<ScrollReveal>
       ),
     );
   }
-}
-
-/// An accent rule that draws from left to right as [progress] runs.
-class DrawLine extends StatelessWidget {
-  const DrawLine({
-    super.key,
-    required this.progress,
-    this.width,
-    this.thickness = 2,
-    this.color,
-    this.start = 0.25,
-  });
-
-  final Animation<double> progress;
-
-  /// Full width when drawn; null fills the available width.
-  final double? width;
-  final double thickness;
-
-  /// Defaults to the theme's accent.
-  final Color? color;
-
-  /// Where in [progress] the line starts drawing.
-  final double start;
-
-  @override
-  Widget build(BuildContext context) {
-    final drawn = CurvedAnimation(
-      parent: progress,
-      curve: Interval(start, 1, curve: Motion.drawCurve),
-    );
-    return ExcludeSemantics(
-      child: SizedBox(
-        width: width ?? double.infinity,
-        height: thickness,
-        child: CustomPaint(
-          painter: _LinePainter(drawn, color ?? AppColors.of(context).accent),
-        ),
-      ),
-    );
-  }
-}
-
-class _LinePainter extends CustomPainter {
-  _LinePainter(this.progress, this.color) : super(repaint: progress);
-
-  final Animation<double> progress;
-  final Color color;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    if (progress.value <= 0) return;
-    canvas.drawRRect(
-      RRect.fromRectAndRadius(
-        Rect.fromLTWH(0, 0, size.width * progress.value, size.height),
-        Radius.circular(size.height / 2),
-      ),
-      Paint()..color = color,
-    );
-  }
-
-  @override
-  bool shouldRepaint(_LinePainter old) =>
-      old.progress != progress || old.color != color;
 }

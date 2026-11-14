@@ -2,17 +2,18 @@ import 'package:flutter/material.dart';
 
 import '../../content/models.dart';
 import '../../theme.dart';
-import '../motion.dart';
 import '../widgets/common.dart';
 
+/// StepWise as the one featured block, then every other project as a
+/// compact row separated by hairlines. No cards, no per-row motion.
 class WorkSection extends StatelessWidget {
   const WorkSection({
     super.key,
-    required this.caseStudies,
+    required this.featured,
     required this.projects,
   });
 
-  final List<CaseStudy> caseStudies;
+  final CaseStudy featured;
   final List<Project> projects;
 
   @override
@@ -20,90 +21,67 @@ class WorkSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SectionHeader(eyebrow: 'Work', title: 'Case studies'),
-        for (final study in caseStudies) ...[
-          // The featured card runs its own reveal (with a drawn rule).
-          study.featured
-              ? _CaseStudyCard(study)
-              : ScrollReveal(child: _CaseStudyCard(study)),
-          const SizedBox(height: 20),
-        ],
-        const SizedBox(height: 28),
-        ScrollReveal(
-          child: Text(
-            'Earlier and smaller projects',
-            style: AppText.of(context).cardTitle,
-          ),
-        ),
-        const SizedBox(height: 16),
-        _ProjectGrid(projects),
+        const SectionHeader(eyebrow: 'Work', title: 'Projects'),
+        _Featured(featured),
+        const SizedBox(height: Space.xxxl),
+        const GroupLabel('More projects'),
+        for (final project in projects) _ProjectRow(project),
       ],
     );
   }
 }
 
-class _CaseStudyCard extends StatelessWidget {
-  const _CaseStudyCard(this.study);
+class _Featured extends StatelessWidget {
+  const _Featured(this.study);
 
   final CaseStudy study;
 
   @override
   Widget build(BuildContext context) {
-    final status = study.status;
     final image = study.image;
-    final diagram = study.diagram;
-    final featured = study.featured;
-    final compact = isCompact(context);
     final c = AppColors.of(context);
     final text = AppText.of(context);
-
-    final body = Column(
+    return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Wrap(
-          spacing: 10,
-          runSpacing: 6,
+          spacing: Space.m,
+          runSpacing: Space.s,
           crossAxisAlignment: WrapCrossAlignment.center,
           children: [
-            if (featured)
-              Text('FEATURED', style: text.eyebrow.copyWith(fontSize: 11)),
-            if (status != null)
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
-                decoration: BoxDecoration(
-                  color: c.accentSoft,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: Text(
-                  status,
-                  style: text.label.copyWith(color: c.accent),
-                ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: Space.s,
+                vertical: Space.xs,
               ),
+              decoration: BoxDecoration(
+                color: c.accentSoft,
+                borderRadius: BorderRadius.circular(Radii.small),
+              ),
+              child: Text(
+                study.status,
+                style: text.label.copyWith(color: c.accent),
+              ),
+            ),
             Text(study.period, style: text.label),
           ],
         ),
-        const SizedBox(height: 12),
+        const SizedBox(height: Space.m),
         Semantics(
           header: true,
           headingLevel: 3,
-          child: Text(
-            study.name,
-            style: featured
-                ? text.sectionTitle.copyWith(fontSize: compact ? 28 : 32)
-                : text.cardTitle,
-          ),
+          child: Text(study.name, style: text.cardTitle),
         ),
-        const SizedBox(height: 4),
-        Text(
-          study.tagline,
-          style: text.lead.copyWith(fontSize: featured ? 18 : 17),
+        const SizedBox(height: Space.xs),
+        Measure(
+          child: Text(study.tagline, style: text.body.copyWith(color: c.ink)),
         ),
         if (image != null) ...[
-          const SizedBox(height: 20),
+          const SizedBox(height: Space.xl),
           Container(
             decoration: BoxDecoration(
               border: Border.all(color: c.line),
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(Radii.card),
             ),
             clipBehavior: Clip.antiAlias,
             child: AspectRatio(
@@ -116,214 +94,159 @@ class _CaseStudyCard extends StatelessWidget {
             ),
           ),
         ],
-        if (diagram != null) ...[
-          const SizedBox(height: 20),
-          _Diagram(url: diagram, alt: study.diagramAlt),
-        ],
-        const SizedBox(height: 20),
-        _Part(
-          label: 'Problem',
-          child: Text(study.problem, style: text.body),
-        ),
-        _Part(label: 'What I did', child: BulletList(study.work)),
-        _Part(
-          label: 'Outcome',
-          child: Text(study.outcome, style: text.body),
-        ),
+        const SizedBox(height: Space.xl),
+        _Fact(label: 'Problem', text: study.problem),
+        _Fact(label: 'What I built', text: study.built),
+        _Fact(label: 'Outcome', text: study.outcome),
+        const SizedBox(height: Space.s),
         TagList(study.stack),
         if (study.links.isNotEmpty) ...[
-          const SizedBox(height: 12),
-          Wrap(
-            spacing: 4,
-            children: [
-              for (final link in study.links)
-                InlineLink(label: link.label, url: link.url),
-            ],
-          ),
+          const SizedBox(height: Space.s),
+          _Links(study.links),
         ],
       ],
     );
-
-    final padding = EdgeInsets.all(compact ? 18 : (featured ? 28 : 24));
-    if (!featured) return LiftCard(padding: padding, child: body);
-
-    // The lead card: an accent rule draws across the top as it arrives.
-    return ScrollReveal(
-      duration: Motion.draw + Motion.reveal,
-      builder: (context, reveal) => LiftCard(
-        padding: EdgeInsets.zero,
-        borderColor: c.lineStrong,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(11),
-              ),
-              child: DrawLine(progress: reveal, thickness: 3, start: 0.3),
-            ),
-            Padding(padding: padding, child: body),
-          ],
-        ),
-      ),
-    );
   }
 }
 
-/// An architecture diagram in a fixed window. It loads only once scrolled
-/// near, fades in, and on hover pans slowly to show the rest of the image.
-/// The "Architecture" link still opens it full size.
-class _Diagram extends StatefulWidget {
-  const _Diagram({required this.url, this.alt});
-
-  final String url;
-  final String? alt;
-
-  @override
-  State<_Diagram> createState() => _DiagramState();
-}
-
-class _DiagramState extends State<_Diagram> {
-  bool _hovered = false;
-
-  @override
-  Widget build(BuildContext context) {
-    final reduced = Motion.reduced(context);
-    final c = AppColors.of(context);
-    return MouseRegion(
-      onEnter: (_) => setState(() => _hovered = true),
-      onExit: (_) => setState(() => _hovered = false),
-      child: Container(
-        decoration: BoxDecoration(
-          color: c.surface,
-          border: Border.all(color: c.line),
-          borderRadius: BorderRadius.circular(8),
-        ),
-        clipBehavior: Clip.antiAlias,
-        child: AspectRatio(
-          aspectRatio: 16 / 9,
-          child: ScrollReveal(
-            builder: (context, reveal) => reveal.isDismissed && !reduced
-                // Not near the viewport yet: reserve the space, skip the
-                // download.
-                ? const SizedBox.expand()
-                : TweenAnimationBuilder<Alignment>(
-                    tween: AlignmentTween(
-                      end: _hovered && !reduced
-                          ? Alignment.bottomCenter
-                          : Alignment.topCenter,
-                    ),
-                    duration: const Duration(milliseconds: 2400),
-                    curve: Curves.easeInOutCubic,
-                    builder: (context, alignment, _) => Image.network(
-                      widget.url,
-                      fit: BoxFit.fitWidth,
-                      alignment: alignment,
-                      semanticLabel: widget.alt,
-                      filterQuality: FilterQuality.medium,
-                      // Fades in once decoded instead of popping in.
-                      frameBuilder: (context, child, frame, sync) =>
-                          sync || reduced
-                          ? child
-                          : AnimatedOpacity(
-                              opacity: frame == null ? 0 : 1,
-                              duration: Motion.reveal,
-                              curve: Motion.curve,
-                              child: child,
-                            ),
-                      errorBuilder: (context, error, stack) => Center(
-                        child: Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Text(
-                            widget.alt ?? 'Architecture diagram',
-                            style: AppText.of(context).label,
-                            textAlign: TextAlign.center,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class _Part extends StatelessWidget {
-  const _Part({required this.label, required this.child});
+/// A label beside one line of text on wide screens, above it on phones.
+class _Fact extends StatelessWidget {
+  const _Fact({required this.label, required this.text});
 
   final String label;
-  final Widget child;
+  final String text;
 
   @override
   Widget build(BuildContext context) {
-    final text = AppText.of(context);
+    final compact = isCompact(context);
+    final style = AppText.of(context);
+    final body = Measure(child: Text(text, style: style.body));
     return Padding(
-      padding: const EdgeInsets.only(bottom: 16),
-      child: Column(
+      padding: const EdgeInsets.only(bottom: Space.l),
+      child: Flex(
+        direction: compact ? Axis.vertical : Axis.horizontal,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label.toUpperCase(), style: text.label),
-          const SizedBox(height: 6),
-          child,
+          SizedBox(
+            width: compact ? null : 120,
+            child: Padding(
+              padding: EdgeInsets.only(
+                top: compact ? 0 : 3,
+                bottom: compact ? Space.xs : 0,
+              ),
+              child: Text(label.toUpperCase(), style: style.label),
+            ),
+          ),
+          if (compact) body else Expanded(child: body),
         ],
       ),
     );
   }
 }
 
-class _ProjectGrid extends StatelessWidget {
-  const _ProjectGrid(this.projects);
-
-  final List<Project> projects;
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        for (final project in projects) ...[
-          ScrollReveal(child: _ProjectCard(project)),
-          const SizedBox(height: 12),
-        ],
-      ],
-    );
-  }
-}
-
-class _ProjectCard extends StatelessWidget {
-  const _ProjectCard(this.project);
+class _ProjectRow extends StatefulWidget {
+  const _ProjectRow(this.project);
 
   final Project project;
 
   @override
+  State<_ProjectRow> createState() => _ProjectRowState();
+}
+
+class _ProjectRowState extends State<_ProjectRow> {
+  bool _open = false;
+
+  @override
   Widget build(BuildContext context) {
+    final project = widget.project;
+    final c = AppColors.of(context);
     final text = AppText.of(context);
-    return LiftCard(
-      padding: EdgeInsets.all(isCompact(context) ? 18 : 24),
+    final meta = [project.period, ?project.status].join(' · ');
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(vertical: Space.xl),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: c.line)),
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(project.period, style: text.label),
-          const SizedBox(height: 6),
-          Semantics(
-            header: true,
-            headingLevel: 3,
-            child: Text(project.name, style: text.title.copyWith(fontSize: 17)),
-          ),
-          const SizedBox(height: 6),
-          Text(project.description, style: text.body),
-          const SizedBox(height: 12),
-          TagList(project.stack),
-          const SizedBox(height: 4),
           Wrap(
+            spacing: Space.m,
+            runSpacing: Space.xs,
+            crossAxisAlignment: WrapCrossAlignment.end,
             children: [
-              for (final link in project.links)
-                InlineLink(label: link.label, url: link.url),
+              Semantics(
+                header: true,
+                headingLevel: 3,
+                child: Text(project.name, style: text.title),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(bottom: 2),
+                child: Text(meta, style: text.label),
+              ),
             ],
           ),
+          const SizedBox(height: Space.xs),
+          Measure(child: Text(project.description, style: text.body)),
+          if (project.bullets.isNotEmpty) ...[
+            const SizedBox(height: Space.s),
+            Measure(child: BulletList(project.bullets)),
+          ],
+          const SizedBox(height: Space.m),
+          TagList(project.stack),
+          if (project.links.isNotEmpty || project.details.isNotEmpty) ...[
+            const SizedBox(height: Space.xs),
+            Transform.translate(
+              // Text buttons carry their own padding; align their text with
+              // the column edge.
+              offset: const Offset(-Space.s, 0),
+              child: Wrap(
+                crossAxisAlignment: WrapCrossAlignment.center,
+                children: [
+                  for (final link in project.links)
+                    InlineLink(label: link.label, url: link.url),
+                  if (project.details.isNotEmpty)
+                    DisclosureButton(
+                      label: 'Details',
+                      open: _open,
+                      onPressed: () => setState(() => _open = !_open),
+                    ),
+                ],
+              ),
+            ),
+          ],
+          if (project.details.isNotEmpty)
+            Disclosed(
+              open: _open,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  for (final (i, line) in project.details.indexed) ...[
+                    if (i > 0) const SizedBox(height: Space.s),
+                    Text(line, style: text.body),
+                  ],
+                ],
+              ),
+            ),
         ],
       ),
     );
   }
+}
+
+class _Links extends StatelessWidget {
+  const _Links(this.links);
+
+  final List<LinkItem> links;
+
+  @override
+  Widget build(BuildContext context) => Transform.translate(
+    offset: const Offset(-Space.s, 0),
+    child: Wrap(
+      children: [
+        for (final link in links) InlineLink(label: link.label, url: link.url),
+      ],
+    ),
+  );
 }

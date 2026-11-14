@@ -20,21 +20,20 @@ class AboutSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         SectionHeader(eyebrow: 'About', title: about.title),
-        ScrollReveal(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 640),
-            child: Text(about.text, style: text.lead.copyWith(fontSize: 17)),
-          ),
+        Measure(
+          child: Text(about.text, style: text.lead.copyWith(fontSize: 17)),
         ),
-        const SizedBox(height: 28),
+        const SizedBox(height: Space.xxl),
+        // The section fades in from the page; this only drives the count.
         ScrollReveal(
+          fade: false,
           duration: Motion.revealWithCount,
           builder: (context, reveal) => LayoutBuilder(
             builder: (context, constraints) => EqualGrid(
               columns: constraints.maxWidth >= 600 ? 4 : 2,
               children: [
                 for (final metric in about.metrics)
-                  LiftCard(
+                  AppCard(
                     child: CountUpMetric(metric: metric, reveal: reveal),
                   ),
               ],

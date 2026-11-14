@@ -24,32 +24,30 @@ class SkillsSection extends StatelessWidget {
       children: [
         const SectionHeader(eyebrow: 'Skills', title: 'What I work with'),
         for (final group in groups)
-          ScrollReveal(
-            child: Padding(
-              padding: const EdgeInsets.only(bottom: 18),
-              child: Flex(
-                direction: compact ? Axis.vertical : Axis.horizontal,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: compact ? null : 180,
-                    child: Padding(
-                      padding: EdgeInsets.only(
-                        top: compact ? 0 : 5,
-                        bottom: compact ? 8 : 0,
-                      ),
-                      child: Text(
-                        group.name,
-                        style: text.title.copyWith(fontSize: 15),
-                      ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: Space.l),
+            child: Flex(
+              direction: compact ? Axis.vertical : Axis.horizontal,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                SizedBox(
+                  width: compact ? null : 180,
+                  child: Padding(
+                    padding: EdgeInsets.only(
+                      top: compact ? 0 : 5,
+                      bottom: compact ? 8 : 0,
+                    ),
+                    child: Text(
+                      group.name,
+                      style: text.title.copyWith(fontSize: 15),
                     ),
                   ),
-                  if (compact)
-                    TagList(group.items)
-                  else
-                    Expanded(child: TagList(group.items)),
-                ],
-              ),
+                ),
+                if (compact)
+                  TagList(group.items)
+                else
+                  Expanded(child: TagList(group.items)),
+              ],
             ),
           ),
       ],
@@ -57,90 +55,194 @@ class SkillsSection extends StatelessWidget {
   }
 }
 
-/// Education and membership as three equal cards, then the publication as
-/// one full-width card. Every card has the same padding, radius and
-/// spacing, and an accent rule that draws in as it arrives.
-class CredentialsSection extends StatelessWidget {
-  const CredentialsSection({super.key, required this.credentials});
+/// The two degrees as equal cards: side by side on wide screens, stacked
+/// on phones.
+class EducationSection extends StatelessWidget {
+  const EducationSection({super.key, required this.education});
 
-  final List<Credential> credentials;
-
-  @override
-  Widget build(BuildContext context) {
-    final narrow = [
-      for (final c in credentials)
-        if (!c.wide) c,
-    ];
-    final wide = [
-      for (final c in credentials)
-        if (c.wide) c,
-    ];
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const SectionHeader(
-          eyebrow: 'Credentials',
-          title: 'Education, research and membership',
-        ),
-        LayoutBuilder(
-          builder: (context, constraints) {
-            final columns = constraints.maxWidth >= 600
-                ? narrow.length.clamp(1, 3)
-                : 1;
-            return EqualGrid(
-              columns: columns,
-              children: [
-                for (final (i, item) in narrow.indexed)
-                  ScrollReveal(
-                    duration: Motion.draw + Motion.reveal,
-                    delay: Duration(milliseconds: 80 * (i % columns)),
-                    builder: (context, reveal) =>
-                        _CredentialCard(item, reveal: reveal),
-                  ),
-              ],
-            );
-          },
-        ),
-        for (final item in wide) ...[
-          const SizedBox(height: 12),
-          ScrollReveal(
-            duration: Motion.draw + Motion.reveal,
-            builder: (context, reveal) => _CredentialCard(item, reveal: reveal),
-          ),
-        ],
-      ],
-    );
-  }
-}
-
-class _CredentialCard extends StatelessWidget {
-  const _CredentialCard(this.item, {required this.reveal});
-
-  final Credential item;
-  final Animation<double> reveal;
+  final List<Credential> education;
 
   @override
   Widget build(BuildContext context) {
     final text = AppText.of(context);
-    return LiftCard(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeader(eyebrow: 'Education', title: 'Where I studied'),
+        LayoutBuilder(
+          builder: (context, constraints) => EqualGrid(
+            columns: constraints.maxWidth >= 600 ? 2 : 1,
+            children: [
+              for (final item in education)
+                AppCard(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(item.title, style: text.title),
+                      const SizedBox(height: Space.xs),
+                      Text(item.detail, style: text.label),
+                    ],
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// The published paper, then the university research projects as plain
+/// rows, then membership as one small line.
+class ResearchSection extends StatelessWidget {
+  const ResearchSection({
+    super.key,
+    required this.research,
+    required this.membership,
+  });
+
+  final Research research;
+  final String membership;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = AppText.of(context);
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SectionHeader(
+          eyebrow: 'Research',
+          title: 'Papers and university projects',
+        ),
+        const GroupLabel('Published'),
+        for (final paper in research.published) _PublicationRow(paper),
+        const SizedBox(height: Space.xxxl),
+        const GroupLabel('University research projects'),
+        for (final project in research.universityProjects)
+          _ResearchRow(
+            project,
+            tag: research.projectTag,
+            pdfOnRequest: research.pdfOnRequest,
+          ),
+        const SizedBox(height: Space.xxxl),
+        Text(membership, style: text.label),
+      ],
+    );
+  }
+}
+
+class _Row extends StatelessWidget {
+  const _Row({required this.child});
+
+  final Widget child;
+
+  @override
+  Widget build(BuildContext context) => Container(
+    width: double.infinity,
+    padding: const EdgeInsets.symmetric(vertical: Space.xl),
+    decoration: BoxDecoration(
+      border: Border(top: BorderSide(color: AppColors.of(context).line)),
+    ),
+    child: child,
+  );
+}
+
+class _PublicationRow extends StatelessWidget {
+  const _PublicationRow(this.paper);
+
+  final Publication paper;
+
+  @override
+  Widget build(BuildContext context) {
+    final text = AppText.of(context);
+    return _Row(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(item.kind.toUpperCase(), style: text.eyebrow),
-          const SizedBox(height: 6),
-          DrawLine(progress: reveal, width: 32, start: 0.3),
-          const SizedBox(height: 12),
-          Text(item.title, style: text.title),
-          const SizedBox(height: 4),
-          Text(item.detail, style: text.body.copyWith(fontSize: 14)),
-          if (item.link case final link?)
-            Padding(
-              padding: const EdgeInsets.only(top: 4),
-              child: Transform.translate(
-                offset: const Offset(-8, 0),
-                child: InlineLink(label: link.label, url: link.url),
-              ),
+          Measure(child: Text(paper.title, style: text.title)),
+          const SizedBox(height: Space.xs),
+          Measure(child: Text(paper.detail, style: text.label)),
+          const SizedBox(height: Space.xs),
+          Transform.translate(
+            offset: const Offset(-Space.s, 0),
+            child: InlineLink(label: paper.link.label, url: paper.link.url),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ResearchRow extends StatefulWidget {
+  const _ResearchRow(
+    this.project, {
+    required this.tag,
+    required this.pdfOnRequest,
+  });
+
+  final ResearchProject project;
+  final String tag;
+  final String pdfOnRequest;
+
+  @override
+  State<_ResearchRow> createState() => _ResearchRowState();
+}
+
+class _ResearchRowState extends State<_ResearchRow> {
+  bool _open = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final project = widget.project;
+    final pdf = project.pdfUrl;
+    final coAuthors = project.coAuthors;
+    final text = AppText.of(context);
+    return _Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Measure(child: Text(project.title, style: text.title)),
+          const SizedBox(height: Space.s),
+          Wrap(
+            spacing: Space.m,
+            runSpacing: Space.xs,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              TagList([widget.tag]),
+              Text(project.source, style: text.label),
+            ],
+          ),
+          if (coAuthors != null) ...[
+            const SizedBox(height: Space.xs),
+            Text('With $coAuthors', style: text.label),
+          ],
+          const SizedBox(height: Space.s),
+          Measure(child: Text(project.summary, style: text.body)),
+          const SizedBox(height: Space.xs),
+          Transform.translate(
+            offset: const Offset(-Space.s, 0),
+            child: Wrap(
+              crossAxisAlignment: WrapCrossAlignment.center,
+              children: [
+                if (pdf != null)
+                  InlineLink(label: 'PDF', url: pdf)
+                else
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: Space.s),
+                    child: Text(widget.pdfOnRequest, style: text.label),
+                  ),
+                DisclosureButton(
+                  label: 'Abstract',
+                  open: _open,
+                  onPressed: () => setState(() => _open = !_open),
+                ),
+              ],
             ),
+          ),
+          Disclosed(
+            open: _open,
+            child: Text(project.abstract, style: text.body),
+          ),
         ],
       ),
     );
@@ -157,75 +259,63 @@ class ContactSection extends StatelessWidget {
     final cv = profile.cvUrl;
     final c = AppColors.of(context);
     final text = AppText.of(context);
-    return ScrollReveal(
-      duration: Motion.draw + Motion.reveal,
-      builder: (context, reveal) => Panel(
-        color: c.accentSoft,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            IntrinsicWidth(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text('CONTACT', style: text.eyebrow),
-                  const SizedBox(height: 6),
-                  DrawLine(progress: reveal, start: 0.3),
-                ],
+    return AppCard(
+      color: c.accentSoft,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('CONTACT', style: text.eyebrow),
+          const SizedBox(height: Space.s),
+          Semantics(
+            header: true,
+            headingLevel: 2,
+            child: Text("Let's talk", style: text.sectionTitle),
+          ),
+          const SizedBox(height: Space.m),
+          Measure(child: Text(profile.closing, style: text.body)),
+          const SizedBox(height: Space.xl),
+          Wrap(
+            spacing: Space.s,
+            runSpacing: Space.s,
+            crossAxisAlignment: WrapCrossAlignment.center,
+            children: [
+              LinkButton(
+                label: 'Email me',
+                url: 'mailto:${profile.email}',
+                icon: const Icon(Icons.mail_outline, size: 18),
+                primary: true,
               ),
-            ),
-            const SizedBox(height: 10),
-            Semantics(
-              header: true,
-              headingLevel: 2,
-              child: Text("Let's talk", style: text.sectionTitle),
-            ),
-            const SizedBox(height: 10),
-            Text(profile.closing, style: text.body.copyWith(fontSize: 16)),
-            const SizedBox(height: 20),
-            Wrap(
-              spacing: 10,
-              runSpacing: 10,
-              crossAxisAlignment: WrapCrossAlignment.center,
-              children: [
+              _CopyEmail(profile.email),
+              if (cv != null)
                 LinkButton(
-                  label: 'Email me',
-                  url: 'mailto:${profile.email}',
-                  icon: const Icon(Icons.mail_outline, size: 18),
-                  primary: true,
+                  label: 'Download CV',
+                  url: cv,
+                  icon: const Icon(Icons.description_outlined, size: 18),
                 ),
-                _CopyEmail(profile.email),
-                if (cv != null)
-                  LinkButton(
-                    label: 'Download CV',
-                    url: cv,
-                    icon: const Icon(Icons.description_outlined, size: 18),
-                  ),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Wrap(
-              spacing: 4,
-              children: [
-                _IconLink(
-                  label: 'LinkedIn',
-                  url: profile.linkedIn,
-                  brand: Brand.linkedIn,
-                ),
-                _IconLink(
-                  label: 'GitHub',
-                  url: profile.github,
-                  brand: Brand.gitHub,
-                ),
-                _IconLink(
-                  label: 'LeetCode',
-                  url: profile.leetCode,
-                  brand: Brand.leetCode,
-                ),
-              ],
-            ),
-          ],
-        ),
+            ],
+          ),
+          const SizedBox(height: Space.l),
+          Wrap(
+            spacing: Space.xs,
+            children: [
+              _IconLink(
+                label: 'LinkedIn',
+                url: profile.linkedIn,
+                brand: Brand.linkedIn,
+              ),
+              _IconLink(
+                label: 'GitHub',
+                url: profile.github,
+                brand: Brand.gitHub,
+              ),
+              _IconLink(
+                label: 'LeetCode',
+                url: profile.leetCode,
+                brand: Brand.leetCode,
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
@@ -314,7 +404,7 @@ class _IconLink extends StatelessWidget {
     return Link(
       uri: Uri.parse(url),
       target: LinkTarget.blank,
-      builder: (context, followLink) => _LiftIconButton(
+      builder: (context, followLink) => _IconButton(
         label: label,
         onPressed: followLink,
         icon: BrandIcon(brand, size: 20),
@@ -323,8 +413,8 @@ class _IconLink extends StatelessWidget {
   }
 }
 
-class _LiftIconButton extends StatefulWidget {
-  const _LiftIconButton({
+class _IconButton extends StatefulWidget {
+  const _IconButton({
     required this.label,
     required this.onPressed,
     required this.icon,
@@ -335,32 +425,27 @@ class _LiftIconButton extends StatefulWidget {
   final Widget icon;
 
   @override
-  State<_LiftIconButton> createState() => _LiftIconButtonState();
+  State<_IconButton> createState() => _IconButtonState();
 }
 
-class _LiftIconButtonState extends State<_LiftIconButton> {
+class _IconButtonState extends State<_IconButton> {
   bool _hovered = false;
 
   @override
   Widget build(BuildContext context) {
     final c = AppColors.of(context);
-    return AnimatedSlide(
-      offset: Offset(0, _hovered ? -0.06 : 0),
-      duration: Motion.reduced(context) ? Duration.zero : Motion.hover,
-      curve: Motion.curve,
-      child: IconButton(
-        tooltip: widget.label,
-        onPressed: widget.onPressed,
-        onHover: (value) => setState(() => _hovered = value),
-        color: _hovered ? c.accent : c.ink,
-        iconSize: 20,
-        style: IconButton.styleFrom(
-          minimumSize: const Size(44, 44),
-          side: BorderSide(color: c.lineStrong),
-          backgroundColor: c.surface,
-        ),
-        icon: widget.icon,
+    return IconButton(
+      tooltip: widget.label,
+      onPressed: widget.onPressed,
+      onHover: (value) => setState(() => _hovered = value),
+      color: _hovered ? c.accent : c.ink,
+      iconSize: 20,
+      style: IconButton.styleFrom(
+        minimumSize: const Size(44, 44),
+        side: BorderSide(color: c.lineStrong),
+        backgroundColor: c.surface,
       ),
+      icon: widget.icon,
     );
   }
 }

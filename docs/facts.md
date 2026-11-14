@@ -5,7 +5,7 @@ and the public CV must agree with this file. Change facts here first, then in th
 
 Items marked `TODO(confirm)` are unresolved. Do not publish them until confirmed.
 
-Last reviewed: 2026-10-05 (round 3: location, LeetCode, About copy)
+Last reviewed: 2026-11-03 (round 4: research section, project order, BSc 2023 confirmed)
 
 ---
 
@@ -76,18 +76,45 @@ Never published: phone number, personal Gmail, the original resume PDF.
 | Master of Information Technology in Artificial Intelligence | Macquarie University | Sydney, NSW | 2026 — completion month `TODO(confirm)` (resume says "Graduating July 2026") |
 | Bachelor of Science in Computer Science and Engineering | North South University | Dhaka, Bangladesh | 2023 |
 
-## Publication
+BSc year 2023 confirmed by the owner (2026-11-03).
+
+## Research
+
+Full list with slugs and URLs: `docs/papers.md`.
+
+### Published (the only published paper)
 
 Deep learning to aid prescription processing & inventory management for local pharmacies
 through smartphone application. *International Journal of Supply Chain Management (IJSCM)*,
 Vol. 10, No. 4, Aug 2021. Primary author.
 Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 
+### University research projects (unpublished)
+
+Course papers with no venue, DOI or peer review. Never call them publications,
+journal papers or conference papers. Tag on the site: "Unpublished · University project".
+
+| Title | Institution · course · year (from the PDF) | Co-authors |
+|---|---|---|
+| Optimizing Bengali Text Generation: A Study on Fine-Tuning BLOOM-560m with Reduced Parameters for Next Word Prediction | North South University · CSE 498R Directed Research · 2023 | Samira Ali, Irfanuddin Ahmed |
+| Enhancing Bengali Language Processing: LoRA-Driven Adaptation in BLOOM | North South University · Senior Design Project · 2023 | Samira Ali, Irfanuddin Ahmed |
+| Domain Transfer for Low-Resource Machine Translation using RAG: Solving Retrieval Noise in Clinical English-to-Bengali Translation | Macquarie University · COMP8851 Major Project · 2026 | Rahba Basheer Vayal Purayil |
+
+- Co-authors shown as "With ..." — `TODO(confirm)`: they have not yet agreed to be named
+- Spelling of "Purayil" — `TODO(confirm)`: the PDF cover says "Purayi", its contribution table "Purayil"
+- PDFs: "PDF available on request" until redacted public editions are supplied. Paper 2 also needs the supervisor's consent
+- Left out by decision: the sentiment-analysis numbers in paper 1
+
 ---
 
-## Projects (display order)
+## Projects
 
-### 1. StepWise — lead case study
+Order on the page: StepWise (featured block), then compact rows for Helping Hand,
+Minima, Prism, MedWay, LanDrop. Minima and Prism keep problem and key point behind
+a closed "Details" toggle; the inline architecture diagrams were removed (the
+"Architecture" links remain).
+
+### 1. StepWise — featured
 - Status: **In development / private beta. Not publicly released — never claim a launch.**
 - URL: https://www.thestepwise.com/ — **not linked** while in development / private beta (decision)
 - Started: Nov 2025
@@ -103,7 +130,7 @@ Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 - Stack: TypeScript, MDX
 - Live: https://www.tryminima.com/
 - Code: https://github.com/hasibullah1811/minima
-- Assets: `web/img/minima-architecture.png` (shown inline, loaded on scroll, and linked full size)
+- Assets: `web/img/minima-architecture.png` (linked full size)
 
 ### 3. Prism — RAG visualiser
 - Date: Jan 2026, open source
@@ -111,7 +138,7 @@ Link: https://ojs.excelingtech.co.uk/index.php/IJSCM/article/view/5878/3037
 - Stack: React, Python, vector database
 - Live: https://prism-xi-three.vercel.app/
 - Code: https://github.com/hasibullah1811/prism
-- Assets: `web/img/prism-architecture.png` (shown inline, loaded on scroll, and linked full size)
+- Assets: `web/img/prism-architecture.png` (linked full size)
 
 ### 4. LanDrop
 - Date: May 2026

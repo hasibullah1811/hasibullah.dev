@@ -17,12 +17,13 @@ the loading state (`test/theme_test.dart` checks they match).
 | inkSoft      | `#45413A` | `#D3CBC0` | body text                        |
 | muted        | `#615B52` | `#ABA296` | labels, dates                    |
 | line         | `#E8E6E1` | `#332D29` | card borders                     |
-| lineStrong   | `#D6D2CA` | `#4A423B` | hover borders, journey track     |
+| lineStrong   | `#D6D2CA` | `#4A423B` | button borders, journey track    |
 | accent       | `#A63F25` | `#E8957A` | eyebrows, links, journey route   |
 | accentSoft   | `#FBEFEA` | `#38251E` | contact panel, status chips      |
 | available    | `#277046` | `#7CC79A` | availability line                |
 
-Dark cards lift with a stronger border and no shadow.
+Cards in both themes: one style, a hairline `line` border, no shadow, no hover
+lift. Radii: 12 for cards and images, 6 for tags, chips and buttons.
 
 ## Contrast (WCAG 2.x)
 

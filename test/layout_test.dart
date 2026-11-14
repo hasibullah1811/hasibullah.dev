@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:hasib_website/content/models.dart';
 import 'package:hasib_website/content/portfolio_content.dart';
 import 'package:hasib_website/main.dart';
 import 'package:hasib_website/ui/theme_controller.dart';
@@ -62,7 +61,7 @@ void main() {
             find
                 .ancestor(
                   of: find.text(m.label, skipOffstage: false),
-                  matching: find.byType(LiftCard),
+                  matching: find.byType(AppCard),
                 )
                 .first,
           ),
@@ -87,43 +86,43 @@ void main() {
       }
     });
 
-    testWidgets('credential cards: three equal, publication full width on '
-        '$name', (tester) async {
+    testWidgets('education: two equal cards on $name', (tester) async {
       await _pumpApp(tester, size: size);
-      Rect card(Credential c) => tester.getRect(
-        find
-            .ancestor(
-              of: find.text(c.title, skipOffstage: false),
-              matching: find.byType(LiftCard),
-            )
-            .first,
-      );
-      final narrow = portfolio.credentials.where((c) => !c.wide).toList();
-      final wide = portfolio.credentials.where((c) => c.wide).toList();
-      expect(narrow, hasLength(3));
-      expect(wide, hasLength(1));
-      final rects = narrow.map(card).toList();
-      final pub = card(wide.single);
-      for (final r in rects) {
-        expect(r.width, moreOrLessEquals(rects.first.width, epsilon: 0.01));
-        expect(r.left, greaterThanOrEqualTo(pub.left - 0.01));
-      }
-      if (size.width >= 600) {
-        for (final r in rects) {
-          expect(r.top, rects.first.top);
-          expect(r.height, moreOrLessEquals(rects.first.height, epsilon: 0.01));
-        }
-        expect(rects.last.right, moreOrLessEquals(pub.right, epsilon: 0.01));
-      } else {
-        // One column, every card the publication's width.
-        expect(rects.first.width, moreOrLessEquals(pub.width, epsilon: 0.01));
-      }
-      expect(pub.top, greaterThan(rects.last.bottom));
+      final rects = [
+        for (final c in portfolio.education)
+          tester.getRect(
+            find
+                .ancestor(
+                  of: find.text(c.title, skipOffstage: false),
+                  matching: find.byType(AppCard),
+                )
+                .first,
+          ),
+      ];
+      expect(rects, hasLength(2));
       expect(
-        find.text(wide.single.title, skipOffstage: false),
-        findsOneWidget,
-        reason: 'full publication title',
+        rects.last.width,
+        moreOrLessEquals(rects.first.width, epsilon: 0.01),
       );
+      if (size.width >= 600) {
+        expect(rects.last.top, rects.first.top);
+        expect(
+          rects.last.height,
+          moreOrLessEquals(rects.first.height, epsilon: 0.01),
+        );
+      } else {
+        expect(rects.last.top, greaterThan(rects.first.bottom));
+      }
+    });
+
+    testWidgets('body text stays within the reading width on $name', (
+      tester,
+    ) async {
+      await _pumpApp(tester, size: size);
+      for (final p in portfolio.research.universityProjects) {
+        final rect = tester.getRect(find.text(p.summary, skipOffstage: false));
+        expect(rect.width, lessThanOrEqualTo(bodyMaxWidth), reason: p.slug);
+      }
     });
 
     testWidgets('renders every section without overflow on $name', (
@@ -144,8 +143,10 @@ void main() {
       for (final heading in [
         portfolio.about.title,
         journey.title,
-        'Case studies',
+        'Projects',
         'What I work with',
+        'Where I studied',
+        'Papers and university projects',
         "Let's talk",
         for (final c in journey.chapters) c.name,
       ]) {
@@ -153,9 +154,16 @@ void main() {
       }
       expect(find.text(journey.move, skipOffstage: false), findsOneWidget);
       expect(find.text(span.title, skipOffstage: false), findsOneWidget);
-      for (final study in portfolio.caseStudies) {
-        expect(find.text(study.name, skipOffstage: false), findsOneWidget);
+      for (final name in [
+        portfolio.featured.name,
+        ...portfolio.projects.map((p) => p.name),
+      ]) {
+        expect(find.text(name, skipOffstage: false), findsOneWidget);
       }
+      expect(
+        find.text(portfolio.membership, skipOffstage: false),
+        findsOneWidget,
+      );
     });
   }
 
@@ -229,5 +237,51 @@ void main() {
       find.text('Download CV', skipOffstage: false),
       hasCv ? findsWidgets : findsNothing,
     );
+  });
+
+  testWidgets('research rows: tag, co-authors, PDF on request, closed '
+      'abstract', (tester) async {
+    await _pumpApp(tester);
+    final research = portfolio.research;
+    final projects = research.universityProjects;
+    expect(
+      find.text(research.projectTag, skipOffstage: false),
+      findsNWidgets(projects.length),
+    );
+    expect(
+      find.text(research.pdfOnRequest, skipOffstage: false),
+      findsNWidgets(projects.where((p) => p.pdfUrl == null).length),
+    );
+    for (final p in projects) {
+      if (p.coAuthors case final names?) {
+        expect(find.text('With $names', skipOffstage: false), findsWidgets);
+      }
+      expect(find.text(p.abstract, skipOffstage: false), findsNothing);
+    }
+    expect(
+      find.text(
+        '${research.published.single.link.label} ↗',
+        skipOffstage: false,
+      ),
+      findsWidgets,
+    );
+
+    final first = find.text('Abstract', skipOffstage: false).first;
+    await tester.ensureVisible(first);
+    await tester.tap(first);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text(projects.first.abstract), findsOneWidget);
+  });
+
+  testWidgets('project details start closed and open on tap', (tester) async {
+    await _pumpApp(tester);
+    final minima = portfolio.projects.firstWhere((p) => p.name == 'Minima');
+    expect(find.text(minima.details.first, skipOffstage: false), findsNothing);
+    final toggle = find.text('Details', skipOffstage: false).first;
+    await tester.ensureVisible(toggle);
+    await tester.tap(toggle);
+    await tester.pump(const Duration(milliseconds: 400));
+    expect(find.text(minima.details.first), findsOneWidget);
+    expect(find.text('Architecture ↗', skipOffstage: false), findsNWidgets(2));
   });
 }

@@ -175,57 +175,68 @@ class Journey {
   final List<JourneyChapter> chapters;
 }
 
+/// The one featured project, shown as a larger block with a screenshot.
 class CaseStudy {
   const CaseStudy({
     required this.name,
     required this.period,
+    required this.status,
     required this.tagline,
     required this.problem,
-    required this.work,
-    required this.stack,
+    required this.built,
     required this.outcome,
-    this.status,
+    required this.stack,
     this.links = const [],
     this.image,
     this.imageAlt,
-    this.diagram,
-    this.diagramAlt,
-    this.featured = false,
   });
 
   final String name;
   final String period;
+  final String status;
   final String tagline;
+
+  /// One line each.
   final String problem;
-  final List<String> work;
-  final List<String> stack;
+  final String built;
   final String outcome;
-  final String? status;
+
+  /// Three to five tags.
+  final List<String> stack;
   final List<LinkItem> links;
   final String? image;
   final String? imageAlt;
-
-  /// Architecture diagram under web/, shown inline once scrolled near.
-  final String? diagram;
-  final String? diagramAlt;
-
-  /// Shown as the larger lead card.
-  final bool featured;
 }
 
+/// A compact project row.
 class Project {
   const Project({
     required this.name,
     required this.period,
     required this.description,
     required this.stack,
+    this.status,
+    this.bullets = const [],
+    this.details = const [],
     this.links = const [],
   });
 
   final String name;
   final String period;
+  final String? status;
+
+  /// One line on what it does.
   final String description;
+
+  /// Three tags.
   final List<String> stack;
+
+  /// At most two short bullets, usually none (test/content_test.dart).
+  final List<String> bullets;
+
+  /// Shown behind a "Details" toggle that starts closed: the problem, then
+  /// the key point.
+  final List<String> details;
   final List<LinkItem> links;
 }
 
@@ -237,21 +248,79 @@ class SkillGroup {
 }
 
 class Credential {
-  const Credential({
-    required this.kind,
-    required this.title,
-    required this.detail,
-    this.link,
-    this.wide = false,
-  });
+  const Credential({required this.title, required this.detail});
 
-  final String kind;
   final String title;
   final String detail;
-  final LinkItem? link;
+}
 
-  /// Takes a full-width row of its own below the other cards.
-  final bool wide;
+/// A peer-reviewed, published paper.
+class Publication {
+  const Publication({
+    required this.title,
+    required this.detail,
+    required this.link,
+  });
+
+  final String title;
+
+  /// Journal, issue, date and role.
+  final String detail;
+  final LinkItem link;
+}
+
+/// An unpublished paper written for a university course. Never described
+/// as a publication.
+class ResearchProject {
+  const ResearchProject({
+    required this.title,
+    required this.source,
+    required this.summary,
+    required this.abstract,
+    required this.slug,
+    this.coAuthors,
+    this.pdfUrl,
+  });
+
+  final String title;
+
+  /// Institution, course and year, as printed on the PDF.
+  final String source;
+
+  /// One plain-English line.
+  final String summary;
+
+  /// The short summary shown behind the "Abstract" toggle.
+  final String abstract;
+
+  /// The approved, permanent file name: `https://www.hasibullah.dev/<slug>`.
+  /// Listed in docs/papers.md.
+  final String slug;
+
+  /// Shown as "With ...". Names only, as written on the PDF.
+  final String? coAuthors;
+
+  /// Path under web/ to the redacted public edition. While null the page
+  /// says "PDF available on request".
+  final String? pdfUrl;
+}
+
+class Research {
+  const Research({
+    required this.published,
+    required this.universityProjects,
+    required this.projectTag,
+    required this.pdfOnRequest,
+  });
+
+  final List<Publication> published;
+  final List<ResearchProject> universityProjects;
+
+  /// The small tag on every university project.
+  final String projectTag;
+
+  /// Shown instead of the PDF link while a project's pdfUrl is null.
+  final String pdfOnRequest;
 }
 
 class About {
@@ -267,17 +336,23 @@ class PortfolioContent {
     required this.profile,
     required this.about,
     required this.journey,
-    required this.caseStudies,
+    required this.featured,
     required this.projects,
     required this.skills,
-    required this.credentials,
+    required this.education,
+    required this.research,
+    required this.membership,
   });
 
   final Profile profile;
   final About about;
   final Journey journey;
-  final List<CaseStudy> caseStudies;
+  final CaseStudy featured;
   final List<Project> projects;
   final List<SkillGroup> skills;
-  final List<Credential> credentials;
+  final List<Credential> education;
+  final Research research;
+
+  /// One small line after the research list.
+  final String membership;
 }
